@@ -4,7 +4,21 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      {
+        name: 'Home',
+        path: '',
+        component: () => import('pages/IndexPage.vue'),
+      },
+      {
+        name: 'QRScanner',
+        path: 'qr-scanner',
+        component: () => import('pages/ScannerPage.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+    ],
   },
 
   // Always leave this as last one,

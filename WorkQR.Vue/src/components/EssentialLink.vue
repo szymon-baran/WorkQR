@@ -1,14 +1,7 @@
 <template>
-  <q-item
-    clickable
-    tag="a"
-    target="_blank"
-    :href="link"
-  >
-    <q-item-section
-      v-if="icon"
-      avatar
-    >
+  <q-separator inset v-if="separatorBefore" class="q-my-sm" />
+  <q-item clickable tag="a" :target="isBlank ? '_blank' : ''" :href="link">
+    <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
 
@@ -27,23 +20,33 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
 
     caption: {
       type: String,
-      default: ''
+      default: '',
     },
 
     link: {
       type: String,
-      default: '#'
+      default: '#',
     },
 
     icon: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+
+    isBlank: {
+      type: Boolean,
+      default: true,
+    },
+
+    separatorBefore: {
+      type: Boolean,
+      default: false,
+    },
+  },
 });
 </script>

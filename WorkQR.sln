@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.EntityFramework", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Domain", "WorkQR.Domain\WorkQR.Domain.csproj", "{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{400DD31A-FB5E-48E1-9587-F9D74C5CD6DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{250B68F1-E9D4-41ED-BD3A-E8EC61EC3AE6} = {400DD31A-FB5E-48E1-9587-F9D74C5CD6DE}
+		{2C48121F-0DB2-407A-804D-A3B167E82A51} = {400DD31A-FB5E-48E1-9587-F9D74C5CD6DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4416B773-87D1-4F69-A31A-28F57C3A7AF2}
