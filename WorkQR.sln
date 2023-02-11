@@ -5,7 +5,11 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "WorkQR.Vue", "WorkQR.Vue\WorkQR.Vue.esproj", "{250B68F1-E9D4-41ED-BD3A-E8EC61EC3AE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.WebAPI", "WorkQR.WebAPI\WorkQR.WebAPI.csproj", "{2C48121F-0DB2-407A-804D-A3B167E82A51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.WebAPI", "WorkQR.WebAPI\WorkQR.WebAPI.csproj", "{2C48121F-0DB2-407A-804D-A3B167E82A51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.EntityFramework", "WorkQR.EntityFramework\WorkQR.EntityFramework.csproj", "{42A0F50C-460F-426D-9296-2CBF4B4791C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Domain", "WorkQR.Domain\WorkQR.Domain.csproj", "{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +27,14 @@ Global
 		{2C48121F-0DB2-407A-804D-A3B167E82A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C48121F-0DB2-407A-804D-A3B167E82A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C48121F-0DB2-407A-804D-A3B167E82A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A0F50C-460F-426D-9296-2CBF4B4791C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A0F50C-460F-426D-9296-2CBF4B4791C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A0F50C-460F-426D-9296-2CBF4B4791C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A0F50C-460F-426D-9296-2CBF4B4791C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
