@@ -47,8 +47,10 @@
             </div>
             <q-separator class="q-my-lg" />
             <p class="login-text text-center text-subtitle1">
-              Nie posiadasz konta?
-              <a href="/" class="text-weight-bold">Zarejestruj się.</a>
+              Nie posiadasz konta?<br />
+              <a href="/" class="text-weight-bold"
+                >Wprowadź otrzymany kod tutaj.</a
+              >
             </p>
           </q-card-section>
         </q-form>

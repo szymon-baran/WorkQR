@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj" />
+    <ProjectReference Include="..\WorkQR.Application.Services\WorkQR.Application.Services.csproj" />
+    <ProjectReference Include="..\WorkQR.Data.Abstraction\WorkQR.Data.Abstraction.csproj" />
+    <ProjectReference Include="..\WorkQR.Data.Repositories\WorkQR.Data.Repositories.csproj" />
+    <ProjectReference Include="..\WorkQR.DependencyInjection\WorkQR.DependencyInjection.csproj" />
     <ProjectReference Include="..\WorkQR.Domain\WorkQR.Domain.csproj" />
     <ProjectReference Include="..\WorkQR.EntityFramework\WorkQR.EntityFramework.csproj" />
   </ItemGroup>
