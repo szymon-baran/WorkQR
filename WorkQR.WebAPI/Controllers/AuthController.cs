@@ -19,7 +19,7 @@ namespace WorkQR.WebAPI.Controllers
         public async Task<ActionResult<UserDTO>> Login(UserLoginVM model)
         {
             var userLogin = await _authService.LoginAsync(model);
-            return userLogin != null ? Ok(userLogin) : Unauthorized("Logowanie nieudane.");
+            return userLogin != null ? Ok(userLogin) : StatusCode(StatusCodes.Status500InternalServerError, "Błąd podczas logowania!");
         }
 
         [HttpPost("register")]

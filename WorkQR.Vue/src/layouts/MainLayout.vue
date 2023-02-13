@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated>
+    <q-header bordered>
       <q-toolbar>
         <q-btn
           flat
@@ -12,11 +12,11 @@
         />
 
         <q-toolbar-title class="q-ml-sm"
-          ><q-icon name="qr_code_2" size="2.8rem" class="text-accent" />
+          ><q-icon name="qr_code_2" size="2.8rem" class="qr-icon" />
           WorkQR
         </q-toolbar-title>
 
-        <div>
+        <div v-if="isUserAuthenticated()">
           Witaj, Admin!
           <q-btn
             flat
@@ -25,6 +25,15 @@
             icon="logout"
             aria-label="Wyloguj"
             class="q-ml-sm"
+          />
+        </div>
+        <div v-else>
+          <q-btn
+            flat
+            dense
+            round
+            icon="login"
+            aria-label="Zaloguj"
             @click="toggleLoginDialog"
           />
         </div>
@@ -52,6 +61,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import EssentialLink from 'components/EssentialLink.vue';
 import LoginDialog from 'components/auth/LoginDialog.vue';
 
@@ -95,6 +105,7 @@ export default defineComponent({
 
   setup() {
     const $q = useQuasar();
+    // const router = useRouter();
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
 
@@ -103,9 +114,9 @@ export default defineComponent({
       leftDrawerOpen,
       loginDialogOpen,
       toggleLoginDialog() {
+        //router.push({ name: 'Login' });
         $q.dialog({
           component: LoginDialog,
-
           // props forwarded to your custom component
           componentProps: {
             text: 'something',
@@ -125,7 +136,15 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      isUserAuthenticated: () =>
+        sessionStorage.getItem('userName') &&
+        sessionStorage.getItem('userToken'),
     };
   },
 });
 </script>
+<style lang="scss" scoped>
+.qr-icon {
+  color: rgba($accent, 0.7);
+}
+</style>

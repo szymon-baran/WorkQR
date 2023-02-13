@@ -30,7 +30,9 @@ namespace CloudDrive.Application
             if (user == null)
                 return null;
 
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var isSuccess = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (user != null && isSuccess)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
