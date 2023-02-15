@@ -1,7 +1,10 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header bordered>
-      <q-toolbar>
+    <q-header>
+      <q-toolbar
+        class="bg-secondary q-pa-xs"
+        style="height: 6vh; min-height: 62px"
+      >
         <q-btn
           flat
           dense
@@ -9,14 +12,18 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
+          color="primary"
+          v-if="$q.screen.lt.sm && $route.name !== 'QRScanner'"
         />
 
-        <q-toolbar-title class="q-ml-sm"
-          ><q-icon name="qr_code_2" size="2.8rem" class="qr-icon" />
-          WorkQR
+        <q-toolbar-title class="q-ml-sm q-mt-xs"
+          ><q-img src="~assets/logo.png" width="56px" />
+          <span class="header-font-spaced q-ml-sm text-primary text-h5"
+            >workQR</span
+          >
         </q-toolbar-title>
 
-        <div v-if="isUserAuthenticated()">
+        <div v-if="isUserAuthenticated() && $route.name !== 'QRScanner'">
           Witaj, Admin!
           <q-btn
             flat
@@ -27,23 +34,27 @@
             class="q-ml-sm"
           />
         </div>
-        <div v-else>
+        <div v-if="!isUserAuthenticated() && $route.name !== 'QRScanner'">
           <q-btn
             flat
             dense
             round
             icon="login"
             aria-label="Zaloguj"
+            color="primary"
             @click="toggleLoginDialog"
           />
         </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      v-if="$route.name !== 'QRScanner'"
+    >
       <q-list>
-        <q-item-label header> Menu aplikacji </q-item-label>
-
+        <div class="q-mt-md"></div>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -68,23 +79,37 @@ import LoginDialog from 'components/auth/LoginDialog.vue';
 const linksList = [
   {
     title: 'Strona główna',
-    caption: 'Zarządzaj swoim czasem pracy!',
+    caption: 'Zarządzaj swoim czasem pracy',
     icon: 'home',
-    link: '/',
+    routerTo: '/',
     isBlank: false,
   },
   {
     title: 'Firma',
     caption: 'Informacje o współpracownikach',
     icon: 'work',
-    link: '/',
+    routerTo: '/',
+    isBlank: false,
+  },
+  {
+    title: 'Twój kod QR',
+    caption: 'Sprawdź swój kod QR',
+    icon: 'qr_code_2',
+    routerTo: '/',
     isBlank: false,
   },
   {
     title: 'Ustawienia',
-    caption: 'Konfiguracja kodów QR',
+    caption: 'Zmień dane swojego konta',
     icon: 'settings',
-    link: '/',
+    routerTo: '/',
+    isBlank: false,
+  },
+  {
+    title: 'Skaner QR',
+    caption: 'Funkcjonalność administracyjna',
+    icon: 'qr_code_scanner',
+    routerTo: '/qr-scanner',
     isBlank: false,
   },
   {
@@ -92,6 +117,7 @@ const linksList = [
     caption: 'Odwiedź stronę projektu',
     icon: 'code',
     link: 'https://github.com/szymon-baran/WorkQR',
+    isExternalLink: true,
     separatorBefore: true,
   },
 ];
@@ -105,7 +131,7 @@ export default defineComponent({
 
   setup() {
     const $q = useQuasar();
-    // const router = useRouter();
+    const router = useRouter();
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
 
@@ -114,24 +140,24 @@ export default defineComponent({
       leftDrawerOpen,
       loginDialogOpen,
       toggleLoginDialog() {
-        //router.push({ name: 'Login' });
-        $q.dialog({
-          component: LoginDialog,
-          // props forwarded to your custom component
-          componentProps: {
-            text: 'something',
-            // ...more..props...
-          },
-        })
-          .onOk(() => {
-            console.log('OK');
-          })
-          .onCancel(() => {
-            console.log('Cancel');
-          })
-          .onDismiss(() => {
-            console.log('Called on OK or Cancel');
-          });
+        router.push({ name: 'Login' });
+        // $q.dialog({
+        //   component: LoginDialog,
+        //   // props forwarded to your custom component
+        //   componentProps: {
+        //     text: 'something',
+        //     // ...more..props...
+        //   },
+        // })
+        //   .onOk(() => {
+        //     console.log('OK');
+        //   })
+        //   .onCancel(() => {
+        //     console.log('Cancel');
+        //   })
+        //   .onDismiss(() => {
+        //     console.log('Called on OK or Cancel');
+        //   });
       },
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

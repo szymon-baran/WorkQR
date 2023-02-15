@@ -1,8 +1,15 @@
 <template>
-  <q-separator inset v-if="separatorBefore" class="q-my-sm" />
-  <q-item clickable tag="a" :target="isBlank ? '_blank' : ''" :href="link">
+  <q-separator inset v-if="separatorBefore" class="q-my-md" />
+  <q-item
+    clickable
+    tag="a"
+    :target="isBlank ? '_blank' : ''"
+    :to="routerTo"
+    :href="isExternalLink ? link : undefined"
+    class="q-my-sm"
+  >
     <q-item-section v-if="icon" avatar>
-      <q-icon :name="icon" />
+      <q-icon :name="icon" size="180%" />
     </q-item-section>
 
     <q-item-section>
@@ -30,7 +37,12 @@ export default defineComponent({
 
     link: {
       type: String,
-      default: '#',
+      default: '',
+    },
+
+    routerTo: {
+      type: String,
+      default: '',
     },
 
     icon: {
@@ -44,6 +56,11 @@ export default defineComponent({
     },
 
     separatorBefore: {
+      type: Boolean,
+      default: false,
+    },
+
+    isExternalLink: {
       type: Boolean,
       default: false,
     },

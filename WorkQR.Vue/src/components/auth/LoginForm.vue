@@ -1,73 +1,129 @@
 <template>
   <!-- <q-dialog position="top" v-if="notClosed"> -->
   <div class="q-pa-lg">
-    <q-card :class="[route.name === 'Login' ? 'card' : 'dialog-card']">
-      <q-card-section class="row" v-if="route.name === 'Login'">
-        <router-link to="/"
-          ><q-btn round color="primary" icon="arrow_back"
-        /></router-link>
-      </q-card-section>
-      <q-card-section class="row">
-        <div class="text-h6">Logowanie</div>
-        <q-space />
-        <div class="text-h6" v-if="route.name !== 'Login'">
-          <router-link to="/login"
-            ><q-btn round color="primary" icon="open_in_full"
-          /></router-link>
-        </div>
-      </q-card-section>
-      <q-separator inset class="q-mb-md" />
-      <q-form @submit="onSubmit">
-        <q-card-section>
-          <q-input
-            filled
-            v-model="loginForm.Username"
-            label="Nazwa użytkownika"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Podaj nazwę użytkownika',
-            ]"
-            class="q-mb-sm"
-          />
-          <q-input
-            filled
-            v-model="loginForm.Password"
-            label="Hasło"
-            lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Podaj hasło']"
-            :type="isPwd ? 'password' : 'text'"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-          <p
-            class="login-text text-center text-weight-bold text-subtitle1 q-mt-sm"
-          >
-            <a href="/">Zapomniałeś hasła?</a>
-          </p>
-          <div class="row justify-center">
-            <q-btn
-              color="primary"
-              label="Zaloguj"
-              class="text-center"
-              padding="10px 50px"
-              type="submit"
-            />
-          </div>
-          <q-separator class="q-my-xl" />
-          <p class="login-text text-center text-subtitle1">
-            Nie posiadasz konta?<br />
-            <a href="/" class="text-weight-bold"
-              >Wprowadź otrzymany kod tutaj.</a
+    <q-card class="card" flat>
+      <q-card-section style="height: 100%" horizontal>
+        <q-card-section
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+          "
+          class="background"
+        >
+          <q-card-section class="row">
+            <q-img src="~assets/logo.png" width="6.75rem" />
+            <span
+              class="text-h4 q-ml-sm text-accent header-font-spaced self-center"
+              >workQR</span
             >
-          </p>
+            <q-space />
+            <q-btn
+              round
+              color="primary"
+              icon="login"
+              @click="() => (isLoginOpen = !isLoginOpen)"
+              v-if="!isLoginOpen"
+              class="self-start"
+            />
+          </q-card-section>
+          <q-card-section
+            class="row"
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <p class="text-h6">Witamy w workQR,</p>
+            <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+            <p class="text-subtitle1">
+              najlepszej aplikacji do zarządzania czasem pracy Twojej firmy.
+            </p>
+          </q-card-section>
+          <q-card-section
+            class="row q-mt-xl"
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <p class="text-body2">Masz pytania odnośnie działania aplikacji?</p>
+            <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+            <p class="text-body2">
+              Zachęcamy do kontaktu
+              <a href="mailto:szymon.w.baran@gmail.com">tutaj</a>!
+            </p>
+          </q-card-section>
         </q-card-section>
-      </q-form>
+        <transition
+          enter-active-class="animated fadeInRight"
+          leave-active-class="animated fadeOutRight"
+          appear
+          :duration="200"
+        >
+          <q-card-section v-if="isLoginOpen" style="width: 45%">
+            <q-card-section class="row">
+              <div></div>
+              <q-space />
+              <q-btn
+                round
+                color="primary"
+                icon="close"
+                @click="() => (isLoginOpen = !isLoginOpen)"
+              />
+            </q-card-section>
+            <q-card-section class="row">
+              <div class="text-h6">Logowanie</div>
+            </q-card-section>
+            <q-separator inset class="q-mb-md" />
+            <q-form @submit="onSubmit">
+              <q-card-section>
+                <q-input
+                  filled
+                  v-model="loginForm.Username"
+                  label="Nazwa użytkownika"
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      (val && val.length > 0) || 'Podaj nazwę użytkownika',
+                  ]"
+                  class="q-mb-sm"
+                />
+                <q-input
+                  filled
+                  v-model="loginForm.Password"
+                  label="Hasło"
+                  lazy-rules
+                  :rules="[(val) => (val && val.length > 0) || 'Podaj hasło']"
+                  :type="isPwd ? 'password' : 'text'"
+                >
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+                <p
+                  class="text-primary text-center text-weight-bold text-subtitle1 q-mt-sm"
+                >
+                  <a href="/">Zapomniałeś hasła?</a>
+                </p>
+                <div class="row justify-center">
+                  <q-btn
+                    color="primary"
+                    label="Zaloguj"
+                    class="text-center"
+                    padding="10px 50px"
+                    type="submit"
+                  />
+                </div>
+                <q-separator class="q-my-xl" />
+                <p class="text-primary text-center text-subtitle1">
+                  Posiadasz kod rejestracyjny?<br />
+                  <a href="/" class="text-weight-bold">Załóż konto tutaj</a>
+                </p>
+              </q-card-section>
+            </q-form>
+          </q-card-section>
+        </transition>
+      </q-card-section>
     </q-card>
   </div>
   <!-- </q-dialog> -->
@@ -85,6 +141,7 @@ export default defineComponent({
     const { loginForm } = storeToRefs(store);
     return {
       isPwd: ref(true),
+      isLoginOpen: ref(false),
       notClosed: ref(true),
       loginForm,
       async onSubmit() {
@@ -101,21 +158,23 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.login-text {
-  color: $primary;
-}
 a {
   text-decoration: none;
   color: $primary;
 }
 .card {
-  width: 35rem;
-  height: 45rem;
-  background: rgba($dark, 0.7);
-}
-.dialog-card {
-  width: 30rem;
-  height: 40rem;
+  width: 60vw;
+  height: 70vh;
   background: rgba($dark, 0.95);
+}
+.background {
+  background-image: linear-gradient(
+    to left top,
+    rgba(#be8902, 0.25),
+    rgba(#976d03, 0.25),
+    rgba(#755401, 0.25),
+    rgba(#4e3701, 0.25),
+    rgba(#332501, 0.25)
+  );
 }
 </style>

@@ -1,1 +1,33 @@
-// app global css in SCSS form
+@font-face {
+  font-family: Inter;
+  src: url(./fonts/Inter-SemiBold.ttf);
+}
+
+.header-font-spaced {
+  font-family: 'Inter';
+  letter-spacing: 2.5px;
+}
+
+.header-font {
+  font-family: 'Inter';
+}
+
+.body--dark {
+  color: #f5f5f5 !important;
+}
+
+.q-dark {
+  color: #f5f5f5 !important;
+}
+
+.text-white {
+  color: $dark !important;
+}
+
+.text-off-white {
+  color: $off-white !important;
+}
+
+.body--light {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
