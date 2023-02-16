@@ -17,8 +17,9 @@
         />
 
         <q-toolbar-title class="q-ml-sm q-mt-xs"
-          ><q-img src="~assets/logo.png" width="56px" />
-          <span class="header-font-spaced q-ml-sm text-primary text-h5"
+          ><q-img src="~assets/logo.png" width="56px" class="logo" />
+          <span
+            class="header-font letter-spacing-sm q-ml-sm text-primary text-h5"
             >workQR</span
           >
         </q-toolbar-title>
@@ -74,7 +75,6 @@ import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import EssentialLink from 'components/EssentialLink.vue';
-import LoginDialog from 'components/auth/LoginDialog.vue';
 
 const linksList = [
   {

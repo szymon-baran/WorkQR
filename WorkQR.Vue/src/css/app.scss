@@ -3,13 +3,21 @@
   src: url(./fonts/Inter-SemiBold.ttf);
 }
 
-.header-font-spaced {
-  font-family: 'Inter';
-  letter-spacing: 2.5px;
-}
-
 .header-font {
   font-family: 'Inter';
+  user-select: none;
+}
+
+.letter-spacing-sm {
+  letter-spacing: 2px;
+}
+
+.letter-spacing-md {
+  letter-spacing: 3px;
+}
+
+.logo {
+  user-select: none;
 }
 
 .body--dark {

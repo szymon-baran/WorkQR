@@ -2,23 +2,30 @@
   <div class="background" style="height: 94vh; width: 100vw">
     <q-card class="card" flat>
       <q-card-section style="padding: 0">
-        <div class="time q-pa-sm q-mt-xs">
-          <p class="text-h1 text-center text-primary">
-            {{ timestamp }}
-          </p>
-          <p class="text-h5 text-center text-primary">
-            {{ date }}
-          </p>
-        </div>
-        <div class="q-mt-md">
+        <div class="q-mt-xl">
           <qrcode-stream :camera="camera" @decode="onDecode" class="video">
-            <q-btn
-              round
-              color="primary"
-              icon="cameraswitch"
-              @click="switchCamera"
-              class="q-ma-sm"
-            />
+            <div class="time q-pa-sm">
+              <q-btn
+                round
+                color="primary"
+                icon="cameraswitch"
+                @click="switchCamera"
+                class="q-ma-xs"
+                style="position: absolute"
+              />
+              <p class="text-h2 text-center text-primary q-mt-xs q-mb-none">
+                {{ timestamp }}
+              </p>
+              <p class="text-subtitle1 text-center text-primary q-mb-none">
+                {{ date }}
+              </p>
+              <p
+                class="text-body1 text-center text-primary q-mb-none"
+                style="margin-bottom: 0"
+              >
+                Zeskanuj swój kod QR
+              </p>
+            </div>
           </qrcode-stream>
         </div>
       </q-card-section>
@@ -58,7 +65,6 @@ export default defineComponent({
         hour12: false,
         hour: 'numeric',
         minute: 'numeric',
-        second: 'numeric',
       });
       this.timestamp = time;
       this.date = date;
@@ -87,18 +93,22 @@ export default defineComponent({
     };
   },
   mounted() {
-    setInterval(this.getNow, 1000);
+    this.getNow();
+    setInterval(this.getNow, 100000);
   },
 });
 </script>
 <style lang="scss" scoped>
+.time {
+  background-color: rgba(0, 0, 0, 0.4);
+}
 .card {
   width: 100%;
   height: 100%;
 }
 .video {
-  height: 64.5vh;
-  width: 86vw;
+  height: 80vh;
+  width: 94vw;
   margin: 0 auto;
   border: 2px solid $primary;
   border-radius: 4px;

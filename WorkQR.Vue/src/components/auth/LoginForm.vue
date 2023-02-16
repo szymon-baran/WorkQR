@@ -1,5 +1,4 @@
 <template>
-  <!-- <q-dialog position="top" v-if="notClosed"> -->
   <div class="q-pa-lg">
     <q-card class="card" flat>
       <q-card-section style="height: 100%" horizontal>
@@ -13,9 +12,9 @@
           class="background"
         >
           <q-card-section class="row">
-            <q-img src="~assets/logo.png" width="6.75rem" />
+            <q-img src="~assets/logo.png" width="6.75rem" class="logo" />
             <span
-              class="text-h4 q-ml-sm text-accent header-font-spaced self-center"
+              class="text-h4 q-ml-sm text-accent header-font letter-spacing-md self-center"
               >workQR</span
             >
             <q-space />
@@ -42,7 +41,7 @@
             class="row q-mt-xl"
             style="display: flex; align-items: center; justify-content: center"
           >
-            <p class="text-body2">Masz pytania odnośnie działania aplikacji?</p>
+            <p class="text-body2">Masz pytania odnośnie działania systemu?</p>
             <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
             <p class="text-body2">
               Zachęcamy do kontaktu
@@ -115,9 +114,11 @@
                   />
                 </div>
                 <q-separator class="q-my-xl" />
-                <p class="text-primary text-center text-subtitle1">
-                  Posiadasz kod rejestracyjny?<br />
-                  <a href="/" class="text-weight-bold">Załóż konto tutaj</a>
+                <p class="text-center text-subtitle1 q-mb-none">
+                  Posiadasz kod rejestracyjny?
+                </p>
+                <p class="text-primary text-center text-subtitle1 q-mt-none">
+                  <a href="/" class="text-weight-bold">Załóż konto</a>
                 </p>
               </q-card-section>
             </q-form>
@@ -126,7 +127,6 @@
       </q-card-section>
     </q-card>
   </div>
-  <!-- </q-dialog> -->
 </template>
 <script>
 import { ref, defineComponent } from 'vue';

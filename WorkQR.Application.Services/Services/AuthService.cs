@@ -9,7 +9,7 @@ using WorkQR.Application;
 using WorkQR.Data.Abstraction;
 using WorkQR.Domain;
 
-namespace CloudDrive.Application
+namespace WorkQR.Application
 {
     public class AuthService : IAuthService
     {
