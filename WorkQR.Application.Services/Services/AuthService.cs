@@ -48,12 +48,14 @@ namespace WorkQR.Application
                 }
 
                 var token = GetToken(authClaims);
+                var roles = await _userManager.GetRolesAsync(user);
 
                 UserDTO userDTO = new()
                 {
                     Username = user.UserName,
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo
+                    Expiration = new DateTimeOffset(token.ValidTo).ToUnixTimeMilliseconds(),
+                    Roles = roles.ToList()
                 };
 
                 return userDTO;

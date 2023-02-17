@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.Text;
 using WorkQR.Application;
 using WorkQR.Data.Abstraction;
@@ -54,6 +55,7 @@ namespace WorkQR.WebAPI
 
             // Dependency injection
             builder.Services.AddScoped<ApplicationDbContext>();
+            builder.Services.AddScoped<Seed>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 
@@ -66,6 +68,8 @@ namespace WorkQR.WebAPI
             {
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 context.Database.Migrate();
+                var seed = services.GetRequiredService<Seed>();
+                seed?.SeedData();
             }
             catch (Exception ex)
             {

@@ -6,3 +6,10 @@ export interface Todo {
 export interface Meta {
   totalCount: number;
 }
+
+export interface UserDTO {
+  username: string;
+  token: string;
+  expiration: bigint;
+  roles: Array<string>;
+}

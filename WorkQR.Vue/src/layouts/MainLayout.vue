@@ -23,9 +23,10 @@
             >workQR</span
           >
         </q-toolbar-title>
-
-        <div v-if="isUserAuthenticated() && $route.name !== 'QRScanner'">
-          Witaj, Admin!
+        <div
+          v-if="authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
+        >
+          Witaj, {{ authStore.getUserName }}!
           <q-btn
             flat
             dense
@@ -33,9 +34,12 @@
             icon="logout"
             aria-label="Wyloguj"
             class="q-ml-sm"
+            @click="logout"
           />
         </div>
-        <div v-if="!isUserAuthenticated() && $route.name !== 'QRScanner'">
+        <div
+          v-if="!authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
+        >
           <q-btn
             flat
             dense
@@ -43,7 +47,7 @@
             icon="login"
             aria-label="Zaloguj"
             color="primary"
-            @click="toggleLoginDialog"
+            @click="routerPushToLogin"
           />
         </div>
       </q-toolbar>
@@ -71,9 +75,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth-store';
 import EssentialLink from 'components/EssentialLink.vue';
 
 const linksList = [
@@ -105,21 +110,14 @@ const linksList = [
     routerTo: '/',
     isBlank: false,
   },
-  {
-    title: 'Skaner QR',
-    caption: 'Funkcjonalność administracyjna',
-    icon: 'qr_code_scanner',
-    routerTo: '/qr-scanner',
-    isBlank: false,
-  },
-  {
-    title: 'Github',
-    caption: 'Odwiedź stronę projektu',
-    icon: 'code',
-    link: 'https://github.com/szymon-baran/WorkQR',
-    isExternalLink: true,
-    separatorBefore: true,
-  },
+  // {
+  //   title: 'Github',
+  //   caption: 'Odwiedź stronę projektu',
+  //   icon: 'code',
+  //   link: 'https://github.com/szymon-baran/WorkQR',
+  //   isExternalLink: true,
+  //   separatorBefore: true,
+  // },
 ];
 
 export default defineComponent({
@@ -134,37 +132,37 @@ export default defineComponent({
     const router = useRouter();
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
+    const authStore = useAuthStore();
+    const routerPushToLogin = () => {
+      router.push({ name: 'Login' });
+    };
+    const logout = () => {
+      authStore.$reset();
+      routerPushToLogin();
+    };
+
+    onMounted(() => {
+      if (authStore.isQRScanner) {
+        linksList.push({
+          title: 'Skaner QR',
+          caption: 'Funkcjonalność administracyjna',
+          icon: 'qr_code_scanner',
+          routerTo: '/qr-scanner',
+          isBlank: false,
+        });
+      }
+    });
 
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       loginDialogOpen,
-      toggleLoginDialog() {
-        router.push({ name: 'Login' });
-        // $q.dialog({
-        //   component: LoginDialog,
-        //   // props forwarded to your custom component
-        //   componentProps: {
-        //     text: 'something',
-        //     // ...more..props...
-        //   },
-        // })
-        //   .onOk(() => {
-        //     console.log('OK');
-        //   })
-        //   .onCancel(() => {
-        //     console.log('Cancel');
-        //   })
-        //   .onDismiss(() => {
-        //     console.log('Called on OK or Cancel');
-        //   });
-      },
+      authStore,
+      routerPushToLogin,
+      logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      isUserAuthenticated: () =>
-        sessionStorage.getItem('userName') &&
-        sessionStorage.getItem('userToken'),
     };
   },
 });

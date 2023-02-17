@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import { useAuthStore } from '../stores/auth-store';
 
 /*
  * If not building with SSR mode, you can
@@ -35,24 +36,46 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (localStorage.getItem('userToken') == null) {
+    const authStore = useAuthStore();
+    // if (to.matched.some((record) => record.meta.requiresAuth)) {
+    //   if (!authStore.isAuthenticated) {
+    //     next({
+    //       name: 'Login',
+    //       //params: { nextUrl: to.fullPath },
+    //     });
+    //   } else {
+    //     next();
+    //   }
+    // }
+    if (to.matched.some((record) => record.meta.requiresNonAuth)) {
+      if (!authStore.isAuthenticated) {
+        next();
+      } else {
         next({
           name: 'Home',
           //params: { nextUrl: to.fullPath },
         });
-      } else {
-        //   if (!store.state.isAuthenticated) {
-        //     next({
-        //       path: '/login',
-        //       params: { nextUrl: to.fullPath },
-        //     });
-        //   } else {
-        next();
-        // }
       }
     } else {
-      next();
+      if (!authStore.isAuthenticated) {
+        next({
+          name: 'Login',
+          //params: { nextUrl: to.fullPath },
+        });
+      } else {
+        if (to.matched.some((record) => record.meta.requiresQrScanner)) {
+          if (authStore.isQRScanner) {
+            next();
+          } else {
+            next({
+              name: 'Home',
+              //params: { nextUrl: to.fullPath },
+            });
+          }
+        } else {
+          next();
+        }
+      }
     }
   });
 

@@ -14,9 +14,9 @@ const routes: RouteRecordRaw[] = [
         name: 'QRScanner',
         path: 'qr-scanner',
         component: () => import('pages/ScannerPage.vue'),
-        // meta: {
-        //   requiresAuth: true,
-        // },
+        meta: {
+          requiresQrScanner: true,
+        },
       },
     ],
   },
@@ -28,6 +28,9 @@ const routes: RouteRecordRaw[] = [
         name: 'Login',
         path: '',
         component: () => import('pages/LoginPage.vue'),
+        meta: {
+          requiresNonAuth: true,
+        },
       },
     ],
   },

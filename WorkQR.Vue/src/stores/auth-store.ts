@@ -1,34 +1,28 @@
 import { defineStore } from 'pinia';
-import { api } from 'boot/axios';
-import { Notify } from 'quasar';
+import { UserDTO } from '../components/models';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
-    loginForm: {
-      Username: null,
-      Password: null,
-      RememberMe: false,
-    },
+    userName: '',
+    token: '',
+    expiration: BigInt(0),
+    roles: [''],
   }),
+  persist: true,
   getters: {
-    isUserAuthenticated: (state) => state.isAuthenticated,
+    isUserAuthenticated: (state) =>
+      state.isAuthenticated && new Date().getTime() < state.expiration,
+    getUserName: (state) => state.userName ?? '',
+    isQRScanner: (state) => state.roles.some((x) => x === 'QRScanner'),
   },
   actions: {
-    async login() {
-      try {
-        const response = await api.post('auth/login', this.loginForm);
-        sessionStorage.setItem('userName', response.data.username);
-        sessionStorage.setItem('userToken', response.data.token);
-        sessionStorage.setItem('userExpiration', response.data.expiration);
-        return true;
-      } catch (error: any) {
-        Notify.create({
-          type: 'negative',
-          message: error.response.data,
-        });
-        return false;
-      }
+    saveLoginInfo(data: UserDTO) {
+      this.isAuthenticated = true;
+      this.userName = data.username;
+      this.token = data.token;
+      this.expiration = data.expiration;
+      this.roles = data.roles;
     },
   },
 });

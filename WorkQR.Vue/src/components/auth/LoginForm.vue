@@ -130,24 +130,27 @@
 </template>
 <script>
 import { ref, defineComponent } from 'vue';
-import { useAuthStore } from 'stores/auth-store';
+import { useUserStore } from 'stores/user-store';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   name: 'LoginForm',
   setup() {
-    const store = useAuthStore();
+    const store = useUserStore();
+    const router = useRouter();
     const { loginForm } = storeToRefs(store);
     return {
       isPwd: ref(true),
       isLoginOpen: ref(false),
-      notClosed: ref(true),
       loginForm,
       async onSubmit() {
-        await store.login();
-        debugger;
-        notClosed = false;
+        let result = await store.login();
+        if (result === true) {
+          store.$reset();
+          router.push({ name: 'Home' });
+        }
       },
     };
   },

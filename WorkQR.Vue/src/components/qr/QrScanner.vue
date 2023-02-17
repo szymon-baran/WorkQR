@@ -13,11 +13,11 @@
                 class="q-ma-xs"
                 style="position: absolute"
               />
-              <p class="text-h2 text-center text-primary q-mt-xs q-mb-none">
-                {{ timestamp }}
-              </p>
               <p class="text-subtitle1 text-center text-primary q-mb-none">
                 {{ date }}
+              </p>
+              <p class="text-h2 text-center text-primary q-mb-xs q-my-none">
+                {{ timestamp }}
               </p>
               <p
                 class="text-body1 text-center text-primary q-mb-none"
@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { QrcodeStream } from 'vue-qrcode-reader';
 
 const days = [
@@ -51,50 +51,52 @@ export default defineComponent({
   components: {
     QrcodeStream,
   },
-  methods: {
-    onDecode(string: any) {
+  setup() {
+    const weekDays = days;
+    const timestamp = ref('');
+    const date = ref('');
+    const camera = ref('front');
+    const onDecode = (string: any) => {
       debugger;
       let str = string;
-    },
-    getNow() {
+    };
+    const getNow = () => {
       const today = new Date();
-      const date = `${
-        this.weekDays[new Date().getDay()]
+      const dateNow = `${
+        weekDays[new Date().getDay()]
       }, ${new Date().toLocaleDateString()}`;
       const time = today.toLocaleTimeString('en-US', {
         hour12: false,
         hour: 'numeric',
         minute: 'numeric',
       });
-      this.timestamp = time;
-      this.date = date;
-    },
-    switchCamera() {
-      switch (this.camera) {
+      timestamp.value = time;
+      date.value = dateNow;
+    };
+    const switchCamera = () => {
+      switch (camera.value) {
         case 'front':
-          this.camera = 'rear';
+          camera.value = 'rear';
           break;
         case 'rear':
-          this.camera = 'front';
+          camera.value = 'front';
           break;
       }
-    },
-  },
-  setup() {
-    const weekDays = days;
-    const timestamp = ref('');
-    const date = ref('');
-    const camera = ref('front');
+    };
+    onMounted(() => {
+      getNow();
+      setInterval(getNow, 100000);
+    });
+
     return {
       weekDays,
       timestamp,
       date,
       camera,
+      getNow,
+      onDecode,
+      switchCamera,
     };
-  },
-  mounted() {
-    this.getNow();
-    setInterval(this.getNow, 100000);
   },
 });
 </script>
