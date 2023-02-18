@@ -115,11 +115,11 @@
                 </div>
                 <q-separator class="q-my-xl" />
                 <p class="text-center text-subtitle1 q-mb-none">
-                  Posiadasz kod rejestracyjny?
+                  Nie posiadasz konta?
                 </p>
                 <p class="text-primary text-center text-subtitle1 q-mt-none">
                   <span class="text-weight-bold pointer" @click="register"
-                    >Załóż konto</span
+                    >Zarejestruj się</span
                   >
                 </p>
               </q-card-section>
@@ -137,7 +137,7 @@ import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
-import RegisterFormDialog from './RegisterFormDialog.vue';
+import RegisterDialog from './RegisterDialog.vue';
 
 export default defineComponent({
   name: 'LoginForm',
@@ -148,7 +148,7 @@ export default defineComponent({
     const $q = useQuasar();
     const register = () => {
       $q.dialog({
-        component: RegisterFormDialog,
+        component: RegisterDialog,
       })
         .onOk(() => {
           console.log('OK');

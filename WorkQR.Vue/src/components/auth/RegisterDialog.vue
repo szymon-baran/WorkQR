@@ -1,10 +1,12 @@
 <template>
   <q-dialog>
     <q-card flat class="card">
-      <q-card-section>
+      <q-card-section class="row items-center q-pb-md">
         <div class="text-h6">Rejestracja</div>
+        <q-space />
+        <q-btn icon="close" dense round color="primary" v-close-popup />
       </q-card-section>
-      <q-card-section>
+      <q-card-section class="q-pb-lg">
         <div class="row q-col-gutter-md items-stretch q-px-sm">
           <div
             class="col-6"
@@ -48,7 +50,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 export default defineComponent({
-  name: 'RegisterFormDialog',
+  name: 'RegisterDialog',
   setup() {
     return {
       isLeftHovered: ref(false),
