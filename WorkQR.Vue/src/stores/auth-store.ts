@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('auth', {
       state.isAuthenticated && new Date().getTime() < state.expiration,
     getUserName: (state) => state.userName ?? '',
     isQRScanner: (state) => state.roles.some((x) => x === 'QRScanner'),
+    getToken: (state) => state.token,
   },
   actions: {
     saveLoginInfo(data: UserDTO) {

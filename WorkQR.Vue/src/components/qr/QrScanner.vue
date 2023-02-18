@@ -35,6 +35,8 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { QrcodeStream } from 'vue-qrcode-reader';
+import { api } from 'boot/axios';
+import { Notify } from 'quasar';
 
 const days = [
   'Niedziela',
@@ -56,9 +58,20 @@ export default defineComponent({
     const timestamp = ref('');
     const date = ref('');
     const camera = ref('front');
-    const onDecode = (string: any) => {
-      debugger;
-      let str = string;
+    const onDecode = async (string: any) => {
+      try {
+        debugger;
+        await api.post('QRScanner/scan', null, {
+          params: {
+            qrAuthorizationKey: string,
+          },
+        });
+      } catch (error: any) {
+        Notify.create({
+          type: 'negative',
+          message: error.response.data,
+        });
+      }
     };
     const getNow = () => {
       const today = new Date();

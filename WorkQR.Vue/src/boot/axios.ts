@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
-import { useAuthStore } from '../stores/auth-store';
+import { useAuthStore } from 'stores/auth-store';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -17,7 +17,10 @@ declare module '@vue/runtime-core' {
 const api = axios.create({ baseURL: 'https://localhost:5001' });
 const authStore = useAuthStore();
 
-api.defaults.headers.common['Authorization'] = authStore.token;
+api.interceptors.request.use(function (config) {
+  config.headers.common['Authorization'] = `Bearer ${authStore.getToken}`;
+  return config;
+});
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
