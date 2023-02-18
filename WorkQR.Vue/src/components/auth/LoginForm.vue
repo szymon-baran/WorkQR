@@ -41,7 +41,7 @@
             class="row q-mt-xl"
             style="display: flex; align-items: center; justify-content: center"
           >
-            <p class="text-body2">Masz pytania odnośnie działania systemu?</p>
+            <p class="text-body2">Masz pytania odnośnie działania aplikacji?</p>
             <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
             <p class="text-body2">
               Zachęcamy do kontaktu
@@ -118,7 +118,9 @@
                   Posiadasz kod rejestracyjny?
                 </p>
                 <p class="text-primary text-center text-subtitle1 q-mt-none">
-                  <a href="/" class="text-weight-bold">Załóż konto</a>
+                  <span class="text-weight-bold pointer" @click="register"
+                    >Załóż konto</span
+                  >
                 </p>
               </q-card-section>
             </q-form>
@@ -134,6 +136,8 @@ import { useUserStore } from 'stores/user-store';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import RegisterFormDialog from './RegisterFormDialog.vue';
 
 export default defineComponent({
   name: 'LoginForm',
@@ -141,10 +145,26 @@ export default defineComponent({
     const store = useUserStore();
     const router = useRouter();
     const { loginForm } = storeToRefs(store);
+    const $q = useQuasar();
+    const register = () => {
+      $q.dialog({
+        component: RegisterFormDialog,
+      })
+        .onOk(() => {
+          console.log('OK');
+        })
+        .onCancel(() => {
+          console.log('Cancel');
+        })
+        .onDismiss(() => {
+          console.log('Called on OK or Cancel');
+        });
+    };
     return {
       isPwd: ref(true),
       isLoginOpen: ref(false),
       loginForm,
+      register,
       async onSubmit() {
         let result = await store.login();
         if (result === true) {
@@ -179,5 +199,8 @@ a {
     rgba(#4e3701, 0.25),
     rgba(#332501, 0.25)
   );
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
