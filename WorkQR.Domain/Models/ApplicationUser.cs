@@ -9,5 +9,6 @@ namespace WorkQR.Domain
         public Guid? CompanyId { get; set; }
         public Guid QrAuthorizationKey { get; set; } = Guid.NewGuid();
         public virtual Company? Company { get; set; }
+        public virtual ICollection<WorktimeEvent> WorktimeEvents { get; set; }
     }
 }

@@ -13,21 +13,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Domain", "WorkQR.Dom
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{400DD31A-FB5E-48E1-9587-F9D74C5CD6DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Application.Abstraction", "WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj", "{A5F8D458-B6EB-447A-8057-8F8EB786E825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Application.Abstraction", "WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj", "{A5F8D458-B6EB-447A-8057-8F8EB786E825}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{FD796735-A31B-43DC-A4D4-B908832BD3BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Application.Services", "WorkQR.Application.Services\WorkQR.Application.Services.csproj", "{378078BD-E9CC-4BDC-88BC-99BBC7A23CAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Application.Services", "WorkQR.Application.Services\WorkQR.Application.Services.csproj", "{378078BD-E9CC-4BDC-88BC-99BBC7A23CAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{5964247D-C055-4D2E-BF68-D4CFC195A429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Data.Abstraction", "WorkQR.Data.Abstraction\WorkQR.Data.Abstraction.csproj", "{98919DCE-4A2F-4201-A431-C9F9CB345241}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Data.Abstraction", "WorkQR.Data.Abstraction\WorkQR.Data.Abstraction.csproj", "{98919DCE-4A2F-4201-A431-C9F9CB345241}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Data.Repositories", "WorkQR.Data.Repositories\WorkQR.Data.Repositories.csproj", "{4343B514-A12F-4965-9992-6505FF0AEBAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Data.Repositories", "WorkQR.Data.Repositories\WorkQR.Data.Repositories.csproj", "{4343B514-A12F-4965-9992-6505FF0AEBAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependencyInjection", "DependencyInjection", "{403C262B-843F-4F38-982A-236A70974448}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.DependencyInjection", "WorkQR.DependencyInjection\WorkQR.DependencyInjection.csproj", "{7472825E-6ED2-4264-988C-7B6BC81F3A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.DependencyInjection", "WorkQR.DependencyInjection\WorkQR.DependencyInjection.csproj", "{7472825E-6ED2-4264-988C-7B6BC81F3A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkQR.Dictionaries", "WorkQR.Dictionaries\WorkQR.Dictionaries.csproj", "{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{7472825E-6ED2-4264-988C-7B6BC81F3A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7472825E-6ED2-4264-988C-7B6BC81F3A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7472825E-6ED2-4264-988C-7B6BC81F3A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{98919DCE-4A2F-4201-A431-C9F9CB345241} = {5964247D-C055-4D2E-BF68-D4CFC195A429}
 		{4343B514-A12F-4965-9992-6505FF0AEBAD} = {5964247D-C055-4D2E-BF68-D4CFC195A429}
 		{7472825E-6ED2-4264-988C-7B6BC81F3A88} = {403C262B-843F-4F38-982A-236A70974448}
+		{8DE25CF1-764E-4A30-86EC-6810BF8A3B2D} = {5964247D-C055-4D2E-BF68-D4CFC195A429}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4416B773-87D1-4F69-A31A-28F57C3A7AF2}
