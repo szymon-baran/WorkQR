@@ -10,6 +10,7 @@ export interface Meta {
 export interface UserDTO {
   username: string;
   token: string;
+  refreshToken: string;
   expiration: bigint;
   roles: Array<string>;
 }

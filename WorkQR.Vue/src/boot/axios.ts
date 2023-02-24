@@ -15,12 +15,33 @@ declare module '@vue/runtime-core' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'https://localhost:5001' });
-const authStore = useAuthStore();
 
 api.interceptors.request.use(function (config) {
-  config.headers.common['Authorization'] = `Bearer ${authStore.getToken}`;
-  return config;
+  const authStore = useAuthStore();
+  debugger;
+  if (config.url) {
+    const controller = config.url.substring(0, config.url.indexOf('/'));
+    if (controller !== 'auth')
+      config.headers['Authorization'] = `Bearer ${authStore.getToken}`;
+    return config;
+  }
 });
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async function (error) {
+    const authStore = useAuthStore();
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      await authStore.refreshAccessToken();
+      return api(originalRequest);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

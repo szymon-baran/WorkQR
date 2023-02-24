@@ -33,5 +33,15 @@ namespace WorkQR.WebAPI.Controllers
             else
                 return Ok(true);
         }
+
+        [HttpPost("refreshAccessToken")]
+        public async Task<ActionResult> RefreshAccessToken(UserTokenVM model)
+        {
+            var result = await _authService.RefreshAccessTokenAsync(model);
+            if (result == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            else
+                return Ok(result);
+        }
     }
 }

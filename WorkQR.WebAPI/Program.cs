@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Text;
 using WorkQR.Application;
@@ -44,7 +46,28 @@ namespace WorkQR.WebAPI
                     ValidateAudience = true,
                     ValidAudience = configuration["JWT:ValidAudience"],
                     ValidIssuer = configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+                    LifetimeValidator = CustomLifetimeValidator,
+                    RequireExpirationTime = true,
+                    ValidateIssuerSigningKey = true,
+                };
+                options.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        c.NoResult();
+
+                        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        c.Response.ContentType = "application/json";
+                        c.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                        c.Response.WriteAsync(c.Exception.ToString()).Wait();
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = c =>
+                    {
+                        c.HandleResponse();
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -114,11 +137,25 @@ namespace WorkQR.WebAPI
 
             app.UseAuthorization();
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:5002"));
+            app.UseCors(x => x
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                //.AllowAnyOrigin()
+                .WithOrigins("https://localhost:5002")
+            );
 
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate, TokenValidationParameters @param)
+        {
+            if (expires != null)
+            {
+                return expires > DateTime.UtcNow;
+            }
+            return false;
         }
     }
 }

@@ -6,5 +6,6 @@ namespace WorkQR.Application
     {
         Task<UserDTO?> LoginAsync(UserLoginVM model);
         Task<IdentityResult?> RegisterAsync(UserRegisterVM model);
+        Task<UserTokenDTO?> RefreshAccessTokenAsync(UserTokenVM model);
     }
 }
