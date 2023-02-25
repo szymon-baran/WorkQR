@@ -70,6 +70,7 @@ export default defineComponent({
         Notify.create({
           type: 'negative',
           message: error.response.data,
+          icon: 'error',
         });
       }
     };

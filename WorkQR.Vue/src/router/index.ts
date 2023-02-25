@@ -38,7 +38,7 @@ export default route(function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     // if (to.matched.some((record) => record.meta.requiresAuth)) {
-    //   if (!authStore.isAuthenticated) {
+    //   if (!authStore.isUserAuthenticated) {
     //     next({
     //       name: 'Login',
     //       //params: { nextUrl: to.fullPath },
@@ -48,7 +48,7 @@ export default route(function (/* { store, ssrContext } */) {
     //   }
     // }
     if (to.matched.some((record) => record.meta.requiresNonAuth)) {
-      if (!authStore.isAuthenticated) {
+      if (!authStore.isUserAuthenticated) {
         next();
       } else {
         next({
@@ -57,7 +57,7 @@ export default route(function (/* { store, ssrContext } */) {
         });
       }
     } else {
-      if (!authStore.isAuthenticated) {
+      if (!authStore.isUserAuthenticated) {
         next({
           name: 'Login',
           //params: { nextUrl: to.fullPath },

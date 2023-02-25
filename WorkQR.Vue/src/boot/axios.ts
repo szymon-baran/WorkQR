@@ -18,7 +18,6 @@ const api = axios.create({ baseURL: 'https://localhost:5001' });
 
 api.interceptors.request.use(function (config) {
   const authStore = useAuthStore();
-  debugger;
   if (config.url) {
     const controller = config.url.substring(0, config.url.indexOf('/'));
     if (controller !== 'auth')
@@ -34,10 +33,15 @@ api.interceptors.response.use(
   async function (error) {
     const authStore = useAuthStore();
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      await authStore.refreshAccessToken();
-      return api(originalRequest);
+    if (error.response.status === 401) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+        await authStore.refreshAccessToken();
+        return api(originalRequest);
+      } else {
+        authStore.$reset();
+        window.location.href = '/#/login';
+      }
     }
     return Promise.reject(error);
   }

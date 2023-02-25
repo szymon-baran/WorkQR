@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { UserDTO } from '../components/models';
+import { UserDTO, UserTokenDTO } from '../components/models';
 import { api } from 'boot/axios';
 import { Notify } from 'quasar';
 
@@ -29,6 +29,11 @@ export const useAuthStore = defineStore('auth', {
       this.expiration = data.expiration;
       this.roles = data.roles;
     },
+    refreshLoginInfo(data: UserTokenDTO) {
+      this.token = data.accessToken;
+      this.refreshToken = data.refreshToken;
+      this.expiration = data.expiration;
+    },
     async refreshAccessToken() {
       try {
         const obj = {
@@ -36,13 +41,13 @@ export const useAuthStore = defineStore('auth', {
           refreshToken: this.refreshToken,
         };
         const response = await api.post('auth/refreshAccessToken', obj);
-        this.token = response.data.accessToken;
-        this.refreshToken = response.data.refreshToken;
+        this.refreshLoginInfo(response.data);
         return response.data.accessToken;
       } catch (error: any) {
         Notify.create({
           type: 'negative',
           message: error.response.data,
+          icon: 'error',
         });
         return false;
       }

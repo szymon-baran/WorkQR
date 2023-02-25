@@ -14,3 +14,9 @@ export interface UserDTO {
   expiration: bigint;
   roles: Array<string>;
 }
+
+export interface UserTokenDTO {
+  accessToken: string;
+  refreshToken: string;
+  expiration: bigint;
+}

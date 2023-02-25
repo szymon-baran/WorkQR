@@ -137,6 +137,7 @@ import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
+import { Notify } from 'quasar';
 import RegisterDialog from './RegisterDialog.vue';
 
 export default defineComponent({
@@ -168,6 +169,11 @@ export default defineComponent({
       async onSubmit() {
         let result = await store.login();
         if (result === true) {
+          Notify.create({
+            type: 'positive',
+            message: 'Zalogowano pomyślnie!',
+            icon: 'check_circle',
+          });
           store.$reset();
           router.push({ name: 'Home' });
         }

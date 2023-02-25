@@ -35,11 +35,11 @@ namespace WorkQR.WebAPI.Controllers
         }
 
         [HttpPost("refreshAccessToken")]
-        public async Task<ActionResult> RefreshAccessToken(UserTokenVM model)
+        public async Task<ActionResult<UserTokenDTO>> RefreshAccessToken(UserTokenVM model)
         {
             var result = await _authService.RefreshAccessTokenAsync(model);
             if (result == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Wymagane ponowne zalogowanie");
             else
                 return Ok(result);
         }

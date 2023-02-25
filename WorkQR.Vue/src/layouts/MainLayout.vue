@@ -79,6 +79,7 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth-store';
+import { Notify } from 'quasar';
 import EssentialLink from 'components/EssentialLink.vue';
 
 const linksList = [
@@ -137,6 +138,11 @@ export default defineComponent({
       router.push({ name: 'Login' });
     };
     const logout = () => {
+      Notify.create({
+        type: 'positive',
+        message: 'Wylogowano pomyślnie!',
+        icon: 'check_circle',
+      });
       authStore.$reset();
       routerPushToLogin();
     };

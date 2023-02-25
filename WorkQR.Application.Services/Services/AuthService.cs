@@ -121,6 +121,7 @@ namespace WorkQR.Application
             return new UserTokenDTO
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                Expiration = new DateTimeOffset(newAccessToken.ValidTo).ToUnixTimeMilliseconds(),
                 RefreshToken = newRefreshToken
             };
         }
