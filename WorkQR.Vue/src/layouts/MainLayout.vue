@@ -17,7 +17,7 @@
         />
 
         <q-toolbar-title class="q-ml-sm q-mt-xs"
-          ><q-img src="~assets/logo.png" width="56px" class="logo" />
+          ><q-img src="~assets/logo.png" width="56px" class="logo-sm" />
           <span
             class="header-font letter-spacing-sm q-ml-sm text-primary text-h5"
             >workQR</span

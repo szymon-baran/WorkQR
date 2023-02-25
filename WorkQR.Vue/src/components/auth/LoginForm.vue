@@ -12,7 +12,7 @@
           class="background"
         >
           <q-card-section class="row">
-            <q-img src="~assets/logo.png" width="6.75rem" class="logo" />
+            <q-img src="~assets/logo.png" width="6.75rem" class="logo-md" />
             <span
               class="text-h4 q-ml-sm text-accent header-font letter-spacing-md self-center"
               >workQR</span
