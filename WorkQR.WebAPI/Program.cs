@@ -108,6 +108,8 @@ namespace WorkQR.WebAPI
             builder.Services.AddScoped<Seed>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            builder.Services.AddScoped<IQRScannerService, QRScannerService>();
+            builder.Services.AddScoped<IWorktimeEventRepository, WorktimeEventRepository>();
 
             var app = builder.Build();
 
