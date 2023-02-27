@@ -1,6 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { useAuthStore } from 'stores/auth-store';
+import { Loading, QSpinnerDots } from 'quasar';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -16,18 +17,28 @@ declare module '@vue/runtime-core' {
 // for each client)
 const api = axios.create({ baseURL: 'https://localhost:5001' });
 
-api.interceptors.request.use(function (config) {
-  const authStore = useAuthStore();
-  if (config.url) {
-    const controller = config.url.substring(0, config.url.indexOf('/'));
-    if (controller !== 'auth')
-      config.headers['Authorization'] = `Bearer ${authStore.getToken}`;
-    return config;
+api.interceptors.request.use(
+  function (config) {
+    Loading.show({
+      spinner: QSpinnerDots,
+      spinnerColor: 'primary',
+    });
+    const authStore = useAuthStore();
+    if (config.url) {
+      const controller = config.url.substring(0, config.url.indexOf('/'));
+      if (controller !== 'auth')
+        config.headers['Authorization'] = `Bearer ${authStore.getToken}`;
+      return config;
+    }
+  },
+  (error) => {
+    Loading.hide();
   }
-});
+);
 
 api.interceptors.response.use(
   (response) => {
+    Loading.hide();
     return response;
   },
   async function (error) {
