@@ -9,7 +9,11 @@ namespace WorkQR.EntityFramework
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        private Company company1;
+        private Company _company1;
+        private Position _company1Position1;
+        private Position _company1Position2;
+        private Position _company1Position3;
+        private Position _company1Position4;
 
 
         public Seed(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
@@ -22,6 +26,7 @@ namespace WorkQR.EntityFramework
         public async void SeedData()
         {
             await AddCompanies();
+            await AddPositions();
             await AddUsers();
         }
 
@@ -32,13 +37,55 @@ namespace WorkQR.EntityFramework
                 return;
             }
 
-            company1 = new()
+            _company1 = new()
             {
-                Name = "Januszex",
-                Description = "Perspektywiczna firma z młodym oraz dynamicznym zespołem"
+                Name = "Januszex Company",
+                Description = "Perspektywiczna firma kurierska z młodym oraz dynamicznym zespołem"
             };
 
-            await _context.Companies.AddAsync(company1);
+            await _context.Companies.AddAsync(_company1);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task AddPositions()
+        {
+            if (_context.Positions.Any())
+            {
+                return;
+            }
+
+            _company1Position1 = new()
+            {
+                Name = "Prezes",
+                Company = _company1,
+                BreakMinsPerDay = 480
+            };
+            await _context.Positions.AddAsync(_company1Position1);
+
+            _company1Position2 = new()
+            {
+                Name = "Kierownik",
+                Company = _company1,
+                BreakMinsPerDay = 60
+            };
+            await _context.Positions.AddAsync(_company1Position2);
+
+            _company1Position3 = new()
+            {
+                Name = "Kierowca",
+                Company = _company1,
+                BreakMinsPerDay = 20
+            };
+            await _context.Positions.AddAsync(_company1Position3);
+
+            _company1Position4 = new()
+            {
+                Name = "Magazynier",
+                Company = _company1,
+                BreakMinsPerDay = 15
+            };
+            await _context.Positions.AddAsync(_company1Position4);
+
             await _context.SaveChangesAsync();
         }
 
@@ -63,7 +110,7 @@ namespace WorkQR.EntityFramework
                 {
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "januszexscanner",
-                    Company = company1
+                    Position = _company1Position1
                 };
                 await _userManager.CreateAsync(scannerUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.QRScanner));
@@ -78,7 +125,7 @@ namespace WorkQR.EntityFramework
                     Email = "jkowalski@workqr.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "jkowalski",
-                    Company = company1
+                    Position = _company1Position1
                 };
                 await _userManager.CreateAsync(modUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Moderator));
@@ -93,7 +140,7 @@ namespace WorkQR.EntityFramework
                     Email = "sklocek@workqr.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "sklocek",
-                    Company = company1
+                    Position = _company1Position4
                 };
                 await _userManager.CreateAsync(normalUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
