@@ -1,14 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using WorkQR.Application;
-using WorkQR.Data.Abstraction;
+﻿using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
 
@@ -25,15 +15,20 @@ namespace WorkQR.Application
             _applicationUserRepository = applicationUserRepository;
         }
 
-        public async Task<EventType?> Scan(Guid qrAuthorizationKey)
+        public async Task<EventScanDTO> Scan(Guid qrAuthorizationKey)
         {
             var user = await _applicationUserRepository.FirstOrDefaultAsync(x => x.QrAuthorizationKey == qrAuthorizationKey);
 
             if (user == null)
-                return null;
+                throw new Exception("Nie znaleziono użytkownika!");
 
-            WorktimeEvent? latestWorktimeEvent = await GetUserLatestWorktimeEvent(user.Id);
-            EventType newEventType = (latestWorktimeEvent?.EventType ?? EventType.EndWork).GetDefaultNewEventType();
+            List<WorktimeEvent> worktimeEvents = await GetUserTodaysWorktimeEvents(user.Id);
+            EventType newEventType = (worktimeEvents?.Last().EventType ?? EventType.EndWork).GetDefaultNewEventType();
+            double breakMinutesLeftToday = CalculateBreakMinutesLeftToday(worktimeEvents, newEventType, user.Position?.BreakMinsPerDay ?? 0);
+
+            if (newEventType == EventType.StartBreak && breakMinutesLeftToday <= 0)
+                throw new Exception($"Dzisiejszy czas przerwy został już wykorzystany! Masz do dyspozycji {user.Position?.BreakMinsPerDay ?? 0} minut przerwy dziennie.");
+
             WorktimeEvent worktimeEvent = new()
             {
                 ApplicationUserId = user.Id,
@@ -44,16 +39,41 @@ namespace WorkQR.Application
             await _worktimeEventRepository.AddAsync(worktimeEvent);
             await _worktimeEventRepository.SaveChangesAsync();
 
-            return worktimeEvent.EventType;
+            return new()
+            {
+                EventType = worktimeEvent.EventType,
+                BreakMinutesLeftToday = breakMinutesLeftToday
+            };
         }
 
-        private async Task<WorktimeEvent?> GetUserLatestWorktimeEvent(string userId)
+        private async Task<List<WorktimeEvent>> GetUserTodaysWorktimeEvents(string userId)
         {
-            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == userId);
+            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == userId && x.EventTime == DateTime.Today);
             if (worktimeEvents.Any())
-                return worktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault();
+                return worktimeEvents.OrderBy(x => x.EventTime).ToList();
             else
-                return null;
+                return new();
+        }
+
+        private double CalculateBreakMinutesLeftToday(List<WorktimeEvent> worktimeEventsToday, EventType newEventType, int userBreakMinutesPerDay)
+        {
+            double breakMinutesToday = 0;
+
+            foreach (var breakStartEvent in worktimeEventsToday.Where(x => x.EventType == EventType.StartBreak)
+                                                            .Select((value, index) => new { index, value }))
+            {
+                var breakEndEvent = worktimeEventsToday.Skip(breakStartEvent.index).FirstOrDefault(x => x.EventType == EventType.EndBreak);
+                if (breakEndEvent != null)
+                {
+                    breakMinutesToday += (breakEndEvent.EventTime - breakStartEvent.value.EventTime).TotalMinutes;
+                }
+                else if (newEventType == EventType.EndBreak)
+                {
+                    breakMinutesToday += (DateTime.Now - breakStartEvent.value.EventTime).TotalMinutes;
+                }
+            }
+
+            return userBreakMinutesPerDay - breakMinutesToday;
         }
     }
 }

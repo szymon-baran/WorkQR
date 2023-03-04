@@ -135,12 +135,13 @@ namespace WorkQR.EntityFramework
             {
                 ApplicationUser normalUser = new()
                 {
-                    FirstName = "Stefan",
-                    LastName = "Klocek",
-                    Email = "sklocek@workqr.com",
+                    FirstName = "Szymon",
+                    LastName = "Baran",
+                    Email = "sbaran@workqr.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = "sklocek",
-                    Position = _company1Position4
+                    UserName = "sbaran",
+                    Position = _company1Position4,
+                    QrAuthorizationKey = Guid.Empty
                 };
                 await _userManager.CreateAsync(normalUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));

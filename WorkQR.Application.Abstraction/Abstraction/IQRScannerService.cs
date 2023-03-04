@@ -5,6 +5,6 @@ namespace WorkQR.Application
 {
     public interface IQRScannerService
     {
-        Task<EventType?> Scan(Guid qrAuthorizationKey);
+        Task<EventScanDTO> Scan(Guid qrAuthorizationKey);
     }
 }
