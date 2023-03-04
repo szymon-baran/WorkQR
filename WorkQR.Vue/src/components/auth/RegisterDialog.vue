@@ -1,6 +1,6 @@
 <template>
   <q-dialog>
-    <q-card flat class="card">
+    <q-card flat class="card q-pa-sm">
       <q-card-section class="row items-center q-pb-md">
         <div class="text-h6">Rejestracja</div>
         <q-space />
