@@ -4,12 +4,12 @@ using WorkQR.Domain;
 
 namespace WorkQR.Application
 {
-    public class QRScannerService : IQRScannerService
+    public class QRService : IQRService
     {
         private readonly IWorktimeEventRepository _worktimeEventRepository;
         private readonly IApplicationUserRepository _applicationUserRepository;
 
-        public QRScannerService(IWorktimeEventRepository worktimeEventRepository, IApplicationUserRepository applicationUserRepository)
+        public QRService(IWorktimeEventRepository worktimeEventRepository, IApplicationUserRepository applicationUserRepository)
         {
             _worktimeEventRepository = worktimeEventRepository;
             _applicationUserRepository = applicationUserRepository;
@@ -74,6 +74,16 @@ namespace WorkQR.Application
             }
 
             return userBreakMinutesPerDay - breakMinutesToday;
+        }
+
+        public async Task<Guid> GetQRAuthorizationKeyByUserName(string userName)
+        {
+            var user = await _applicationUserRepository.FirstOrDefaultAsync(x => x.UserName == userName);
+
+            if (user == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            return user.QrAuthorizationKey;
         }
     }
 }

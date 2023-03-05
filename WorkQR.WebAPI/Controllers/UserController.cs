@@ -9,30 +9,35 @@ namespace WorkQR.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = UserRoles.QRScanner)]
-    public class QRScannerController : ControllerBase
+    [Authorize]
+    public class UserController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IQRService _qrService;
 
-        public QRScannerController(UserManager<ApplicationUser> userManager, IQRService qrScannerService)
+        public UserController(IQRService qrScannerService)
         {
-            _userManager = userManager;
             _qrService = qrScannerService;
         }
 
-        [HttpPost("scan")]
-        public async Task<ActionResult<EventScanDTO>> Scan(string qrAuthorizationKey)
+
+        [HttpGet("getQRAuthorizationKey")]
+        public async Task<ActionResult<Guid>> GetQRAuthorizationKey()
         {
             try
             {
-                EventScanDTO addedEvent = await _qrService.Scan(Guid.Parse(qrAuthorizationKey));
-                return Ok(addedEvent);
+                string userName = User.Identity.Name;
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+                Guid qrAuthorizationKey = await _qrService.GetQRAuthorizationKeyByUserName(userName);
+                return Ok(qrAuthorizationKey);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
     }
 }

@@ -3,8 +3,9 @@ using WorkQR.Dictionaries;
 
 namespace WorkQR.Application
 {
-    public interface IQRScannerService
+    public interface IQRService
     {
         Task<EventScanDTO> Scan(Guid qrAuthorizationKey);
+        Task<Guid> GetQRAuthorizationKeyByUserName(string userName);
     }
 }

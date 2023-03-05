@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', {
     refreshToken: '',
     expiration: BigInt(0),
     roles: [''],
+    qrAuthorizationKey: '',
   }),
   persist: true,
   getters: {
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore('auth', {
     getUserName: (state) => state.userName ?? '',
     isQRScanner: (state) => state.roles.some((x) => x === 'QRScanner'),
     getToken: (state) => state.token,
+    getQrAuthorizationKey: (state) => state.qrAuthorizationKey,
   },
   actions: {
     saveLoginInfo(data: UserDTO) {
@@ -34,6 +36,9 @@ export const useAuthStore = defineStore('auth', {
       this.refreshToken = data.refreshToken;
       this.expiration = data.expiration;
     },
+    setQrAuthorizationKey(data: string) {
+      this.qrAuthorizationKey = data;
+    },
     async refreshAccessToken() {
       try {
         const obj = {
@@ -43,6 +48,19 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post('auth/refreshAccessToken', obj);
         this.refreshLoginInfo(response.data);
         return response.data.accessToken;
+      } catch (error: any) {
+        Notify.create({
+          type: 'negative',
+          message: error.response.data,
+          icon: 'error',
+        });
+        return false;
+      }
+    },
+    async setQRAuthorizationKey() {
+      try {
+        const response = await api.get('user/getQRAuthorizationKey');
+        this.setQrAuthorizationKey(response.data);
       } catch (error: any) {
         Notify.create({
           type: 'negative',
