@@ -18,8 +18,7 @@
 
         <q-toolbar-title class="q-ml-sm q-mt-xs"
           ><q-img src="~assets/logo.png" width="56px" class="logo-sm" />
-          <span
-            class="header-font letter-spacing-sm q-ml-sm text-primary text-h5"
+          <span class="header-font header-sm q-ml-sm text-primary text-h5"
             >workQR</span
           >
         </q-toolbar-title>
@@ -143,7 +142,7 @@ export default defineComponent({
         message: 'Wylogowano pomyślnie!',
         icon: 'check_circle',
       });
-      authStore.$reset();
+      authStore.logout();
       routerPushToLogin();
     };
 

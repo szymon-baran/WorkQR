@@ -2,60 +2,71 @@
   <div class="q-pa-lg">
     <q-card class="card" flat>
       <q-card-section style="height: 100%" horizontal>
-        <q-card-section
-          style="
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 100%;
-          "
-          class="background"
-        >
-          <q-card-section class="row">
-            <q-img src="~assets/logo.png" width="6.75rem" class="logo-md" />
-            <span
-              class="text-h4 q-ml-sm text-accent header-font letter-spacing-md self-center"
-              >workQR</span
-            >
-            <q-space />
-            <q-btn
-              round
-              color="primary"
-              icon="login"
-              @click="() => (isLoginOpen = !isLoginOpen)"
-              v-if="!isLoginOpen"
-              class="self-start"
-            />
-          </q-card-section>
-          <q-card-section
-            class="row"
-            style="display: flex; align-items: center; justify-content: center"
-          >
-            <p class="text-h6">Witamy w workQR,</p>
-            <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
-            <p class="text-subtitle1">
-              najlepszej aplikacji do zarządzania czasem pracy Twojej firmy.
-            </p>
-          </q-card-section>
-          <q-card-section
-            class="row q-mt-xl"
-            style="display: flex; align-items: center; justify-content: center"
-          >
-            <p class="text-body2">Masz pytania odnośnie działania aplikacji?</p>
-            <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
-            <p class="text-body2">
-              Zachęcamy do kontaktu
-              <a href="mailto:szymon.w.baran@gmail.com">tutaj</a>!
-            </p>
-          </q-card-section>
-        </q-card-section>
         <transition
-          enter-active-class="animated fadeInRight"
-          leave-active-class="animated fadeOutRight"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
           appear
           :duration="200"
         >
-          <q-card-section v-if="isLoginOpen" style="width: 45%">
+          <q-card-section
+            style="display: flex; flex-direction: column; width: 100%"
+            class="background"
+            v-show="!isLoginOpen || !$q.screen.lt.sm"
+          >
+            <q-card-section class="row">
+              <q-img src="~assets/logo.png" width="5.75rem" class="logo-md" />
+              <span
+                class="text-h4 q-ml-sm text-accent header-font header-md self-center"
+                >workQR</span
+              >
+              <q-space />
+              <q-btn
+                round
+                color="primary"
+                icon="login"
+                @click="() => (isLoginOpen = !isLoginOpen)"
+                v-show="!isLoginOpen"
+                class="self-start"
+              />
+            </q-card-section>
+            <q-card-section
+              class="row"
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <q-img src="~assets/clock-people.png" width="30rem" />
+              <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+              <p class="text-h6 q-mb-xs text-center">Zarządzaj czasem pracy</p>
+              <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+              <p class="text-subtitle1 q-mb-none text-center">
+                w swojej firmie z wykorzystaniem kodów QR.
+              </p>
+              <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+              <p class="text-subtitle1 text-center">Wygodnie i za darmo.</p>
+              <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
+              <q-btn
+                round
+                color="primary"
+                icon="fa-brands fa-github"
+                href="https://github.com/szymon-baran/WorkQR"
+                target="_blank"
+              />
+            </q-card-section>
+          </q-card-section>
+        </transition>
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          appear
+          :duration="200"
+        >
+          <q-card-section
+            v-show="isLoginOpen"
+            :style="[$q.screen.lt.sm ? 'width: 100%' : 'width: 45%']"
+          >
             <q-card-section class="row">
               <div></div>
               <q-space />
@@ -117,7 +128,9 @@
                 <p class="text-center text-subtitle1 q-mb-none">
                   Nie posiadasz konta?
                 </p>
-                <p class="text-primary text-center text-subtitle1 q-mt-none">
+                <p
+                  class="text-primary text-center text-subtitle1 q-mt-none q-mb-md"
+                >
                   <span class="text-weight-bold pointer" @click="register"
                     >Zarejestruj się</span
                   >
@@ -190,19 +203,22 @@ a {
   color: $primary;
 }
 .card {
-  width: 60vw;
-  height: 70vh;
+  width: 75rem;
+  max-width: 95vw;
+  height: 43rem;
+  max-height: 100vh;
   background: rgba($dark, 0.95);
 }
 .background {
-  background-image: linear-gradient(
-    to left top,
-    rgba(#be8902, 0.25),
-    rgba(#976d03, 0.25),
-    rgba(#755401, 0.25),
-    rgba(#4e3701, 0.25),
-    rgba(#332501, 0.25)
-  );
+  // background-image: linear-gradient(
+  //   to left top,
+  //   rgba(#be8902, 0.25),
+  //   rgba(#976d03, 0.25),
+  //   rgba(#755401, 0.25),
+  //   rgba(#4e3701, 0.25),
+  //   rgba(#332501, 0.25)
+  // );
+  background: rgba($primary, 0.12);
 }
 .pointer {
   cursor: pointer;

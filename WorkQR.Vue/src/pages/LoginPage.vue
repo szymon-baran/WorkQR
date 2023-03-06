@@ -1,5 +1,8 @@
 <template>
-  <q-page class="row items-center justify-evenly background">
+  <q-page
+    class="row items-center justify-evenly"
+    :class="[$q.screen.lt.sm ? 'mobile-background' : 'background']"
+  >
     <LoginForm />
   </q-page>
 </template>
@@ -7,10 +10,14 @@
 <script lang="ts">
 import LoginForm from 'components/auth/LoginForm.vue';
 import { defineComponent } from 'vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'LoginPage',
   components: { LoginForm },
+  setup() {
+    const $q = useQuasar();
+  },
 });
 </script>
 
@@ -30,5 +37,8 @@ export default defineComponent({
   // background-image: url('assets/background.jpeg');
   // background-position: center;
   // background-size: cover;
+}
+.mobile-background {
+  //background: rgba($primary, 0.1);
 }
 </style>

@@ -51,5 +51,9 @@ export const useAuthStore = defineStore('auth', {
       const response = await api.get('user/getQRAuthorizationKey');
       this.setQrAuthorizationKey(response.data);
     },
+    logout() {
+      localStorage.removeItem('auth');
+      this.$reset();
+    },
   },
 });
