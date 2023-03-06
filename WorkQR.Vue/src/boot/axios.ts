@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { useAuthStore } from 'stores/auth-store';
 import { Loading, QSpinnerDots } from 'quasar';
+import { Notify } from 'quasar';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -33,6 +34,11 @@ api.interceptors.request.use(
   },
   (error) => {
     Loading.hide();
+    Notify.create({
+      type: 'negative',
+      message: error.response.data,
+      icon: 'error',
+    });
   }
 );
 
@@ -53,6 +59,13 @@ api.interceptors.response.use(
         authStore.$reset();
         window.location.href = '/#/login';
       }
+    } else {
+      Loading.hide();
+      Notify.create({
+        type: 'negative',
+        message: error.response.data,
+        icon: 'error',
+      });
     }
     return Promise.reject(error);
   }

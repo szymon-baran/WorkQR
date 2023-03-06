@@ -26,56 +26,53 @@ namespace WorkQR.Application
             _configuration = configuration;
         }
 
-        public async Task<UserDTO?> LoginAsync(UserLoginVM model)
+        public async Task<UserDTO> LoginAsync(UserLoginVM model)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
-                return null;
+                throw new Exception("Nie znaleziono użytkownika!");
 
             var isSuccess = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!isSuccess)
+                throw new Exception("Niepoprawne hasło!");
 
-            if (user != null && isSuccess)
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var token = GetToken(authClaims);
-                var refreshToken = GetRefreshToken();
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(30);
-                await _userManager.UpdateAsync(user);
-                var roles = await _userManager.GetRolesAsync(user);
-
-                UserDTO userDTO = new()
-                {
-                    Username = user.UserName,
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    RefreshToken = refreshToken,
-                    Expiration = new DateTimeOffset(token.ValidTo).ToUnixTimeMilliseconds(),
-                    Roles = roles.ToList()
-                };
-
-                return userDTO;
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
-            return null;
+            var token = GetToken(authClaims);
+            var refreshToken = GetRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(30);
+            await _userManager.UpdateAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            UserDTO userDTO = new()
+            {
+                Username = user.UserName,
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                Expiration = new DateTimeOffset(token.ValidTo).ToUnixTimeMilliseconds(),
+                Roles = roles.ToList()
+            };
+
+            return userDTO;
         }
 
-        public async Task<IdentityResult?> RegisterAsync(UserRegisterVM model)
+        public async Task<IdentityResult> RegisterAsync(UserRegisterVM model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return null;
+                throw new Exception("Istnieje już użytkownik o podanej nazwie!");
 
             ApplicationUser user = new()
             {
@@ -87,7 +84,7 @@ namespace WorkQR.Application
             return result;
         }
 
-        public async Task<UserTokenDTO?> RefreshAccessTokenAsync(UserTokenVM model)
+        public async Task<UserTokenDTO> RefreshAccessTokenAsync(UserTokenVM model)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -101,16 +98,14 @@ namespace WorkQR.Application
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(model.AccessToken, tokenValidationParameters, out SecurityToken securityToken);
             if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
+                throw new SecurityTokenException("Błędny token.");
 
             string username = principal.Identity.Name;
 
             var user = await _userManager.FindByNameAsync(username);
 
             if (user == null || user.RefreshToken != model.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return null;
-            }
+                throw new Exception("Wymagane ponowne zalogowanie.");
 
             var newAccessToken = GetToken(principal.Claims.ToList());
             var newRefreshToken = GetRefreshToken();

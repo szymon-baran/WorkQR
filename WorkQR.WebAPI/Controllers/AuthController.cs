@@ -18,30 +18,45 @@ namespace WorkQR.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(UserLoginVM model)
         {
-            var userLogin = await _authService.LoginAsync(model);
-            return userLogin != null ? Ok(userLogin) : StatusCode(StatusCodes.Status500InternalServerError, "Błąd podczas logowania!");
+            try
+            {
+                var userLogin = await _authService.LoginAsync(model);
+                return Ok(userLogin);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegisterVM model)
         {
-            var result = await _authService.RegisterAsync(model);
-            if (result == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            else if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
-            else
+            try
+            {
+                var result = await _authService.RegisterAsync(model);
+                if (!result.Succeeded)
+                    return StatusCode(StatusCodes.Status500InternalServerError, result?.Errors.First().Description ?? "Wystąpił błąd");
                 return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPost("refreshAccessToken")]
         public async Task<ActionResult<UserTokenDTO>> RefreshAccessToken(UserTokenVM model)
         {
-            var result = await _authService.RefreshAccessTokenAsync(model);
-            if (result == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, "Wymagane ponowne zalogowanie");
-            else
+            try
+            {
+                var result = await _authService.RefreshAccessTokenAsync(model);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

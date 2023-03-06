@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { UserDTO, UserTokenDTO } from '../components/models';
 import { api } from 'boot/axios';
-import { Notify } from 'quasar';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -40,35 +39,17 @@ export const useAuthStore = defineStore('auth', {
       this.qrAuthorizationKey = data;
     },
     async refreshAccessToken() {
-      try {
-        const obj = {
-          accessToken: this.token,
-          refreshToken: this.refreshToken,
-        };
-        const response = await api.post('auth/refreshAccessToken', obj);
-        this.refreshLoginInfo(response.data);
-        return response.data.accessToken;
-      } catch (error: any) {
-        Notify.create({
-          type: 'negative',
-          message: error.response.data,
-          icon: 'error',
-        });
-        return false;
-      }
+      const obj = {
+        accessToken: this.token,
+        refreshToken: this.refreshToken,
+      };
+      const response = await api.post('auth/refreshAccessToken', obj);
+      this.refreshLoginInfo(response.data);
+      return response.data.accessToken;
     },
     async setQRAuthorizationKey() {
-      try {
-        const response = await api.get('user/getQRAuthorizationKey');
-        this.setQrAuthorizationKey(response.data);
-      } catch (error: any) {
-        Notify.create({
-          type: 'negative',
-          message: error.response.data,
-          icon: 'error',
-        });
-        return false;
-      }
+      const response = await api.get('user/getQRAuthorizationKey');
+      this.setQrAuthorizationKey(response.data);
     },
   },
 });
