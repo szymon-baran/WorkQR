@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkQR.Application;
 
 namespace WorkQR.WebAPI.Controllers

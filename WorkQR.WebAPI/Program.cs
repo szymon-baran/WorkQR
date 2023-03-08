@@ -107,8 +107,9 @@ namespace WorkQR.WebAPI
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<Seed>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IQRService, QRService>();
+            builder.Services.AddScoped<IWorktimeEventService, WorktimeEventService>();
+            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IWorktimeEventRepository, WorktimeEventRepository>();
 
             var app = builder.Build();
@@ -142,8 +143,8 @@ namespace WorkQR.WebAPI
             app.UseCors(x => x
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                //.AllowAnyOrigin()
-                .WithOrigins("https://localhost:5002")
+                .AllowAnyOrigin()
+                //.WithOrigins("https://localhost:5002")
             );
 
             app.MapControllers();

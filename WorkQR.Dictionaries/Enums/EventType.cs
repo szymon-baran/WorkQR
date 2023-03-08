@@ -28,6 +28,42 @@ namespace WorkQR.Dictionaries
                 _ => EventType.StartWork,
             };
         }
+
+        public static string GetQTimestampTitle(this EventType latestEventType)
+        {
+            return latestEventType switch
+            {
+                EventType.StartWork => "Praca",
+                EventType.StartBreak => "Przerwa",
+                EventType.EndBreak => "Praca",
+                EventType.EndWork => "Przerwa",
+                _ => "",
+            };
+        }
+
+        public static string GetQTimestampDescription(this EventType latestEventType)
+        {
+            return latestEventType switch
+            {
+                EventType.StartWork => "Rozpoczęcie dnia roboczego",
+                EventType.StartBreak => "Zejście na przerwę",
+                EventType.EndBreak => "Powrót do pracy",
+                EventType.EndWork => "Zakończenie dnia roboczego",
+                _ => "",
+            };
+        }
+
+        public static string GetQTimestampColor(this EventType latestEventType)
+        {
+            return latestEventType switch
+            {
+                EventType.StartWork => "#f0ac00",
+                EventType.StartBreak => "#f5f5f5",
+                EventType.EndBreak => "#f0ac00",
+                EventType.EndWork => "#f5f5f5",
+                _ => "#f0ac00",
+            };
+        }
     }
 
 }

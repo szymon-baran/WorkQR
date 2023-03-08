@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-lg">
+  <div>
     <q-card class="card" flat>
       <q-card-section style="height: 100%" horizontal>
         <transition
@@ -13,10 +13,15 @@
             class="background"
             v-show="!isLoginOpen || !$q.screen.lt.sm"
           >
-            <q-card-section class="row">
-              <q-img src="~assets/logo.png" width="5.75rem" class="logo-md" />
+            <q-card-section class="row q-pb-none">
+              <q-img
+                src="~assets/logo.png"
+                width="5.75rem"
+                class="logo-md q-ml-sm"
+              />
               <span
                 class="text-h4 q-ml-sm text-accent header-font header-md self-center"
+                v-if="!$q.screen.lt.sm"
                 >workQR</span
               >
               <q-space />
@@ -29,15 +34,24 @@
                 class="self-start"
               />
             </q-card-section>
+            <q-card-section class="row q-pt-none" v-if="$q.screen.lt.sm">
+              <span class="text-h4 text-accent header-font header-md"
+                >workQR</span
+              >
+            </q-card-section>
             <q-card-section
-              class="row"
+              class="row q-mt-sm"
               style="
                 display: flex;
                 align-items: center;
                 justify-content: center;
               "
             >
-              <q-img src="~assets/clock-people.png" width="30rem" />
+              <q-img
+                src="~assets/clock-people-2.png"
+                width="38rem"
+                class="q-mb-sm"
+              />
               <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
               <p class="text-h6 q-mb-xs text-center">Zarządzaj czasem pracy</p>
               <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
@@ -149,8 +163,7 @@ import { useUserStore } from 'stores/user-store';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
-import { Notify } from 'quasar';
+import { useQuasar, Notify } from 'quasar';
 import RegisterDialog from './RegisterDialog.vue';
 
 export default defineComponent({
@@ -204,7 +217,7 @@ a {
 }
 .card {
   width: 75rem;
-  max-width: 95vw;
+  max-width: 94vw;
   height: 43rem;
   max-height: 100vh;
   background: rgba($dark, 0.95);

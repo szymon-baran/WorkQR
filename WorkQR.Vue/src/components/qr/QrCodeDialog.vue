@@ -34,20 +34,27 @@
             @click="() => (isHelpOpen = !isHelpOpen)"
           />
         </div>
-        <div class="" v-show="isHelpOpen">
-          <p class="text-body-2 q-mb-none">
-            <span class="text-weight-bold">Krok 1.</span> Spróbuj odnowić kod
-            przyciskiem znajdującym się powyżej.
-          </p>
-          <p class="text-body-2 q-mb-none">
-            <span class="text-weight-bold">Krok 2.</span> Jeżeli przeładowanie
-            nie pomogło, wprowadź na skanerze następujący kod: 000 000.
-          </p>
-          <p class="text-body-2">
-            <span class="text-weight-bold">Krok 3.</span> Skontaktuj się z
-            moderatorem strony w swojej firmie.
-          </p>
-        </div>
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          appear
+          :duration="200"
+        >
+          <div class="" v-show="isHelpOpen">
+            <p class="text-body-2 q-mb-none">
+              <span class="text-weight-bold">Krok 1.</span> Spróbuj odnowić kod
+              przyciskiem znajdującym się powyżej.
+            </p>
+            <p class="text-body-2 q-mb-none">
+              <span class="text-weight-bold">Krok 2.</span> Jeżeli przeładowanie
+              nie pomogło, wprowadź na skanerze następujący kod: 000 000.
+            </p>
+            <p class="text-body-2">
+              <span class="text-weight-bold">Krok 3.</span> Skontaktuj się z
+              moderatorem strony w swojej firmie.
+            </p>
+          </div>
+        </transition>
       </q-card-section>
     </q-card>
   </q-dialog>

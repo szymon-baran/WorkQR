@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <QrScanner />
+    <qr-scanner />
   </q-page>
 </template>
 <script lang="ts">

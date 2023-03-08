@@ -11,6 +11,7 @@
 .header-sm {
   letter-spacing: 2px;
   text-shadow: 2px 2px 4px $dark, 0 0 2px $primary;
+  font-size: 1.3rem !important;
 }
 
 .header-md {
@@ -47,4 +48,16 @@
 
 .body--light {
   color: rgba(0, 0, 0, 0.87) !important;
+}
+
+@media (max-width: 599.98px) {
+  .q-layout-padding {
+    padding: 25px 20px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .q-layout-padding {
+    padding: 60px 70px;
+  }
 }

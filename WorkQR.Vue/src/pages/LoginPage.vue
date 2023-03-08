@@ -3,7 +3,7 @@
     class="row items-center justify-evenly"
     :class="[$q.screen.lt.sm ? 'mobile-background' : 'background']"
   >
-    <LoginForm />
+    <login-form />
   </q-page>
 </template>
 

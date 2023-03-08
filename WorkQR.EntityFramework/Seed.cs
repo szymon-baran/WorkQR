@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WorkQR.Dictionaries;
 using WorkQR.Domain;
 
 namespace WorkQR.EntityFramework
@@ -14,6 +15,7 @@ namespace WorkQR.EntityFramework
         private Position _company1Position2;
         private Position _company1Position3;
         private Position _company1Position4;
+        private ApplicationUser _company1Position4User1;
 
 
         public Seed(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
@@ -28,6 +30,7 @@ namespace WorkQR.EntityFramework
             await AddCompanies();
             await AddPositions();
             await AddUsers();
+            await AddWorktimeEvents();
         }
 
         private async Task AddCompanies()
@@ -133,7 +136,7 @@ namespace WorkQR.EntityFramework
             }
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
             {
-                ApplicationUser normalUser = new()
+                _company1Position4User1 = new()
                 {
                     FirstName = "Szymon",
                     LastName = "Baran",
@@ -143,10 +146,62 @@ namespace WorkQR.EntityFramework
                     Position = _company1Position4,
                     QrAuthorizationKey = Guid.Empty
                 };
-                await _userManager.CreateAsync(normalUser, "Admin1!");
+                await _userManager.CreateAsync(_company1Position4User1, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-                await _userManager.AddToRoleAsync(normalUser, UserRoles.User);
+                await _userManager.AddToRoleAsync(_company1Position4User1, UserRoles.User);
             }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task AddWorktimeEvents()
+        {
+            if (_context.WorktimeEvents.Any())
+            {
+                return;
+            }
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartWork,
+                EventTime = DateTime.Now.AddHours(-8),
+                Description = "Przegląd maili, spotkanie z zespołem, praca z projektem"
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Now.AddHours(-6),
+                Description = "Pierwsza przerwa"
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Now.AddHours(-5).AddMinutes(-45),
+                Description = "Powrót do prac nad projektem"
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Now.AddHours(-2),
+                Description = "Druga przerwa"
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Now.AddHours(-1).AddMinutes(-40),
+                Description = "Spotkanie z klientem"
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndWork,
+                EventTime = DateTime.Now,
+                Description = "Koniec pracy"
+            });
 
             await _context.SaveChangesAsync();
         }

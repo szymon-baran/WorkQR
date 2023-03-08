@@ -23,6 +23,7 @@ api.interceptors.request.use(
     Loading.show({
       spinner: QSpinnerDots,
       spinnerColor: 'primary',
+      delay: 500,
     });
     const authStore = useAuthStore();
     if (config.url) {
