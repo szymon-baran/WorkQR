@@ -1,4 +1,6 @@
-﻿namespace WorkQR.Application
+﻿using WorkQR.Dictionaries;
+
+namespace WorkQR.Application
 {
     public class QTimestampDTO
     {
@@ -10,6 +12,7 @@
         /// Start time (HH:MM) - optional
         public string Time { get; set; } = "";
         public string Title { get; set; } = "";
+        public EventType EventType { get; set; }
         public string Header { get; set; } = "";
         public string Details { get; set; } = "";
         public double Duration { get; set; } = 0;

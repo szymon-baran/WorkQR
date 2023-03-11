@@ -21,7 +21,7 @@ namespace WorkQR.WebAPI.Controllers
 
 
         [HttpGet("getUserWorktimeEventsBetweenDates")]
-        public async Task<ActionResult<QTimestampDTO>> GetUserWorktimeEventsBetweenDates([FromQuery]DaysSpanVM model)
+        public async Task<ActionResult<WorktimeEventDTO>> GetUserWorktimeEventsBetweenDates([FromQuery]DaysSpanVM model)
         {
             try
             {
@@ -30,8 +30,8 @@ namespace WorkQR.WebAPI.Controllers
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
-                List<QTimestampDTO> timestamps = await _worktimeEventService.GetUserWorktimeEventsBetweenDates(model, userName);
-                return Ok(timestamps);
+                WorktimeEventDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDates(model, userName);
+                return Ok(worktimeEventsDTO);
             }
             catch (Exception ex)
             {

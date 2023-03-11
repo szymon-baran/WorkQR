@@ -4,7 +4,7 @@
     clickable
     tag="a"
     :target="isBlank ? '_blank' : ''"
-    :to="routerTo"
+    :to="{ name: routerTo }"
     :href="isExternalLink ? link : undefined"
     class="q-my-sm"
   >

@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'Home',
-        path: '',
+        path: 'home',
         component: () => import('pages/IndexPage.vue'),
       },
       {
@@ -17,6 +17,11 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresQrScanner: true,
         },
+      },
+      {
+        name: 'MyEventsHistory',
+        path: 'events-history',
+        component: () => import('pages/MyEventsHistoryPage.vue'),
       },
     ],
   },

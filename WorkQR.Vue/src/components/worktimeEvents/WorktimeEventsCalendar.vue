@@ -1,147 +1,154 @@
 <template>
-  <div class="subcontent">
-    <div class="row q-mt-md">
-      <q-btn color="primary" icon="arrow_back" @click="onPrev()" />
-      <q-btn
-        color="primary"
-        class="q-ml-sm"
-        label="Dzisiaj"
-        @click="onToday()"
-      />
-      <q-space />
-      <!-- <q-input dense filled v-model="selectedDate" mask="date">
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date v-model="selectedDate" mask="YYYY-MM-DD">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Zamknij" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input> -->
-      <q-btn
-        class="q-ml-sm"
-        color="primary"
-        icon="arrow_forward"
-        @click="onNext()"
-      />
-    </div>
-
-    <div class="row justify-center q-mt-xs">
-      <div
-        style="
-          display: flex;
-          max-width: 90vw;
-          width: 100%;
-          height: 46rem;
-          max-height: 70vh;
-        "
+  <div class="row q-mt-md">
+    <q-btn color="primary" icon="arrow_back" @click="onPrev()" />
+    <q-btn color="primary" class="q-ml-sm" label="Dzisiaj" @click="onToday()" />
+    <q-space />
+    <div class="pointer">
+      <span class="text-body1"
+        >Czas przepracowany w wybranym tygodniu:
+        <span class="text-weight-bold">{{
+          minutesToWorkedTime(workedMinutes + breakMinutes)
+        }}</span
+        >.</span
       >
-        <q-calendar-day
-          ref="calendar"
-          v-model="selectedDate"
-          view="week"
-          animated
-          bordered
-          transition-next="slide-left"
-          transition-prev="slide-right"
-          no-active-date
-          :interval-start="7"
-          :interval-count="14"
-          :interval-height="46"
-          :weekdays="[1, 2, 3, 4, 5, 6, 0]"
-          :disabled-weekdays="[0, 6]"
-          @change="onChange"
-          locale="pl"
-          :hour24-format="true"
-        >
-          <template #head-day-event="{ scope: { timestamp } }">
-            <div
-              style="
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding: 2px;
-              "
-            >
-              <template
-                v-for="event in eventsMap[timestamp.date]"
-                :key="event.id"
-              >
-                <q-badge
-                  v-if="!event.time"
-                  :class="badgeClasses(event, 'header')"
-                  :style="badgeStyles(event, 'header')"
-                  style="
-                    width: 100%;
-                    cursor: pointer;
-                    height: 12px;
-                    font-size: 10px;
-                    margin: 1px;
-                  "
-                >
-                  <span class="title q-calendar__ellipsis">
-                    {{ event.title }}
-                    <q-tooltip>{{ event.details }}</q-tooltip>
-                  </span>
-                </q-badge>
-                <q-badge
-                  v-else
-                  :class="badgeClasses(event, 'header')"
-                  :style="badgeStyles(event, 'header')"
-                  style="
-                    margin: 1px;
-                    width: 10px;
-                    max-width: 10px;
-                    height: 10px;
-                    max-height: 10px;
-                  "
-                  @click="scrollToEvent(event)"
-                >
-                  <q-tooltip>{{ event.time + ' - ' + event.header }}</q-tooltip>
-                </q-badge>
-              </template>
-            </div>
-          </template>
-
-          <template
-            #day-body="{
-              scope: { timestamp, timeStartPos, timeDurationHeight },
-            }"
+      <q-tooltip class="text-caption">
+        <div>
+          Praca:
+          <span class="text-weight-bold">{{
+            minutesToWorkedTime(workedMinutes)
+          }}</span>
+        </div>
+        <div>
+          Przerwa:
+          <span class="text-weight-bold">{{
+            minutesToWorkedTime(breakMinutes)
+          }}</span>
+        </div>
+      </q-tooltip>
+    </div>
+    <q-space />
+    <q-input dense filled v-model="selectedDate" mask="####-##-##">
+      <template v-slot:append>
+        <q-icon name="event" class="cursor-pointer">
+          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-date v-model="selectedDate" mask="YYYY-MM-DD">
+              <div class="row items-center justify-end">
+                <q-btn v-close-popup label="Zamknij" color="primary" flat />
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+    </q-input>
+    <q-btn
+      class="q-ml-sm"
+      color="primary"
+      icon="arrow_forward"
+      @click="onNext()"
+    />
+  </div>
+  <div class="row justify-center q-mt-xs">
+    <div
+      style="
+        display: flex;
+        max-width: 90vw;
+        width: 100%;
+        height: 38rem;
+        max-height: 70vh;
+      "
+    >
+      <q-calendar-day
+        ref="calendar"
+        v-model="selectedDate"
+        view="week"
+        animated
+        transition-next="slide-left"
+        transition-prev="slide-right"
+        no-active-date
+        :interval-start="7"
+        :interval-count="14"
+        :interval-height="50"
+        :weekdays="[1, 2, 3, 4, 5, 6, 0]"
+        :disabled-weekdays="[0, 6]"
+        @change="onChange"
+        locale="pl"
+        :hour24-format="true"
+        class="calendar"
+      >
+        <template #head-day-event="{ scope: { timestamp } }">
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              flex-wrap: wrap;
+              padding: 2px;
+            "
           >
             <template
-              v-for="event in getEvents(timestamp.date)"
+              v-for="event in eventsMap[timestamp.date]"
               :key="event.id"
             >
-              <div
-                v-if="event.time !== undefined"
-                class="my-event"
-                :class="badgeClasses(event, 'body')"
-                :style="
-                  badgeStyles(event, 'body', timeStartPos, timeDurationHeight)
+              <q-badge
+                v-if="!event.time"
+                :class="badgeClasses(event, 'header')"
+                :style="badgeStyles(event, 'header')"
+                style="
+                  width: 100%;
+                  cursor: pointer;
+                  height: 12px;
+                  font-size: 10px;
+                  margin: 1px;
                 "
               >
-                <span class="title q-calendar__ellipsis text-weight-bold">
+                <span class="title q-calendar__ellipsis">
                   {{ event.title }}
-                  <q-tooltip>
-                    <div class="text-caption text-weight-bold">
-                      {{ event.header }}
-                    </div>
-                    <div class="text-caption">{{ event.details }}</div>
-                  </q-tooltip>
+                  <q-tooltip>{{ event.details }}</q-tooltip>
                 </span>
-              </div>
+              </q-badge>
+              <q-badge
+                v-else
+                :class="badgeClasses(event, 'header')"
+                :style="badgeStyles(event, 'header')"
+                style="
+                  margin: 1px;
+                  width: 10px;
+                  max-width: 10px;
+                  height: 10px;
+                  max-height: 10px;
+                "
+                @click="scrollToEvent(event)"
+              >
+                <q-tooltip>{{ event.time + ' - ' + event.header }}</q-tooltip>
+              </q-badge>
             </template>
+          </div>
+        </template>
+
+        <template
+          #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }"
+        >
+          <template v-for="event in getEvents(timestamp.date)" :key="event.id">
+            <div
+              v-if="event.time !== undefined"
+              class="my-event"
+              :class="badgeClasses(event, 'body')"
+              :style="
+                badgeStyles(event, 'body', timeStartPos, timeDurationHeight)
+              "
+            >
+              <span class="title q-calendar__ellipsis text-weight-bold">
+                {{ event.title }}
+                <q-tooltip>
+                  <div class="text-caption text-weight-bold">
+                    {{ event.header }} ({{ event.duration.toFixed(2) }} min)
+                  </div>
+                  <div class="text-caption">{{ event.details }}</div>
+                </q-tooltip>
+              </span>
+            </div>
           </template>
-        </q-calendar-day>
-      </div>
+        </template>
+      </q-calendar-day>
     </div>
   </div>
 </template>
@@ -170,9 +177,20 @@ export default defineComponent({
     QCalendarDay,
   },
   setup() {
+    const workedMinutes = ref(-1);
+    const breakMinutes = ref(-1);
+    const minutesToWorkedTime = (minutes) =>
+      minutes
+        ? `${Math.floor(minutes / 60)}:${(minutes % 60)
+            .toFixed(0)
+            .padEnd(2, '0')}`
+        : '0:00';
     return {
       events: ref([]),
       selectedDate: ref(today()),
+      workedMinutes,
+      breakMinutes,
+      minutesToWorkedTime,
     };
   },
 
@@ -206,10 +224,7 @@ export default defineComponent({
     badgeClasses(event, type) {
       const isHeader = type === 'header';
       return {
-        //[`text-white bg-${event.bgcolor}`]: true,
         'full-width': !isHeader && (!event.side || event.side === 'full'),
-        'left-side': !isHeader && event.side === 'left',
-        'right-side': !isHeader && event.side === 'right',
         'rounded-border': true,
       };
     },
@@ -237,28 +252,6 @@ export default defineComponent({
 
       if (events.length === 1) {
         events[0].side = 'full';
-      } else if (events.length === 2) {
-        // this example does no more than 2 events per day
-        // check if the two events overlap and if so, select
-        // left or right side alignment to prevent overlap
-        const startTime = addToDate(parsed(events[0].date), {
-          minute: parseTime(events[0].time),
-        });
-        const endTime = addToDate(startTime, { minute: events[0].duration });
-        const startTime2 = addToDate(parsed(events[1].date), {
-          minute: parseTime(events[1].time),
-        });
-        const endTime2 = addToDate(startTime2, { minute: events[1].duration });
-        if (
-          isBetweenDates(startTime2, startTime, endTime, true) ||
-          isBetweenDates(endTime2, startTime, endTime, true)
-        ) {
-          events[0].side = 'left';
-          events[1].side = 'right';
-        } else {
-          events[0].side = 'full';
-          events[1].side = 'full';
-        }
       }
 
       return events;
@@ -288,68 +281,48 @@ export default defineComponent({
           },
         }
       );
-      this.events = response.data;
+      this.events = response.data.timestamps;
+      this.workedMinutes = response.data.workedMinutes;
+      this.breakMinutes = response.data.breakMinutes;
     },
   },
 });
 </script>
-<style lang="sass" scoped>
-
-.my-event
-  position: absolute
-  font-size: 12px
-  justify-content: center
-  margin: 0 1px
-  text-overflow: ellipsis
-  overflow: hidden
-  cursor: pointer
-
-.title
-  position: relative
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 100%
-
-.text-white
-  color: white
-
-.bg-blue
-  background: blue
-
-.bg-green
-  background: green
-
-.bg-orange
-  background: orange
-
-.bg-red
-  background: red
-
-.bg-teal
-  background: teal
-
-.bg-grey
-  background: grey
-
-.bg-purple
-  background: purple
-
-.full-width
-  left: 0
-  width: calc(100% - 2px)
-
-.left-side
-  left: 0
-  width: calc(50% - 3px)
-
-.right-side
-  left: 50%
-  width: calc(50% - 3px)
-
-.rounded-border
-  border-radius: 2px
-
---calendar-border-current-dark
-  color: $primary
+<style lang="scss" scoped>
+.my-event {
+  position: absolute;
+  font-size: 12px;
+  justify-content: center;
+  margin: 0 1px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
+.title {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.full-width {
+  left: 0;
+  width: calc(100% - 2px);
+}
+.rounded-border {
+  border-radius: 5px;
+}
+--calendar-border-current-dark {
+  color: $primary;
+}
+.calendar {
+  --calendar-border-dark: black 1px solid;
+  --calendar-background-dark: #2a2a2a;
+  --calendar-disabled-date-background: #201f1f;
+  --calendar-border-current-dark: #f0ac00 2px solid;
+  padding: 5px;
+}
+.pointer {
+  cursor: default;
+}
 </style>

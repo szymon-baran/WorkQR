@@ -1,3 +1,21 @@
+::-webkit-scrollbar-track-piece {
+  background-color: $dark-page;
+}
+::-webkit-scrollbar-thumb:vertical {
+  height: 30px;
+  background-color: $dark-page;
+}
+
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.3s ease;
+}
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
 @font-face {
   font-family: Inter;
   src: url(./fonts/Inter-SemiBold.ttf);

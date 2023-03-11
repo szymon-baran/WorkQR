@@ -18,6 +18,7 @@
                 src="~assets/logo.png"
                 width="5.75rem"
                 class="logo-md q-ml-sm"
+                no-spinner
               />
               <span
                 class="text-h4 q-ml-sm text-accent header-font header-md self-center"
@@ -51,6 +52,7 @@
                 src="~assets/clock-people-2.png"
                 width="38rem"
                 class="q-mb-sm"
+                no-spinner
               />
               <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
               <p class="text-h6 q-mb-xs text-center">Zarządzaj czasem pracy</p>

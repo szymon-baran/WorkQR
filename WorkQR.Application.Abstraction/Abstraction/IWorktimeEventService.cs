@@ -2,6 +2,6 @@
 {
     public interface IWorktimeEventService
     {
-        Task<List<QTimestampDTO>> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName);
+        Task<WorktimeEventDTO> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName);
     }
 }

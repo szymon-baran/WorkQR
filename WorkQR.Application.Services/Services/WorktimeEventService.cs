@@ -27,7 +27,7 @@ namespace WorkQR.Application
             _userManager = userManager;
         }
 
-        public async Task<List<QTimestampDTO>> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName)
+        public async Task<WorktimeEventDTO> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -37,16 +37,17 @@ namespace WorkQR.Application
                                                                                                                   && x.EventTime >= model.DateFrom
                                                                                                                   && x.EventTime <= model.DateTo);
             LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderBy(x => x.EventTime));
-            List<QTimestampDTO> timestamps = new();
+            WorktimeEventDTO worktimeEventsDTO = new();
 
             for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
             {
                 var worktimeEvent = element.Value;
-                timestamps.Add(new QTimestampDTO()
+                worktimeEventsDTO.Timestamps.Add(new QTimestampDTO()
                 {
                     Date = worktimeEvent.EventTime.ToString("yyyy-MM-dd"),
                     Time = worktimeEvent.EventTime.ToString("HH:mm"),
                     Title = worktimeEvent.EventType.GetQTimestampTitle(),
+                    EventType = worktimeEvent.EventType,
                     Header = worktimeEvent.EventType.GetQTimestampDescription(),
                     Details = worktimeEvent.Description,
                     Duration = (element.Next?.Value.EventTime - element.Value.EventTime ?? TimeSpan.Zero).TotalMinutes,
@@ -54,7 +55,7 @@ namespace WorkQR.Application
                 });
             }
 
-            return timestamps;
+            return worktimeEventsDTO;
         }
     }
 }
