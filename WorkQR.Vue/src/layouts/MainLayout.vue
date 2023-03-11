@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh Lpr lff">
     <q-header>
       <q-toolbar
         class="bg-secondary q-pa-xs"
@@ -17,7 +17,12 @@
         />
 
         <q-toolbar-title class="q-ml-sm q-mt-xs"
-          ><q-img src="~assets/logo.png" width="3rem" class="logo-sm" />
+          ><q-img
+            src="~assets/logo.png"
+            width="3rem"
+            class="logo-sm"
+            no-spinner
+          />
           <span class="header-font header-sm q-ml-sm text-primary text-h5"
             >workQR</span
           >
@@ -56,9 +61,19 @@
       v-model="leftDrawerOpen"
       show-if-above
       v-if="$route.name !== 'QRScanner'"
+      :width="220"
     >
+      <!-- <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      v-if="$route.name !== 'QRScanner'"
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      mini-to-overlay
+    > -->
       <q-list>
-        <div class="q-mt-md"></div>
+        <div></div>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -68,7 +83,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="scale" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>
@@ -86,7 +105,14 @@ const linksList = [
     title: 'Strona główna',
     caption: 'Zarządzaj swoim czasem pracy',
     icon: 'home',
-    routerTo: '/',
+    routerTo: 'Home',
+    isBlank: false,
+  },
+  {
+    title: 'Dane historyczne',
+    caption: 'Sprawdź ile godzin przepracowałeś',
+    icon: 'history',
+    routerTo: 'MyEventsHistory',
     isBlank: false,
   },
   {
@@ -132,6 +158,7 @@ export default defineComponent({
     const router = useRouter();
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
+    const miniState = ref(true);
     const authStore = useAuthStore();
     const routerPushToLogin = () => {
       router.push({ name: 'Login' });
@@ -162,6 +189,7 @@ export default defineComponent({
       essentialLinks: linksList,
       leftDrawerOpen,
       loginDialogOpen,
+      miniState,
       authStore,
       routerPushToLogin,
       logout,

@@ -1,9 +1,31 @@
 <template>
   <div class="row q-mt-md">
-    <q-btn color="primary" icon="arrow_back" @click="onPrev()" />
-    <q-btn color="primary" class="q-ml-sm" label="Dzisiaj" @click="onToday()" />
-    <q-space />
-    <div class="pointer">
+    <div class="col-lg-2 col-xs-12 q-mt-xs">
+      <q-input
+        dense
+        filled
+        v-model="selectedDate"
+        mask="####-##-##"
+        style="width: 98%"
+      >
+        <template v-slot:append>
+          <q-icon name="event" style="cursor: pointer">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date v-model="selectedDate" mask="YYYY-MM-DD">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Zamknij" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+    </div>
+    <div class="cursor-default col-lg-7 col-xs-12 text-center q-mt-xs">
       <span class="text-body1"
         >Czas przepracowany w wybranym tygodniu:
         <span class="text-weight-bold">{{
@@ -26,26 +48,30 @@
         </div>
       </q-tooltip>
     </div>
-    <q-space />
-    <q-input dense filled v-model="selectedDate" mask="####-##-##">
-      <template v-slot:append>
-        <q-icon name="event" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-date v-model="selectedDate" mask="YYYY-MM-DD">
-              <div class="row items-center justify-end">
-                <q-btn v-close-popup label="Zamknij" color="primary" flat />
-              </div>
-            </q-date>
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
-    <q-btn
-      class="q-ml-sm"
-      color="primary"
-      icon="arrow_forward"
-      @click="onNext()"
-    />
+    <div class="col-lg-1 col-xs-4 q-mt-xs">
+      <q-btn
+        color="primary"
+        icon="arrow_back"
+        style="width: 98%"
+        @click="onPrev()"
+      />
+    </div>
+    <div class="col-lg-1 col-xs-4 q-mt-xs">
+      <q-btn
+        color="primary"
+        label="Dzisiaj"
+        style="width: 98%"
+        @click="onToday()"
+      />
+    </div>
+    <div class="col-lg-1 col-xs-4 q-mt-xs">
+      <q-btn
+        color="primary"
+        icon="arrow_forward"
+        style="width: 98%"
+        @click="onNext()"
+      />
+    </div>
   </div>
   <div class="row justify-center q-mt-xs">
     <div
@@ -137,7 +163,7 @@
               "
             >
               <span class="title q-calendar__ellipsis text-weight-bold">
-                {{ event.title }}
+                <span v-if="!$q.screen.lt.sm">{{ event.title }}</span>
                 <q-tooltip>
                   <div class="text-caption text-weight-bold">
                     {{ event.header }} ({{ event.duration.toFixed(2) }} min)
@@ -168,7 +194,7 @@ import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.sass';
 
 import { defineComponent, ref } from 'vue';
 import { api } from 'boot/axios';
-import { colors } from 'quasar';
+import { useQuasar, colors } from 'quasar';
 const { getPaletteColor } = colors;
 
 export default defineComponent({
@@ -177,6 +203,7 @@ export default defineComponent({
     QCalendarDay,
   },
   setup() {
+    const $q = useQuasar();
     const workedMinutes = ref(-1);
     const breakMinutes = ref(-1);
     const minutesToWorkedTime = (minutes) =>
@@ -322,7 +349,7 @@ export default defineComponent({
   --calendar-border-current-dark: #f0ac00 2px solid;
   padding: 5px;
 }
-.pointer {
+.cursor-default {
   cursor: default;
 }
 </style>

@@ -1,14 +1,9 @@
 <template>
-  <transition
-    enter-active-class="animated fadeIn"
-    leave-active-class="animated fadeOut"
-    appear
-    :duration="300"
-  >
-    <div :key="$route.path">
-      <router-view />
-    </div>
-  </transition>
+  <router-view v-slot="{ Component }">
+    <transition name="scale" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </template>
 
 <script lang="ts">
