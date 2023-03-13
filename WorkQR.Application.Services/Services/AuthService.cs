@@ -59,6 +59,8 @@ namespace WorkQR.Application
             UserDTO userDTO = new()
             {
                 Username = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken,
                 Expiration = new DateTimeOffset(token.ValidTo).ToUnixTimeMilliseconds(),

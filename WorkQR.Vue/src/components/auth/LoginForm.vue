@@ -121,7 +121,7 @@
                   <template v-slot:append>
                     <q-icon
                       :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
+                      class="pointer"
                       @click="isPwd = !isPwd"
                     />
                   </template>
@@ -234,8 +234,5 @@ a {
   //   rgba(#332501, 0.25)
   // );
   background: rgba($primary, 0.12);
-}
-.pointer {
-  cursor: pointer;
 }
 </style>

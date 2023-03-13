@@ -9,7 +9,7 @@
         style="width: 98%"
       >
         <template v-slot:append>
-          <q-icon name="event" style="cursor: pointer">
+          <q-icon name="event" class="pointer">
             <q-popup-proxy
               cover
               transition-show="scale"
@@ -118,13 +118,8 @@
                 v-if="!event.time"
                 :class="badgeClasses(event, 'header')"
                 :style="badgeStyles(event, 'header')"
-                style="
-                  width: 100%;
-                  cursor: pointer;
-                  height: 12px;
-                  font-size: 10px;
-                  margin: 1px;
-                "
+                style="width: 100%; height: 12px; font-size: 10px; margin: 1px"
+                class="pointer"
               >
                 <span class="title q-calendar__ellipsis">
                   {{ event.title }}
@@ -156,7 +151,7 @@
           <template v-for="event in getEvents(timestamp.date)" :key="event.id">
             <div
               v-if="event.time !== undefined"
-              class="my-event"
+              class="my-event pointer"
               :class="badgeClasses(event, 'body')"
               :style="
                 badgeStyles(event, 'body', timeStartPos, timeDurationHeight)
@@ -323,7 +318,6 @@ export default defineComponent({
   margin: 0 1px;
   text-overflow: ellipsis;
   overflow: hidden;
-  cursor: pointer;
 }
 .title {
   position: relative;

@@ -6,6 +6,8 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
     userName: '',
+    firstName: '',
+    lastName: '',
     token: '',
     refreshToken: '',
     expiration: BigInt(0),
@@ -17,6 +19,10 @@ export const useAuthStore = defineStore('auth', {
     isUserAuthenticated: (state) =>
       state.isAuthenticated && new Date().getTime() < state.expiration,
     getUserName: (state) => state.userName ?? '',
+    getFullName: (state) => `${state.firstName} ${state.lastName}` ?? '',
+    getInitials: (state) =>
+      `${state.firstName.substring(0, 1)}${state.lastName.substring(0, 1)}` ??
+      '',
     isQRScanner: (state) => state.roles.some((x) => x === 'QRScanner'),
     getToken: (state) => state.token,
     getQrAuthorizationKey: (state) => state.qrAuthorizationKey,
@@ -25,6 +31,8 @@ export const useAuthStore = defineStore('auth', {
     saveLoginInfo(data: UserDTO) {
       this.isAuthenticated = true;
       this.userName = data.username;
+      this.firstName = data.firstName;
+      this.lastName = data.lastName;
       this.token = data.token;
       this.refreshToken = data.refreshToken;
       this.expiration = data.expiration;

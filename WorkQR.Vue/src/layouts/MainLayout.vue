@@ -2,7 +2,7 @@
   <q-layout view="hHh Lpr lff">
     <q-header>
       <q-toolbar
-        class="bg-secondary q-pa-xs"
+        class="bg-secondary q-px-md q-py-xs"
         style="height: 6vh; min-height: 62px"
       >
         <q-btn
@@ -30,16 +30,64 @@
         <div
           v-if="authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
         >
-          Witaj, {{ authStore.getUserName }}!
-          <q-btn
-            flat
-            dense
-            round
-            icon="logout"
-            aria-label="Wyloguj"
-            class="q-ml-sm"
-            @click="logout"
-          />
+          <span class="pointer">
+            <q-chip color="dark-page" :clickable="false">
+              <q-avatar color="primary" text-color="white">{{
+                authStore.getInitials
+              }}</q-avatar>
+              <q-btn-dropdown
+                color="primary"
+                size="md"
+                dense
+                flat
+                :label="authStore.getFullName"
+                cover
+              >
+                <div class="row q-pa-md">
+                  <div class="column">
+                    <div class="text-h6 q-mb-md text-center">Opcje</div>
+                    <q-btn
+                      color="primary"
+                      icon="qr_code_2"
+                      label="Kod QR"
+                      size="sm"
+                    />
+                    <q-btn
+                      color="primary"
+                      icon="settings"
+                      label="Ustawienia"
+                      size="sm"
+                      class="q-mt-sm"
+                    />
+                  </div>
+
+                  <q-separator vertical inset class="q-mx-md" />
+
+                  <div class="column items-center">
+                    <q-avatar color="primary" text-color="white" size="4rem">{{
+                      authStore.getInitials
+                    }}</q-avatar>
+
+                    <div class="text-subtitle1 q-mt-md">
+                      {{ authStore.getUserName }}
+                    </div>
+
+                    <div class="text-subtitle2 q-mb-md text-center">
+                      {{ authStore.getFullName }}
+                    </div>
+
+                    <q-btn
+                      color="primary"
+                      label="Wyloguj"
+                      push
+                      size="sm"
+                      @click="logout"
+                    />
+                  </div>
+                </div>
+              </q-btn-dropdown>
+            </q-chip>
+          </span>
         </div>
         <div
           v-if="!authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
@@ -123,27 +171,12 @@ const linksList = [
     isBlank: false,
   },
   {
-    title: 'Twój kod QR',
-    caption: 'Sprawdź swój kod QR',
-    icon: 'qr_code_2',
-    routerTo: '/',
-    isBlank: false,
-  },
-  {
     title: 'Ustawienia',
     caption: 'Zmień dane swojego konta',
     icon: 'settings',
     routerTo: '/',
     isBlank: false,
   },
-  // {
-  //   title: 'Github',
-  //   caption: 'Odwiedź stronę projektu',
-  //   icon: 'code',
-  //   link: 'https://github.com/szymon-baran/WorkQR',
-  //   isExternalLink: true,
-  //   separatorBefore: true,
-  // },
 ];
 
 export default defineComponent({
@@ -159,6 +192,7 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
     const miniState = ref(true);
+    const isUserMenuVisible = ref(false);
     const authStore = useAuthStore();
     const routerPushToLogin = () => {
       router.push({ name: 'Login' });
@@ -190,6 +224,7 @@ export default defineComponent({
       leftDrawerOpen,
       loginDialogOpen,
       miniState,
+      isUserMenuVisible,
       authStore,
       routerPushToLogin,
       logout,

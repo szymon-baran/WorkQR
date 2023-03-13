@@ -1,5 +1,4 @@
 <template>
-  <q-separator inset v-if="separatorBefore" class="q-my-md" />
   <q-item
     clickable
     tag="a"
@@ -52,11 +51,6 @@ export default defineComponent({
     isBlank: {
       type: Boolean,
       default: true,
-    },
-
-    separatorBefore: {
-      type: Boolean,
-      default: false,
     },
 
     isExternalLink: {

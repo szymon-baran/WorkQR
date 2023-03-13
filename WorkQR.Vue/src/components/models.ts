@@ -1,5 +1,7 @@
 export interface UserDTO {
   username: string;
+  firstName: string;
+  lastName: string;
   token: string;
   refreshToken: string;
   expiration: bigint;

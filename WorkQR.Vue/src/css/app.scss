@@ -68,6 +68,10 @@
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 @media (max-width: 599.98px) {
   .q-layout-padding {
     padding: 25px 20px;
@@ -78,4 +82,12 @@
   .q-layout-padding {
     padding: 60px 70px;
   }
+}
+
+// colors
+.text-dark-page {
+  color: $dark-page !important;
+}
+.bg-dark-page {
+  background: $dark-page !important;
 }

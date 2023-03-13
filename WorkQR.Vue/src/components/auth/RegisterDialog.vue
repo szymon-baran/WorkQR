@@ -9,7 +9,7 @@
       <q-card-section class="q-pb-lg">
         <div class="row q-col-gutter-md items-stretch q-px-sm">
           <div
-            class="col-6"
+            class="col-6 pointer"
             @mouseover="() => (isLeftHovered = true)"
             @mouseleave="() => (isLeftHovered = false)"
           >
@@ -26,7 +26,7 @@
             </q-img>
           </div>
           <div
-            class="col-6"
+            class="col-6 pointer"
             @mouseover="() => (isRightHovered = true)"
             @mouseleave="() => (isRightHovered = false)"
           >
@@ -63,8 +63,5 @@ export default defineComponent({
 .card {
   width: 900px;
   max-width: 95vw;
-}
-.col-6 {
-  cursor: pointer;
 }
 </style>

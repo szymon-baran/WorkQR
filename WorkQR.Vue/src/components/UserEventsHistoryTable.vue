@@ -22,7 +22,7 @@
               style="min-width: 14rem"
             >
               <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
+                <q-icon name="event">
                   <q-popup-proxy
                     cover
                     transition-show="scale"
