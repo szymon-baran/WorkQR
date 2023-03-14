@@ -13,10 +13,10 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
           color="primary"
-          v-if="$q.screen.lt.sm && $route.name !== 'QRScanner'"
+          v-if="$q.screen.lt.md && $route.name !== 'QRScanner'"
         />
 
-        <q-toolbar-title class="q-ml-sm q-mt-xs"
+        <q-toolbar-title class="q-ml-sm q-mt-xs" shrink
           ><q-img
             src="~assets/logo.png"
             width="3rem"
@@ -27,6 +27,15 @@
             >workQR</span
           >
         </q-toolbar-title>
+        <q-space />
+        <div class="row" v-if="!$q.screen.lt.md && $route.name !== 'QRScanner'">
+          <EssentialLink
+            v-for="link in essentialLinks"
+            :key="link.title"
+            v-bind="link"
+          />
+        </div>
+        <q-space />
         <div
           v-if="authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
         >
@@ -40,7 +49,7 @@
                 size="md"
                 dense
                 flat
-                :label="authStore.getFullName"
+                :label="$q.screen.lt.md ? '' : authStore.getFullName"
                 cover
               >
                 <div class="row q-pa-md">
@@ -107,8 +116,7 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
-      v-if="$route.name !== 'QRScanner'"
+      v-show="$route.name !== 'QRScanner'"
       :width="220"
     >
       <!-- <q-drawer
@@ -122,7 +130,7 @@
     > -->
       <q-list>
         <div></div>
-        <EssentialLink
+        <EssentialLinkMobile
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
@@ -146,7 +154,8 @@ import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth-store';
 import { Notify } from 'quasar';
-import EssentialLink from 'components/EssentialLink.vue';
+import EssentialLink from 'src/components/navigation/EssentialLink.vue';
+import EssentialLinkMobile from 'src/components/navigation/EssentialLinkMobile.vue';
 
 const linksList = [
   {
@@ -157,7 +166,7 @@ const linksList = [
     isBlank: false,
   },
   {
-    title: 'Dane historyczne',
+    title: 'Historia',
     caption: 'Sprawdź ile godzin przepracowałeś',
     icon: 'history',
     routerTo: 'MyEventsHistory',
@@ -184,6 +193,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    EssentialLinkMobile,
   },
 
   setup() {
@@ -192,7 +202,6 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
     const miniState = ref(true);
-    const isUserMenuVisible = ref(false);
     const authStore = useAuthStore();
     const routerPushToLogin = () => {
       router.push({ name: 'Login' });
@@ -206,25 +215,28 @@ export default defineComponent({
       authStore.logout();
       routerPushToLogin();
     };
+    const essentialLinks = ref(linksList);
 
     onMounted(() => {
       if (authStore.isQRScanner) {
-        linksList.push({
+        const scannerLink = {
           title: 'Skaner QR',
           caption: 'Funkcjonalność administracyjna',
           icon: 'qr_code_scanner',
-          routerTo: '/qr-scanner',
+          routerTo: 'QRScanner',
           isBlank: false,
-        });
+        };
+        if (!essentialLinks.value.some((x) => x.routerTo === 'QRScanner')) {
+          essentialLinks.value.push(scannerLink);
+        }
       }
     });
 
     return {
-      essentialLinks: linksList,
+      essentialLinks,
       leftDrawerOpen,
       loginDialogOpen,
       miniState,
-      isUserMenuVisible,
       authStore,
       routerPushToLogin,
       logout,

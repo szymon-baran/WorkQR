@@ -18,22 +18,26 @@
 
 @font-face {
   font-family: Inter;
-  src: url(./fonts/Inter-SemiBold.ttf);
+  src: url(./fonts/Inter-Medium.ttf);
+}
+
+body {
+  font-family: Inter;
 }
 
 .header-font {
-  font-family: 'Inter';
+  font-family: 'Cal Sans';
   user-select: none;
 }
 
 .header-sm {
-  letter-spacing: 2px;
+  letter-spacing: 0.09em;
   text-shadow: 2px 2px 4px $dark, 0 0 2px $primary;
-  font-size: 1.3rem !important;
+  font-size: 1.35rem !important;
 }
 
 .header-md {
-  letter-spacing: 3px;
+  letter-spacing: 0.12em;
   text-shadow: 2px 2px 4px $dark, 0 0 3px $primary;
   font-size: 1.75rem !important;
 }
@@ -74,13 +78,13 @@
 
 @media (max-width: 599.98px) {
   .q-layout-padding {
-    padding: 25px 20px;
+    padding: 30px 25px;
   }
 }
 
 @media (min-width: 1440px) {
   .q-layout-padding {
-    padding: 60px 70px;
+    padding: 70px 80px;
   }
 }
 

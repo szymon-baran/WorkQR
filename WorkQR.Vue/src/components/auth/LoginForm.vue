@@ -11,7 +11,7 @@
           <q-card-section
             style="display: flex; flex-direction: column; width: 100%"
             class="background"
-            v-show="!isLoginOpen || !$q.screen.lt.sm"
+            v-show="!isLoginOpen || !$q.screen.lt.md"
           >
             <q-card-section class="row q-pb-none">
               <q-img
@@ -22,7 +22,7 @@
               />
               <span
                 class="text-h4 q-ml-sm text-accent header-font header-md self-center"
-                v-if="!$q.screen.lt.sm"
+                v-if="!$q.screen.lt.md"
                 >workQR</span
               >
               <q-space />
@@ -35,7 +35,7 @@
                 class="self-start"
               />
             </q-card-section>
-            <q-card-section class="row q-pt-none" v-if="$q.screen.lt.sm">
+            <q-card-section class="row q-pt-none" v-if="$q.screen.lt.md">
               <span class="text-h4 text-accent header-font header-md"
                 >workQR</span
               >
@@ -81,7 +81,7 @@
         >
           <q-card-section
             v-show="isLoginOpen"
-            :style="[$q.screen.lt.sm ? 'width: 100%' : 'width: 45%']"
+            :style="[$q.screen.lt.md ? 'width: 100%' : 'width: 45%']"
           >
             <q-card-section class="row">
               <div></div>

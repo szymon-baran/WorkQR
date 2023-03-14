@@ -1,16 +1,17 @@
 <template>
   <q-page padding>
-    <q-card dark bordered>
+    <q-card dark bordered flat>
       <q-card-section>
         <div class="row">
-          <span class="text-h4">Strona główna</span>
-          <q-space />
+          <span class="text-h4 col-lg-11 col-xs-12">Strona główna</span>
           <q-btn
             color="primary"
             icon="qr_code_2"
-            :label="$q.screen.lt.sm ? '' : 'Kod QR'"
-            :round="$q.screen.lt.sm ? true : false"
+            :label="$q.screen.lt.md ? '' : 'Kod QR'"
+            :round="$q.screen.lt.md ? true : false"
             @click="showQrCodeDialog()"
+            class="col-lg-1"
+            :class="$q.screen.lt.md ? 'q-mt-sm' : ''"
           />
         </div>
       </q-card-section>

@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import 'cal-sans';
 
 export default defineComponent({
   name: 'App',

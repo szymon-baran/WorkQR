@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <q-card dark bordered>
+    <q-card dark bordered flat>
       <q-card-section>
         <div class="row">
-          <span class="text-h4">Dane historyczne</span>
+          <span class="text-h4">Historia wpisów</span>
         </div>
       </q-card-section>
       <q-separator dark inset />

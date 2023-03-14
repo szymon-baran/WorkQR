@@ -77,10 +77,10 @@
     <div
       style="
         display: flex;
-        max-width: 90vw;
+        max-width: 95vw;
         width: 100%;
         height: 38rem;
-        max-height: 70vh;
+        max-height: 60vh;
       "
     >
       <q-calendar-day
@@ -158,7 +158,7 @@
               "
             >
               <span class="title q-calendar__ellipsis text-weight-bold">
-                <span v-if="!$q.screen.lt.sm">{{ event.title }}</span>
+                <span v-if="!$q.screen.lt.md">{{ event.title }}</span>
                 <q-tooltip>
                   <div class="text-caption text-weight-bold">
                     {{ event.header }} ({{ event.duration.toFixed(2) }} min)

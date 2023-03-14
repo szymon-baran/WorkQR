@@ -1,7 +1,7 @@
 <template>
   <q-page
     class="row items-center justify-evenly"
-    :class="[$q.screen.lt.sm ? 'mobile-background' : 'background']"
+    :class="[$q.screen.lt.md ? 'mobile-background' : 'background']"
   >
     <login-form />
   </q-page>
