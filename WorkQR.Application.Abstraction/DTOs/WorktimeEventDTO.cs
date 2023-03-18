@@ -4,8 +4,11 @@ namespace WorkQR.Application
 {
     public class WorktimeEventDTO
     {
-        public List<QTimestampDTO> Timestamps { get; set; } = new();
-        public double WorkedMinutes { get => Timestamps.Where(x => x.EventType == EventType.StartWork || x.EventType == EventType.EndBreak).Sum(x => x.Duration); }
-        public double BreakMinutes { get => Timestamps.Where(x => x.EventType == EventType.StartBreak).Sum(x => x.Duration); }
+        public Guid Id { get; set; }
+        public EventType EventType { get; set; }
+        public string EventTypeName { get; set; }
+        public DateTime EventTime { get; set; }
+        public string Description { get; set; } = "";
+        public double DurationInSecs { get; set; } = 0;
     }
 }

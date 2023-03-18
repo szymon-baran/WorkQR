@@ -195,13 +195,13 @@ namespace WorkQR.EntityFramework
                 EventTime = DateTime.Now.AddHours(-1).AddMinutes(-40),
                 Description = "Spotkanie z klientem"
             });
-            await _context.WorktimeEvents.AddAsync(new()
-            {
-                ApplicationUser = _company1Position4User1,
-                EventType = EventType.EndWork,
-                EventTime = DateTime.Now,
-                Description = "Koniec pracy"
-            });
+            //await _context.WorktimeEvents.AddAsync(new()
+            //{
+            //    ApplicationUser = _company1Position4User1,
+            //    EventType = EventType.EndWork,
+            //    EventTime = DateTime.Now,
+            //    Description = "Koniec pracy"
+            //});
 
             await _context.SaveChangesAsync();
         }

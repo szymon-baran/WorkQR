@@ -27,7 +27,36 @@ namespace WorkQR.Application
             _userManager = userManager;
         }
 
-        public async Task<WorktimeEventDTO> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName)
+        public async Task<List<WorktimeEventDTO>> GetUserWorktimeEventsToday(string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == user.Id
+                                                                                                                  && x.EventTime >= DateTime.Today
+                                                                                                                  && x.EventTime < DateTime.Today.AddDays(1));
+            LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderByDescending(x => x.EventTime));
+            List<WorktimeEventDTO> worktimeEventsList = new();
+
+            for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
+            {
+                var worktimeEvent = element.Value;
+                worktimeEventsList.Add(new WorktimeEventDTO()
+                {
+                    Id = worktimeEvent.Id,
+                    EventType = worktimeEvent.EventType,
+                    EventTypeName = worktimeEvent.EventType.GetEnumDescription(),
+                    EventTime = worktimeEvent.EventTime,
+                    Description = worktimeEvent.Description,
+                    DurationInSecs = worktimeEvent.EventType != EventType.EndWork ? ((element.Previous?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalSeconds : 0,
+                });
+            }
+
+            return worktimeEventsList;
+        }
+
+        public async Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -37,7 +66,7 @@ namespace WorkQR.Application
                                                                                                                   && x.EventTime >= model.DateFrom
                                                                                                                   && x.EventTime <= model.DateTo);
             LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderBy(x => x.EventTime));
-            WorktimeEventDTO worktimeEventsDTO = new();
+            WorktimeEventsTimestampsDTO worktimeEventsDTO = new();
 
             for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
             {
@@ -50,7 +79,7 @@ namespace WorkQR.Application
                     EventType = worktimeEvent.EventType,
                     Header = worktimeEvent.EventType.GetQTimestampDescription(),
                     Details = worktimeEvent.Description,
-                    Duration = (element.Next?.Value.EventTime - element.Value.EventTime ?? TimeSpan.Zero).TotalMinutes,
+                    Duration = worktimeEvent.EventType != EventType.EndWork ? ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalMinutes : 0,
                     Bgcolor = worktimeEvent.EventType.GetQTimestampColor()
                 });
             }

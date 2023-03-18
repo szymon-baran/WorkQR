@@ -1,17 +1,16 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 
 namespace WorkQR.Dictionaries
 {
     public enum EventType
     {
-        [Display(Name = "Rozpoczęcie pracy")]
+        [Description("Rozpoczęcie pracy")]
         StartWork,
-        [Display(Name = "Rozpoczęcie przerwy")]
+        [Description("Rozpoczęcie przerwy")]
         StartBreak,
-        [Display(Name = "Zakończenie przerwy")]
+        [Description("Zakończenie przerwy")]
         EndBreak,
-        [Display(Name = "Zakończenie pracy")]
+        [Description("Zakończenie pracy")]
         EndWork,
     }
 

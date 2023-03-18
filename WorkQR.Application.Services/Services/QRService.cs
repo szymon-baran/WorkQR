@@ -23,7 +23,9 @@ namespace WorkQR.Application
                 throw new Exception("Nie znaleziono użytkownika!");
 
             List<WorktimeEvent> worktimeEvents = await GetUserTodaysWorktimeEvents(user.Id);
-            EventType newEventType = (worktimeEvents?.Last().EventType ?? EventType.EndWork).GetDefaultNewEventType();
+
+
+            EventType newEventType = (worktimeEvents.Any() ? worktimeEvents.Last().EventType : EventType.EndWork).GetDefaultNewEventType();
             double breakMinutesLeftToday = CalculateBreakMinutesLeftToday(worktimeEvents, newEventType, user.Position?.BreakMinsPerDay ?? 0);
 
             if (newEventType == EventType.StartBreak && breakMinutesLeftToday <= 0)

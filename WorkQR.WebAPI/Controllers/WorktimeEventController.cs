@@ -20,8 +20,8 @@ namespace WorkQR.WebAPI.Controllers
         }
 
 
-        [HttpGet("getUserWorktimeEventsBetweenDates")]
-        public async Task<ActionResult<WorktimeEventDTO>> GetUserWorktimeEventsBetweenDates([FromQuery]DaysSpanVM model)
+        [HttpGet("getUserWorktimeEventsToday")]
+        public async Task<ActionResult<List<WorktimeEventDTO>>> GetUserWorktimeEventsToday()
         {
             try
             {
@@ -30,7 +30,26 @@ namespace WorkQR.WebAPI.Controllers
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
-                WorktimeEventDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDates(model, userName);
+                List<WorktimeEventDTO> worktimeEventsList = await _worktimeEventService.GetUserWorktimeEventsToday(userName);
+                return Ok(worktimeEventsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getUserWorktimeEventsBetweenDates")]
+        public async Task<ActionResult<WorktimeEventsTimestampsDTO>> GetUserWorktimeEventsBetweenDates([FromQuery]DaysSpanVM model)
+        {
+            try
+            {
+                string userName = User.Identity.Name;
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+                WorktimeEventsTimestampsDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDates(model, userName);
                 return Ok(worktimeEventsDTO);
             }
             catch (Exception ex)

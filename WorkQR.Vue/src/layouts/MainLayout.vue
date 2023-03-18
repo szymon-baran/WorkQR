@@ -52,64 +52,10 @@
                 :label="$q.screen.lt.md ? '' : authStore.getFullName"
                 cover
               >
-                <div class="row q-pa-md">
-                  <div class="column">
-                    <div class="text-h6 q-mb-md text-center">Opcje</div>
-                    <q-btn
-                      color="primary"
-                      icon="qr_code_2"
-                      label="Kod QR"
-                      size="sm"
-                    />
-                    <q-btn
-                      color="primary"
-                      icon="settings"
-                      label="Ustawienia"
-                      size="sm"
-                      class="q-mt-sm"
-                    />
-                  </div>
-
-                  <q-separator vertical inset class="q-mx-md" />
-
-                  <div class="column items-center">
-                    <q-avatar color="primary" text-color="white" size="4rem">{{
-                      authStore.getInitials
-                    }}</q-avatar>
-
-                    <div class="text-subtitle1 q-mt-md">
-                      {{ authStore.getUserName }}
-                    </div>
-
-                    <div class="text-subtitle2 q-mb-md text-center">
-                      {{ authStore.getFullName }}
-                    </div>
-
-                    <q-btn
-                      color="primary"
-                      label="Wyloguj"
-                      push
-                      size="sm"
-                      @click="logout"
-                    />
-                  </div>
-                </div>
+                <user-portable-menu />
               </q-btn-dropdown>
             </q-chip>
           </span>
-        </div>
-        <div
-          v-if="!authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
-        >
-          <q-btn
-            flat
-            dense
-            round
-            icon="login"
-            aria-label="Zaloguj"
-            color="primary"
-            @click="routerPushToLogin"
-          />
         </div>
       </q-toolbar>
     </q-header>
@@ -151,11 +97,10 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth-store';
-import { Notify } from 'quasar';
 import EssentialLink from 'src/components/navigation/EssentialLink.vue';
 import EssentialLinkMobile from 'src/components/navigation/EssentialLinkMobile.vue';
+import UserPortableMenu from 'src/components/user/UserPortableMenu.vue';
 
 const linksList = [
   {
@@ -194,29 +139,16 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLinkMobile,
+    UserPortableMenu,
   },
 
   setup() {
     const $q = useQuasar();
-    const router = useRouter();
     const leftDrawerOpen = ref(false);
     const loginDialogOpen = ref(false);
     const miniState = ref(true);
     const authStore = useAuthStore();
-    const routerPushToLogin = () => {
-      router.push({ name: 'Login' });
-    };
-    const logout = () => {
-      Notify.create({
-        type: 'positive',
-        message: 'Wylogowano pomyślnie!',
-        icon: 'check_circle',
-      });
-      authStore.logout();
-      routerPushToLogin();
-    };
     const essentialLinks = ref(linksList);
-
     onMounted(() => {
       if (authStore.isQRScanner) {
         const scannerLink = {
@@ -238,8 +170,6 @@ export default defineComponent({
       loginDialogOpen,
       miniState,
       authStore,
-      routerPushToLogin,
-      logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
