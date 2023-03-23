@@ -13,3 +13,10 @@ export interface UserTokenDTO {
   refreshToken: string;
   expiration: bigint;
 }
+
+export interface CompanyRegisterResultDTO {
+  moderatorResult: object;
+  scannerResult: object;
+  scannerUsername: string;
+  scannerPassword: string;
+}

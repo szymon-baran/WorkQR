@@ -111,6 +111,7 @@ namespace WorkQR.WebAPI
             builder.Services.AddScoped<IWorktimeEventService, WorktimeEventService>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IWorktimeEventRepository, WorktimeEventRepository>();
+            builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
             var app = builder.Build();
 
