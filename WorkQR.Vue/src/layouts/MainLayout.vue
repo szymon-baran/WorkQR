@@ -23,7 +23,7 @@
             class="logo-sm"
             no-spinner
           />
-          <span class="header-font header-sm q-ml-sm text-primary text-h5"
+          <span class="header-font header-sm q-ml-sm text-accent text-h5"
             >workQR</span
           >
         </q-toolbar-title>
@@ -45,7 +45,7 @@
                 authStore.getInitials
               }}</q-avatar>
               <q-btn-dropdown
-                color="primary"
+                color="accent"
                 size="md"
                 dense
                 flat

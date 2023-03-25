@@ -7,11 +7,12 @@
     :href="isExternalLink ? link : undefined"
     class="q-my-sm text-center"
     style="width: 10rem"
+    exact-active-class="text-accent"
   >
     <q-item-section>
-      <div class="row self-center">
+      <!-- <div class="row self-center">
         <q-icon :name="icon" size="180%" class="" />
-      </div>
+      </div> -->
       <div class="row self-center">
         <q-item-label class="q-mt-xs">{{ title.toUpperCase() }}</q-item-label>
       </div>

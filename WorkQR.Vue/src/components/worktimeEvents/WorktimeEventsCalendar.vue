@@ -190,6 +190,8 @@ import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.sass';
 import { defineComponent, ref } from 'vue';
 import { api } from 'boot/axios';
 import { useQuasar, colors } from 'quasar';
+import { eventTypeEnum } from '../../enums/eventTypeEnum';
+
 const { getPaletteColor } = colors;
 
 export default defineComponent({
@@ -201,18 +203,48 @@ export default defineComponent({
     const $q = useQuasar();
     const workedMinutes = ref(-1);
     const breakMinutes = ref(-1);
+    const eventTypes = eventTypeEnum;
     const minutesToWorkedTime = (minutes) =>
       minutes
         ? `${Math.floor(minutes / 60)}:${(minutes % 60)
             .toFixed(0)
             .padEnd(2, '0')}`
         : '0:00';
+    const badgeStyles = (
+      event,
+      type,
+      timeStartPos = undefined,
+      timeDurationHeight = undefined
+    ) => {
+      const s = {};
+      if (timeStartPos && timeDurationHeight) {
+        s.top = timeStartPos(event.time) + 'px';
+        s.height = timeDurationHeight(event.duration) + 'px';
+      }
+      s['align-items'] = 'flex-start';
+      switch (event.eventType) {
+        case eventTypes.END_WORK:
+        case eventTypes.START_BREAK:
+          s['background-color'] = getPaletteColor('off-white');
+          break;
+        case eventTypes.START_WORK:
+        case eventTypes.END_BREAK:
+        default:
+          s['background-color'] = getPaletteColor('primary');
+          break;
+      }
+      s['color'] = getPaletteColor('dark');
+      return s;
+    };
+
     return {
       events: ref([]),
       selectedDate: ref(today()),
       workedMinutes,
       breakMinutes,
+      eventTypes,
       minutesToWorkedTime,
+      badgeStyles,
     };
   },
 
@@ -249,23 +281,6 @@ export default defineComponent({
         'full-width': !isHeader && (!event.side || event.side === 'full'),
         'rounded-border': true,
       };
-    },
-
-    badgeStyles(
-      event,
-      type,
-      timeStartPos = undefined,
-      timeDurationHeight = undefined
-    ) {
-      const s = {};
-      if (timeStartPos && timeDurationHeight) {
-        s.top = timeStartPos(event.time) + 'px';
-        s.height = timeDurationHeight(event.duration) + 'px';
-      }
-      s['align-items'] = 'flex-start';
-      s['background-color'] = event.bgcolor;
-      s['color'] = getPaletteColor('dark');
-      return s;
     },
 
     getEvents(dt) {

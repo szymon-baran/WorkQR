@@ -79,8 +79,7 @@ namespace WorkQR.Application
                     EventType = worktimeEvent.EventType,
                     Header = worktimeEvent.EventType.GetQTimestampDescription(),
                     Details = worktimeEvent.Description,
-                    Duration = worktimeEvent.EventType != EventType.EndWork ? ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalMinutes : 0,
-                    Bgcolor = worktimeEvent.EventType.GetQTimestampColor()
+                    Duration = worktimeEvent.EventType != EventType.EndWork ? ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalMinutes : 0
                 });
             }
 

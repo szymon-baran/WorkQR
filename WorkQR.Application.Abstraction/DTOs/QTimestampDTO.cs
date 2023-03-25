@@ -16,6 +16,5 @@ namespace WorkQR.Application
         public string Header { get; set; } = "";
         public string Details { get; set; } = "";
         public double Duration { get; set; } = 0;
-        public string Bgcolor { get; set; } = "green";
     }
 }

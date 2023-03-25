@@ -51,18 +51,6 @@ namespace WorkQR.Dictionaries
                 _ => "",
             };
         }
-
-        public static string GetQTimestampColor(this EventType latestEventType)
-        {
-            return latestEventType switch
-            {
-                EventType.StartWork => "#f0ac00",
-                EventType.StartBreak => "#f5f5f5",
-                EventType.EndBreak => "#f0ac00",
-                EventType.EndWork => "#f5f5f5",
-                _ => "#f0ac00",
-            };
-        }
     }
 
 }

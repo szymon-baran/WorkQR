@@ -6,7 +6,7 @@
           Aktualnie
           <span class="text-weight-bold">{{ getCurrentTaskName() }}</span>
         </div>
-        <span v-if="worktimeEvents[0]['eventType'] !== eventTypeEnum.END_WORK">
+        <span v-if="worktimeEvents[0]['eventType'] !== eventTypes.END_WORK">
           <div>od</div>
           <div class="header-font header-md q-mt-sm">
             {{ hours }} <span class="time-word">godz.</span> {{ minutes }}
@@ -38,13 +38,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { api } from 'boot/axios';
-
-const eventTypeEnum = Object.freeze({
-  START_WORK: 0,
-  START_BREAK: 1,
-  END_BREAK: 2,
-  END_WORK: 3,
-});
+import { eventTypeEnum } from '../../enums/eventTypeEnum';
 
 export default defineComponent({
   name: 'WorktimeEventsTodayList',
@@ -95,10 +89,11 @@ export default defineComponent({
     const hours = ref();
     const minutes = ref();
     const seconds = ref();
+    const eventTypes = eventTypeEnum;
     const calculateTimeSinceLastEvent = () => {
       if (
         worktimeEvents.value.length > 0 &&
-        worktimeEvents.value[0]['eventType'] !== eventTypeEnum.END_WORK
+        worktimeEvents.value[0]['eventType'] !== eventTypes.END_WORK
       ) {
         let difference =
           Date.now() - new Date(worktimeEvents.value[0]['eventTime']).getTime();
@@ -114,12 +109,12 @@ export default defineComponent({
     };
     const getCurrentTaskName = () => {
       switch (worktimeEvents.value[0]['eventType']) {
-        case eventTypeEnum.START_WORK:
-        case eventTypeEnum.END_BREAK:
+        case eventTypes.START_WORK:
+        case eventTypes.END_BREAK:
           return 'pracujesz';
-        case eventTypeEnum.START_BREAK:
+        case eventTypes.START_BREAK:
           return 'jesteś na przerwie';
-        case eventTypeEnum.END_WORK:
+        case eventTypes.END_WORK:
           return 'nie pracujesz';
       }
     };
@@ -142,7 +137,7 @@ export default defineComponent({
       hours,
       minutes,
       seconds,
-      eventTypeEnum,
+      eventTypes,
       calculateTimeSinceLastEvent,
       getCurrentTaskName,
     };
