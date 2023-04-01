@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj" />
     <ProjectReference Include="..\WorkQR.Domain\WorkQR.Domain.csproj" />
   </ItemGroup>
 

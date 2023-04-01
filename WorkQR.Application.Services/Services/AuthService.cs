@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using WorkQR.Application;
 using WorkQR.Data.Abstraction;
 using WorkQR.Domain;
+using WorkQR.EntityFramework;
 
 namespace WorkQR.Application
 {
@@ -19,15 +20,24 @@ namespace WorkQR.Application
     {
         private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly ICompanyRepository _companyRepository;
+        private readonly IPositionRepository _positionRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IApplicationUserService _applicationUserService;
 
-        public AuthService(IApplicationUserRepository applicationUserRepository, ICompanyRepository companyRepository, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthService(IApplicationUserRepository applicationUserRepository,
+                           ICompanyRepository companyRepository,
+                           IPositionRepository positionRepository,
+                           UserManager<ApplicationUser> userManager,
+                           IConfiguration configuration,
+                           IApplicationUserService applicationUserService)
         {
             _applicationUserRepository = applicationUserRepository;
             _companyRepository = companyRepository;
+            _positionRepository = positionRepository;
             _userManager = userManager;
             _configuration = configuration;
+            _applicationUserService = applicationUserService;
         }
 
         public async Task<UserDTO> LoginAsync(UserLoginVM model)
@@ -39,6 +49,9 @@ namespace WorkQR.Application
             var isSuccess = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!isSuccess)
                 throw new Exception("Niepoprawne hasło!");
+
+            if (_applicationUserService.IsUserDisabled(user))
+                throw new Exception("Konto jest nieaktywne!");
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -102,6 +115,32 @@ namespace WorkQR.Application
             };
             await _companyRepository.AddAsync(company);
 
+            List<Position> systemPositions = new()
+            { 
+                new() 
+                {
+                    Name = "Moderator",
+                    BreakMinsPerDay = 30,
+                    CompanyId = company.Id,
+                    IsSystemPosition = true
+                },
+                new() 
+                {
+                    Name = "Skaner QR",
+                    BreakMinsPerDay = 100,
+                    CompanyId = company.Id,
+                    IsSystemPosition = true
+                },
+                new() 
+                {
+                    Name = "Pracownik",
+                    BreakMinsPerDay = 15,
+                    CompanyId = company.Id,
+                    IsSystemPosition = false
+                },
+            };
+            await _positionRepository.AddRangeAsync(systemPositions);
+
             ApplicationUser moderator = new()
             {
                 Email = model.ModeratorEmail,
@@ -109,11 +148,12 @@ namespace WorkQR.Application
                 UserName = model.ModeratorUsername
             };
             var moderatorResult = await _userManager.CreateAsync(moderator, model.ModeratorPassword);
+            await _userManager.AddToRoleAsync(moderator, UserRoles.Moderator);
 
             Random random = new();
 
             string scannerUsername = $"{model.CompanyName}qr";
-            while (await _userManager.FindByNameAsync(scannerUsername) != null) 
+            while (await _userManager.FindByNameAsync(scannerUsername) != null)
             {
                 int randomNumber = random.Next(1000, 9999);
                 scannerUsername = $"{model.CompanyName}qr{randomNumber}";
@@ -126,6 +166,7 @@ namespace WorkQR.Application
             };
             string scannerPassword = GenerateRandomPassword();
             var scannerResult = await _userManager.CreateAsync(scanner, scannerPassword);
+            await _userManager.AddToRoleAsync(scanner, UserRoles.QRScanner);
 
             return new()
             {

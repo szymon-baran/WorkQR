@@ -14,8 +14,13 @@
             :class="$q.screen.lt.md ? 'q-mt-sm' : ''"
           />
         </div>
+      </q-card-section>
+      <q-separator dark inset />
+      <q-card-section
+        style="max-width: 95vw; width: 100%; height: 44rem; max-height: 71vh"
+      >
         <div>
-          <worktime-events-today-list />
+          <worktime-events-today />
         </div>
       </q-card-section>
     </q-card>
@@ -26,12 +31,12 @@
 import { defineComponent } from 'vue';
 import { useQuasar } from 'quasar';
 import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
-import WorktimeEventsTodayList from 'components/worktimeEvents/WorktimeEventsTodayList.vue';
+import WorktimeEventsToday from 'components/worktimeEvents/WorktimeEventsToday.vue';
 
 export default defineComponent({
   name: 'IndexPage',
   components: {
-    WorktimeEventsTodayList,
+    WorktimeEventsToday,
   },
   setup() {
     const $q = useQuasar();

@@ -24,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
       `${state.firstName.substring(0, 1)}${state.lastName.substring(0, 1)}` ??
       '',
     isQRScanner: (state) => state.roles.some((x) => x === 'QRScanner'),
+    isModerator: (state) => state.roles.some((x) => x === 'Moderator'),
     getToken: (state) => state.token,
     getQrAuthorizationKey: (state) => state.qrAuthorizationKey,
   },

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WorkQR.Domain;
 
 namespace WorkQR.Application
 {

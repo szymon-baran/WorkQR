@@ -53,14 +53,12 @@ export default route(function (/* { store, ssrContext } */) {
       } else {
         next({
           name: 'Home',
-          //params: { nextUrl: to.fullPath },
         });
       }
     } else {
       if (!authStore.isUserAuthenticated) {
         next({
           name: 'Login',
-          //params: { nextUrl: to.fullPath },
         });
       } else {
         if (to.matched.some((record) => record.meta.requiresQrScanner)) {
@@ -69,7 +67,14 @@ export default route(function (/* { store, ssrContext } */) {
           } else {
             next({
               name: 'Home',
-              //params: { nextUrl: to.fullPath },
+            });
+          }
+        } else if (to.matched.some((record) => record.meta.requiresModerator)) {
+          if (authStore.isModerator) {
+            next();
+          } else {
+            next({
+              name: 'Home',
             });
           }
         } else {

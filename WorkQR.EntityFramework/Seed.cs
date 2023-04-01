@@ -59,17 +59,19 @@ namespace WorkQR.EntityFramework
 
             _company1Position1 = new()
             {
-                Name = "Prezes",
+                Name = "Moderator",
                 Company = _company1,
-                BreakMinsPerDay = 480
+                BreakMinsPerDay = 480,
+                IsSystemPosition = true
             };
             await _context.Positions.AddAsync(_company1Position1);
 
             _company1Position2 = new()
             {
-                Name = "Kierownik",
+                Name = "Skaner QR",
                 Company = _company1,
-                BreakMinsPerDay = 60
+                BreakMinsPerDay = 1000,
+                IsSystemPosition = true
             };
             await _context.Positions.AddAsync(_company1Position2);
 
@@ -77,15 +79,17 @@ namespace WorkQR.EntityFramework
             {
                 Name = "Kierowca",
                 Company = _company1,
-                BreakMinsPerDay = 20
+                BreakMinsPerDay = 20,
+                IsSystemPosition = false
             };
             await _context.Positions.AddAsync(_company1Position3);
 
             _company1Position4 = new()
             {
-                Name = "Magazynier",
+                Name = "Pracownik",
                 Company = _company1,
-                BreakMinsPerDay = 15
+                BreakMinsPerDay = 15,
+                IsSystemPosition = false
             };
             await _context.Positions.AddAsync(_company1Position4);
 
@@ -113,7 +117,7 @@ namespace WorkQR.EntityFramework
                 {
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "januszexscanner",
-                    Position = _company1Position1
+                    Position = _company1Position2
                 };
                 await _userManager.CreateAsync(scannerUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.QRScanner));

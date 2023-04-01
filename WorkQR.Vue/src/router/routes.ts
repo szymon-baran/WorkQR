@@ -11,6 +11,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/IndexPage.vue'),
       },
       {
+        name: 'MyEventsHistory',
+        path: 'events-history',
+        component: () => import('pages/MyEventsHistoryPage.vue'),
+      },
+      {
         name: 'QRScanner',
         path: 'qr-scanner',
         component: () => import('pages/ScannerPage.vue'),
@@ -19,9 +24,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'MyEventsHistory',
-        path: 'events-history',
-        component: () => import('pages/MyEventsHistoryPage.vue'),
+        name: 'CompanyManagement',
+        path: 'company-management',
+        component: () => import('pages/ManageCompanyPage.vue'),
+        meta: {
+          requiresModerator: true,
+        },
       },
     ],
   },

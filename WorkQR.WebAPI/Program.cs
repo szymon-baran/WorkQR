@@ -24,8 +24,9 @@ namespace WorkQR.WebAPI
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -112,6 +113,8 @@ namespace WorkQR.WebAPI
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IWorktimeEventRepository, WorktimeEventRepository>();
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+            builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 
             var app = builder.Build();
 

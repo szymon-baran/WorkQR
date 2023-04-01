@@ -12,7 +12,6 @@ using WorkQR.Application;
 using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WorkQR.Application
 {
@@ -33,9 +32,26 @@ namespace WorkQR.Application
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
 
-            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == user.Id
-                                                                                                                  && x.EventTime >= DateTime.Today
-                                                                                                                  && x.EventTime < DateTime.Today.AddDays(1));
+            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWorktimeEvents(new()
+            {
+                UserId = user.Id,
+                DateFrom = DateTime.Today,
+                DateTo = DateTime.Today.AddDays(1),
+                Description = null
+            });
+
+            return await FromWorktimeEventsToLinkedDTO(worktimeEvents);
+        }
+
+        public async Task<List<WorktimeEventDTO>> GetEmployeeWorkHours(GetEventsVM model)
+        {
+            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWorktimeEvents(model);
+            return await FromWorktimeEventsToLinkedDTO(worktimeEvents);
+        }
+
+        // TODO: move to converter
+        private async Task<List<WorktimeEventDTO>> FromWorktimeEventsToLinkedDTO(IEnumerable<WorktimeEvent> worktimeEvents)
+        {
             LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderByDescending(x => x.EventTime));
             List<WorktimeEventDTO> worktimeEventsList = new();
 
@@ -56,7 +72,7 @@ namespace WorkQR.Application
             return worktimeEventsList;
         }
 
-        public async Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDates(DaysSpanVM model, string userName)
+        public async Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDatesForCalendar(DaysSpanVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)

@@ -49,7 +49,7 @@ namespace WorkQR.WebAPI.Controllers
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
-                WorktimeEventsTimestampsDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDates(model, userName);
+                WorktimeEventsTimestampsDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDatesForCalendar(model, userName);
                 return Ok(worktimeEventsDTO);
             }
             catch (Exception ex)

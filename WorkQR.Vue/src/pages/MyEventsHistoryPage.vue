@@ -7,7 +7,7 @@
         </div>
       </q-card-section>
       <q-separator dark inset />
-      <q-card-section>
+      <q-card-section style="min-height: 44rem">
         <worktime-events-calendar></worktime-events-calendar>
       </q-card-section>
     </q-card>

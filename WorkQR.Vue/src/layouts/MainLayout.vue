@@ -162,6 +162,20 @@ export default defineComponent({
           essentialLinks.value.push(scannerLink);
         }
       }
+      if (authStore.isModerator) {
+        const companyManagementLink = {
+          title: 'Zarządzanie firmą',
+          caption: 'Funkcjonalność moderacyjna',
+          icon: 'apartment',
+          routerTo: 'CompanyManagement',
+          isBlank: false,
+        };
+        if (
+          !essentialLinks.value.some((x) => x.routerTo === 'CompanyManagement')
+        ) {
+          essentialLinks.value.push(companyManagementLink);
+        }
+      }
     });
 
     return {

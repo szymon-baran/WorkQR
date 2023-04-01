@@ -20,3 +20,19 @@ export interface CompanyRegisterResultDTO {
   scannerUsername: string;
   scannerPassword: string;
 }
+
+export class GetEventsVM {
+  UserId: string;
+  DateFrom: string;
+  DateTo: string;
+  Description: string;
+  EventType: number;
+
+  constructor() {
+    this.UserId = '';
+    this.DateFrom = new Date().toISOString().slice(0, 10);
+    this.DateTo = new Date().toISOString().slice(0, 10);
+    this.Description = '';
+    this.EventType = 0;
+  }
+}
