@@ -36,6 +36,7 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
+    document.title = to.meta.title;
     const authStore = useAuthStore();
     // if (to.matched.some((record) => record.meta.requiresAuth)) {
     //   if (!authStore.isUserAuthenticated) {

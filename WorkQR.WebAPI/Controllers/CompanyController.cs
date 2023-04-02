@@ -13,11 +13,13 @@ namespace WorkQR.WebAPI.Controllers
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IWorktimeEventService _worktimeEventService;
+        private readonly IQRService _qrService;
 
-        public CompanyController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService)
+        public CompanyController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService, IQRService qrService)
         {
             _applicationUserService = applicationUserService;
             _worktimeEventService = worktimeEventService;
+            _qrService = qrService;
         }
 
         [HttpGet("getCompanyEmployees")]
@@ -41,6 +43,20 @@ namespace WorkQR.WebAPI.Controllers
             try
             {
                 var companyEmployees = await _worktimeEventService.GetEmployeeWorkHours(model);
+                return Ok(companyEmployees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("resetUserQRAuthorizationKey")]
+        public async Task<ActionResult<Guid>> ResetUserQRAuthorizationKey(string userId)
+        {
+            try
+            {
+                var companyEmployees = await _qrService.ResetUserQRAuthorizationKey(userId);
                 return Ok(companyEmployees);
             }
             catch (Exception ex)

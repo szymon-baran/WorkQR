@@ -2,7 +2,7 @@
   <q-dialog>
     <q-card flat class="card q-pa-sm">
       <q-card-section class="row items-center q-pb-md">
-        <div class="text-h6">Twój kod QR</div>
+        <div class="text-h6">{{ getTitle() }}</div>
         <q-space />
         <q-btn icon="close" dense round color="primary" v-close-popup />
       </q-card-section>
@@ -11,17 +11,25 @@
           <q-btn
             icon="refresh"
             color="primary"
-            label="Odnów kod"
+            label="Przeładuj kod"
             @click="authStore.setQRAuthorizationKey()"
           />
         </div>
+        <div class="row q-mb-md flex-center" v-if="companyUsername">
+          <q-btn
+            icon="restart_alt"
+            color="primary"
+            label="Wygeneruj nowy kod"
+            @click="confirmCodeReset()"
+          />
+        </div>
         <qrcode-vue
-          :value="authStore.getQrAuthorizationKey"
+          :value="getQrCode"
           :size="size"
           level="H"
           :foreground="foreground"
           :background="background"
-          v-if="authStore.getQrAuthorizationKey"
+          v-if="authStore.getQrAuthorizationKey || companyUserCode"
         />
       </q-card-section>
       <q-card-section>
@@ -60,25 +68,66 @@
   </q-dialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import QrcodeVue from 'qrcode.vue';
-import { colors } from 'quasar';
+import { useQuasar, colors } from 'quasar';
 import { useAuthStore } from 'stores/auth-store';
 const { getPaletteColor } = colors;
 
 export default defineComponent({
   name: 'QrCodeDialog',
+  props: {
+    companyUserId: {
+      type: String,
+      default: '',
+    },
+    companyUsername: {
+      type: String,
+      default: '',
+    },
+    companyUserCode: {
+      type: String,
+      default: '',
+    },
+  },
   components: {
     QrcodeVue,
   },
-  setup() {
+  setup(props) {
     const size = 260;
     const foreground = getPaletteColor('primary');
     const background = getPaletteColor('dark');
     const authStore = useAuthStore();
     const isHelpOpen = ref(false);
+    const qrCode = ref();
+    const $q = useQuasar();
+    const getQrCode = computed(
+      () => qrCode.value ?? authStore.getQrAuthorizationKey
+    );
+    const getTitle = () => {
+      return props.companyUsername
+        ? `Kod QR ${props.companyUsername}`
+        : 'Twój kod QR';
+    };
+    const confirmCodeReset = () => {
+      $q.dialog({
+        title: 'Wygeneruj nowy kod',
+        message:
+          'Czy na pewno chcesz wygenerować nowy kod? Po wykonaniu tej operacji stary kod przestanie działać!',
+        cancel: true,
+        persistent: true,
+        focus: 'cancel',
+      }).onOk(async () => {
+        const response = await authStore.resetQRAuthorizationKey(
+          props.companyUserId
+        );
+        qrCode.value = response;
+      });
+    };
     onMounted(() => {
-      if (!authStore.getQrAuthorizationKey) {
+      if (props.companyUserCode) {
+        qrCode.value = props.companyUserCode;
+      } else if (!authStore.getQrAuthorizationKey) {
         authStore.setQRAuthorizationKey();
       }
     });
@@ -88,6 +137,10 @@ export default defineComponent({
       background,
       authStore,
       isHelpOpen,
+      qrCode,
+      getQrCode,
+      getTitle,
+      confirmCodeReset,
     };
   },
 });

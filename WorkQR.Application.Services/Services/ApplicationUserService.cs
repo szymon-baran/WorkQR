@@ -34,6 +34,7 @@ namespace WorkQR.Application
                 Username = x.UserName ?? "",
                 PositionName = x.Position.Name,
                 RegistrationCode = x.RegistrationCode ?? "",
+                QrAuthorizationKey = x.QrAuthorizationKey,
                 IsDisabled = IsUserDisabled(x)
             }).ToList();
         }

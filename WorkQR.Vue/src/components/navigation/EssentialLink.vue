@@ -6,7 +6,7 @@
     :to="{ name: routerTo }"
     :href="isExternalLink ? link : undefined"
     class="q-my-sm text-center"
-    style="width: 10rem"
+    style="width: 9.5rem; letter-spacing: 0.05rem; word-spacing: 1000px"
     exact-active-class="text-accent"
   >
     <q-item-section>

@@ -8,6 +8,7 @@
         public string LastName { get; set; } = "";
         public string PositionName { get; set; } = "";
         public string RegistrationCode { get; set; } = "";
+        public Guid QrAuthorizationKey { get; set; }
         public bool IsDisabled { get; set; }
     }
 }

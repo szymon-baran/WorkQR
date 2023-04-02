@@ -9,17 +9,24 @@ const routes: RouteRecordRaw[] = [
         name: 'Home',
         path: 'home',
         component: () => import('pages/IndexPage.vue'),
+        meta: {
+          title: 'Strona główna | WorkQR',
+        },
       },
       {
         name: 'MyEventsHistory',
         path: 'events-history',
         component: () => import('pages/MyEventsHistoryPage.vue'),
+        meta: {
+          title: 'Historia | WorkQR',
+        },
       },
       {
         name: 'QRScanner',
         path: 'qr-scanner',
         component: () => import('pages/ScannerPage.vue'),
         meta: {
+          title: 'Skaner QR | WorkQR',
           requiresQrScanner: true,
         },
       },
@@ -28,6 +35,7 @@ const routes: RouteRecordRaw[] = [
         path: 'company-management',
         component: () => import('pages/ManageCompanyPage.vue'),
         meta: {
+          title: 'Zarządzanie firmą | WorkQR',
           requiresModerator: true,
         },
       },
@@ -42,6 +50,7 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('pages/LoginPage.vue'),
         meta: {
+          title: 'Zaloguj się | WorkQR',
           requiresNonAuth: true,
         },
       },
@@ -53,6 +62,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
+    meta: {
+      title: 'Nie znaleziono strony | WorkQR',
+    },
   },
 ];
 

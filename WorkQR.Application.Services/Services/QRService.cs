@@ -87,5 +87,19 @@ namespace WorkQR.Application
 
             return user.QrAuthorizationKey;
         }
+
+        public async Task<Guid> ResetUserQRAuthorizationKey(string userId)
+        {
+            var user = await _applicationUserRepository.FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            user.QrAuthorizationKey = Guid.NewGuid();
+            _applicationUserRepository.Update(user);
+            await _applicationUserRepository.SaveChangesAsync();
+
+            return user.QrAuthorizationKey;
+        }
     }
 }

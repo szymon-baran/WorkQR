@@ -36,7 +36,13 @@
             />
           </q-td>
           <q-td key="actions" :props="props">
-            <q-btn dense round flat color="grey" icon="qr_code"
+            <q-btn
+              dense
+              round
+              flat
+              color="grey"
+              icon="qr_code"
+              @click="showQrCode(props.row)"
               ><q-tooltip anchor="bottom middle" self="top middle"
                 >Pokaż kod QR</q-tooltip
               ></q-btn
@@ -78,6 +84,7 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
 import { useQuasar } from 'quasar';
 import EmployeeDetailsDialog from './EmployeeDetailsDialog.vue';
+import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
 
 export default defineComponent({
   name: 'EmployeesList',
@@ -140,6 +147,25 @@ export default defineComponent({
           console.log('Called on OK or Cancel');
         });
     };
+    const showQrCode = (row: any) => {
+      $q.dialog({
+        component: QrCodeDialog,
+        componentProps: {
+          companyUserId: row.id,
+          companyUsername: row.username,
+          companyUserCode: row.qrAuthorizationKey,
+        },
+      })
+        .onOk(() => {
+          console.log('OK');
+        })
+        .onCancel(() => {
+          console.log('Cancel');
+        })
+        .onDismiss(() => {
+          console.log('Called on OK or Cancel');
+        });
+    };
     onMounted(async () => {
       const response = await api.get('company/getCompanyEmployees');
       employees.value = response.data;
@@ -148,6 +174,7 @@ export default defineComponent({
       employees,
       columns,
       showDetails,
+      showQrCode,
     };
   },
 });

@@ -60,6 +60,18 @@ export const useAuthStore = defineStore('auth', {
       const response = await api.get('user/getQRAuthorizationKey');
       this.setQrAuthorizationKey(response.data);
     },
+    async resetQRAuthorizationKey(userId: string) {
+      const response = await api.post(
+        'company/resetUserQRAuthorizationKey',
+        null,
+        {
+          params: {
+            userId: userId,
+          },
+        }
+      );
+      return response.data;
+    },
     logout() {
       localStorage.removeItem('auth');
       this.$reset();
