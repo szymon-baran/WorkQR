@@ -7,13 +7,23 @@
         <q-btn icon="close" dense round color="primary" v-close-popup />
       </q-card-section>
       <q-card-section class="text-center">
-        <div class="row q-mb-md flex-center">
-          <q-btn
-            icon="refresh"
-            color="primary"
-            label="Przeładuj kod"
-            @click="authStore.setQRAuthorizationKey()"
-          />
+        <div class="row q-mb-md">
+          <div class="col">
+            <q-btn
+              icon="refresh"
+              color="primary"
+              label="Przeładuj"
+              @click="authStore.setQRAuthorizationKey()"
+            />
+          </div>
+          <div class="col">
+            <q-btn
+              icon="print"
+              color="primary"
+              label="Drukuj"
+              @click="printPdf()"
+            />
+          </div>
         </div>
         <div class="row q-mb-md flex-center" v-if="companyUsername">
           <q-btn
@@ -31,6 +41,15 @@
           :background="background"
           v-if="authStore.getQrAuthorizationKey || companyUserCode"
         />
+        <div ref="qrCodeImage">
+          <qrcode-vue
+            :value="getQrCode"
+            :size="size * 0.6"
+            level="H"
+            v-if="authStore.getQrAuthorizationKey || companyUserCode"
+            v-show="false"
+          />
+        </div>
       </q-card-section>
       <q-card-section>
         <div class="row q-mb-md flex-center">
@@ -65,6 +84,7 @@
         </transition>
       </q-card-section>
     </q-card>
+    <print-qr-code :image="getImage" ref="printComponent" v-show="false" />
   </q-dialog>
 </template>
 <script lang="ts">
@@ -72,6 +92,8 @@ import { defineComponent, ref, onMounted, computed } from 'vue';
 import QrcodeVue from 'qrcode.vue';
 import { useQuasar, colors } from 'quasar';
 import { useAuthStore } from 'stores/auth-store';
+import PrintQrCode from './PrintQrCode.vue';
+
 const { getPaletteColor } = colors;
 
 export default defineComponent({
@@ -92,14 +114,17 @@ export default defineComponent({
   },
   components: {
     QrcodeVue,
+    PrintQrCode,
   },
   setup(props) {
     const size = 260;
-    const foreground = getPaletteColor('primary');
+    const foreground = getPaletteColor('primary') as string;
     const background = getPaletteColor('dark');
     const authStore = useAuthStore();
     const isHelpOpen = ref(false);
     const qrCode = ref();
+    const qrCodeImage = ref(null);
+    const printComponent = ref(null);
     const $q = useQuasar();
     const getQrCode = computed(
       () => qrCode.value ?? authStore.getQrAuthorizationKey
@@ -124,6 +149,42 @@ export default defineComponent({
         qrCode.value = response;
       });
     };
+    const getImage = computed(() => {
+      return qrCodeImage.value
+        ? qrCodeImage.value
+            .getElementsByTagName('canvas')[0]
+            .toDataURL('image/png')
+        : '';
+    });
+    const printPdf = () => {
+      let stylesHtml = '';
+      for (const node of [
+        ...document.querySelectorAll('link[rel="stylesheet"], style'),
+      ]) {
+        stylesHtml += node.outerHTML;
+      }
+      let w = window.open(
+        '',
+        '',
+        'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0'
+      );
+      if (w && printComponent.value) {
+        //w.document.write(printComponent.value.$el.innerHTML);
+        w.document.write(`<!DOCTYPE html>
+          <html>
+            <head>
+              ${stylesHtml}
+            </head>
+            <body>
+              ${printComponent.value.$el.innerHTML}
+            </body>
+          </html>`);
+        w.document.close();
+        w.setTimeout(function () {
+          if (w) w.print();
+        }, 1000);
+      }
+    };
     onMounted(() => {
       if (props.companyUserCode) {
         qrCode.value = props.companyUserCode;
@@ -138,9 +199,13 @@ export default defineComponent({
       authStore,
       isHelpOpen,
       qrCode,
+      qrCodeImage,
+      printComponent,
       getQrCode,
+      getImage,
       getTitle,
       confirmCodeReset,
+      printPdf,
     };
   },
 });
