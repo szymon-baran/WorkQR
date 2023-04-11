@@ -62,7 +62,8 @@ namespace WorkQR.EntityFramework
                 Name = "Moderator",
                 Company = _company1,
                 BreakMinsPerDay = 480,
-                IsSystemPosition = true
+                IsSystemPosition = true,
+                UserRoleName = UserRoles.Moderator
             };
             await _context.Positions.AddAsync(_company1Position1);
 
@@ -71,7 +72,8 @@ namespace WorkQR.EntityFramework
                 Name = "Skaner QR",
                 Company = _company1,
                 BreakMinsPerDay = 1000,
-                IsSystemPosition = true
+                IsSystemPosition = true,
+                UserRoleName = UserRoles.QRScanner
             };
             await _context.Positions.AddAsync(_company1Position2);
 
@@ -80,7 +82,8 @@ namespace WorkQR.EntityFramework
                 Name = "Kierowca",
                 Company = _company1,
                 BreakMinsPerDay = 20,
-                IsSystemPosition = false
+                IsSystemPosition = false,
+                UserRoleName = UserRoles.User
             };
             await _context.Positions.AddAsync(_company1Position3);
 
@@ -89,7 +92,8 @@ namespace WorkQR.EntityFramework
                 Name = "Pracownik",
                 Company = _company1,
                 BreakMinsPerDay = 15,
-                IsSystemPosition = false
+                IsSystemPosition = false,
+                UserRoleName = UserRoles.User
             };
             await _context.Positions.AddAsync(_company1Position4);
 

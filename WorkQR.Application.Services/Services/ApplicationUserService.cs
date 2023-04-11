@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
+using WorkQR.EntityFramework;
 
 namespace WorkQR.Application
 {
@@ -9,11 +11,15 @@ namespace WorkQR.Application
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IApplicationUserRepository _applicationUserRepository;
+        private readonly IPositionRepository _positionRepository;
+        private readonly IMapper _mapper;
 
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, IApplicationUserRepository applicationUserRepository)
+        public ApplicationUserService(UserManager<ApplicationUser> userManager, IApplicationUserRepository applicationUserRepository, IPositionRepository positionRepository, IMapper mapper)
         {
             _userManager = userManager;
             _applicationUserRepository = applicationUserRepository;
+            _positionRepository = positionRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<EmployeeDTO>> GetCompanyEmployees(string username)
@@ -32,11 +38,57 @@ namespace WorkQR.Application
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 Username = x.UserName ?? "",
-                PositionName = x.Position.Name,
+                PositionId = x.Position.Id,
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
                 IsDisabled = IsUserDisabled(x)
             }).ToList();
+        }
+
+        public async Task UpdateCompanyEmployees(string username, List<CompanyEmployeeVM> model)
+        {
+            var loggedUser = await _userManager.FindByNameAsync(username);
+
+            if (loggedUser == null || loggedUser.Position == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null && x.Position.CompanyId == loggedUser.Position.CompanyId);
+            applicationUsers = applicationUsers.Where(x => model.Any(y => y.Id == x.Id)).ToList();
+            foreach (var user in applicationUsers)
+            {
+                CompanyEmployeeVM modelEmployee = model.First(y => y.Id == user.Id);
+                if (modelEmployee.Username != user.UserName)
+                {
+                    await _userManager.SetUserNameAsync(user, modelEmployee.Username);
+                    await _userManager.UpdateNormalizedUserNameAsync(user);
+                }
+                if (modelEmployee.IsDisabled)
+                {
+                    user.LockoutEnd = DateTime.MaxValue;
+                    user.LockoutEnabled = true;
+                }
+                else
+                {
+                    user.LockoutEnd = null; 
+                    user.LockoutEnabled = false;
+                }
+                if (modelEmployee.PositionId != user.PositionId)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    await _userManager.RemoveFromRolesAsync(user, roles);
+                    Position position = await _positionRepository.FirstOrDefaultAsync(x => x.Id == modelEmployee.PositionId);
+                    if (position != null)
+                    {
+                        await _userManager.AddToRoleAsync(user, position.UserRoleName);
+                    }
+                    user.PositionId = modelEmployee.PositionId;
+                }
+                user.FirstName = modelEmployee.FirstName;
+                user.LastName = modelEmployee.LastName;
+                user.PositionId = modelEmployee.PositionId;
+            }
+
+            await _applicationUserRepository.SaveChangesAsync();
         }
 
         public bool IsUserDisabled(ApplicationUser user)

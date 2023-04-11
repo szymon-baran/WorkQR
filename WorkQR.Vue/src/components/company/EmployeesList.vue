@@ -1,7 +1,27 @@
 <template>
   <div>
+    <div class="row">
+      <div class="col-7 text-subtitle1">
+        Możesz edytować wartości poszczególnych rekordów poprzez kliknięcie
+        wybranej komórki
+      </div>
+      <div
+        class="col-5 text-subtitle2 text-right"
+        v-if="editedRecords && editedRecords.length > 0"
+      >
+        Edytowane rekordy:
+        {{ editedRecords }}
+        <div>
+          <q-btn
+            color="primary"
+            label="Zapisz zmiany"
+            class="q-mt-sm"
+            @click="saveChanges"
+          />
+        </div>
+      </div>
+    </div>
     <q-table
-      title="Pracownicy"
       :rows="employees"
       :columns="columns"
       row-key="id"
@@ -17,23 +37,83 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="lastName" :props="props">
+          <q-td key="index" :props="props">{{ props.row.index }}</q-td>
+          <q-td key="lastName" :props="props" class="pointer">
             {{ props.row.lastName }}
+            <q-popup-edit
+              title="Edytuj nazwisko"
+              auto-save
+              v-model="props.row.lastName"
+              v-slot="scope"
+              @change="onValueUpdate(props.row)"
+            >
+              <q-input v-model="scope.value" dense autofocus />
+            </q-popup-edit>
           </q-td>
-          <q-td key="firstName" :props="props">
+          <q-td key="firstName" :props="props" class="pointer">
             {{ props.row.firstName }}
+            <q-popup-edit
+              title="Edytuj imię"
+              auto-save
+              v-model="props.row.firstName"
+              v-slot="scope"
+              @change="onValueUpdate(props.row)"
+            >
+              <q-input v-model="scope.value" dense autofocus />
+            </q-popup-edit>
           </q-td>
-          <q-td key="username" :props="props">
+          <q-td key="username" :props="props" class="pointer">
             {{ props.row.username }}
+            <q-popup-edit
+              title="Edytuj nazwę użytkownika"
+              auto-save
+              v-model="props.row.username"
+              v-slot="scope"
+              @change="onValueUpdate(props.row)"
+            >
+              <q-input v-model="scope.value" dense autofocus />
+            </q-popup-edit>
           </q-td>
-          <q-td key="positionName" :props="props">
-            {{ props.row.positionName }}
+          <q-td key="positionId" :props="props" class="pointer">
+            {{
+              positions.find((x) => x.value == props.row.positionId)?.label ??
+              'Brak'
+            }}
+            <q-popup-edit
+              title="Edytuj typ konta"
+              auto-save
+              v-model="props.row.positionId"
+              v-slot="scope"
+            >
+              <q-select
+                v-model="scope.value"
+                :options="positions"
+                dense
+                autofocus
+                emit-value
+              >
+                <template v-slot:selected>
+                  {{
+                    positions.find((x) => x.value == scope.value)?.label ??
+                    'Brak'
+                  }}
+                </template>
+              </q-select>
+            </q-popup-edit>
           </q-td>
-          <q-td key="isDisabled" :props="props">
+          <q-td key="isDisabled" :props="props" class="pointer">
             <q-icon
-              :name="props.row.isDisabled ? 'close' : 'check'"
+              :name="props.row.isDisabled ? 'check' : 'close'"
               size="1.3rem"
             />
+            <q-popup-edit
+              title="Zablokuj konto"
+              auto-save
+              v-model="props.row.isDisabled"
+              v-slot="scope"
+            >
+              <q-checkbox v-model="scope.value" label="Konto zablokowane" />
+            </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
@@ -46,16 +126,6 @@
               ><q-tooltip anchor="bottom middle" self="top middle"
                 >Pokaż kod QR</q-tooltip
               ></q-btn
-            >
-            <q-btn
-              dense
-              round
-              flat
-              color="grey"
-              :icon="props.row.isDisabled ? 'check' : 'block'"
-              ><q-tooltip anchor="bottom middle" self="top middle">{{
-                props.row.isDisabled ? 'Odblokuj' : 'Zablokuj'
-              }}</q-tooltip></q-btn
             >
             <q-btn dense round flat color="grey" icon="delete"
               ><q-tooltip anchor="bottom middle" self="top middle"
@@ -82,7 +152,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
-import { useQuasar } from 'quasar';
+import { useQuasar, Notify } from 'quasar';
 import EmployeeDetailsDialog from './EmployeeDetailsDialog.vue';
 import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
 
@@ -91,7 +161,14 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const employees = ref([]);
+    const positions = ref([]);
+    const editedRecords = ref([]);
     const columns = [
+      {
+        name: 'index',
+        label: '#',
+        field: 'index',
+      },
       {
         name: 'lastName',
         field: 'lastName',
@@ -114,8 +191,8 @@ export default defineComponent({
         sortable: false,
       },
       {
-        name: 'positionName',
-        field: 'positionName',
+        name: 'positionId',
+        field: 'positionId',
         align: 'center',
         label: 'Typ konta',
         sortable: false,
@@ -124,7 +201,7 @@ export default defineComponent({
         name: 'isDisabled',
         field: 'isDisabled',
         align: 'center',
-        label: 'Konto aktywne',
+        label: 'Konto zablokowane',
         sortable: false,
       },
       { name: 'actions', label: 'Akcje', field: '', align: 'right' },
@@ -166,15 +243,42 @@ export default defineComponent({
           console.log('Called on OK or Cancel');
         });
     };
+    const onValueUpdate = (row: any) => {
+      if (!editedRecords.value.includes(row.index))
+        editedRecords.value.push(row.index);
+    };
+    const saveChanges = async () => {
+      const recordsToSave = employees.value.filter((x) =>
+        editedRecords.value.includes(x.index)
+      );
+      await api.post('company/updateCompanyEmployees', recordsToSave);
+      Notify.create({
+        type: 'positive',
+        message: 'Zaktualizowano pomyślnie!',
+        icon: 'check_circle',
+      });
+      editedRecords.value = [];
+    };
     onMounted(async () => {
-      const response = await api.get('company/getCompanyEmployees');
-      employees.value = response.data;
+      const employeesResponse = await api.get('company/getCompanyEmployees');
+      employees.value = employeesResponse.data;
+      employees.value.forEach((row, index) => {
+        row.index = index + 1;
+      });
+      const positionsResponse = await api.get(
+        'position/getCompanyPositionsForUserToSelect'
+      );
+      positions.value = positionsResponse.data;
     });
     return {
       employees,
+      positions,
+      editedRecords,
       columns,
       showDetails,
       showQrCode,
+      onValueUpdate,
+      saveChanges,
     };
   },
 });

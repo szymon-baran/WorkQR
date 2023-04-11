@@ -104,6 +104,8 @@ namespace WorkQR.WebAPI
             });
             builder.Services.AddCors();
 
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Dependency injection
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<Seed>();
@@ -115,6 +117,7 @@ namespace WorkQR.WebAPI
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
             builder.Services.AddScoped<IPositionRepository, PositionRepository>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            builder.Services.AddScoped<IPositionService, PositionService>();
 
             var app = builder.Build();
 

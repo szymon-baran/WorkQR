@@ -37,6 +37,21 @@ namespace WorkQR.WebAPI.Controllers
             }
         }
 
+        [HttpPost("updateCompanyEmployees")]
+        public async Task<ActionResult> UpdateCompanyEmployees(List<CompanyEmployeeVM> model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                await _applicationUserService.UpdateCompanyEmployees(userName, model);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("getEmployeeWorktimeEvents")]
         public async Task<ActionResult<List<EmployeeDTO>>> GetEmployeeWorkHours([FromQuery]GetEventsVM model)
         {

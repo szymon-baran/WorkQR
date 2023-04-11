@@ -17,12 +17,12 @@
                 class="text-off-white"
                 active-class="text-primary"
               >
+                <q-tab name="employees" icon="groups" label="Pracownicy" />
                 <q-tab
-                  name="employees"
-                  icon="groups"
-                  label="Wszyscy pracownicy"
+                  name="positions"
+                  icon="event_seat"
+                  label="Stanowiska pracy"
                 />
-                <q-tab name="alarms" icon="alarm" label="Alarms" />
                 <q-tab name="movies" icon="movie" label="Movies" />
               </q-tabs>
             </div>
@@ -38,24 +38,13 @@
               transition-next="jump-up"
             >
               <q-tab-panel name="employees">
-                <div class="text-h4 q-mb-md">Wszyscy pracownicy</div>
+                <div class="text-h4 q-mb-md">Pracownicy</div>
                 <employees-list />
               </q-tab-panel>
 
-              <q-tab-panel name="alarms">
-                <div class="text-h4 q-mb-md">Alarms</div>
-                <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-                  praesentium cumque magnam odio iure quidem, quod illum numquam
-                  possimus obcaecati commodi minima assumenda consectetur culpa
-                  fuga nulla ullam. In, libero.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-                  praesentium cumque magnam odio iure quidem, quod illum numquam
-                  possimus obcaecati commodi minima assumenda consectetur culpa
-                  fuga nulla ullam. In, libero.
-                </p>
+              <q-tab-panel name="positions">
+                <div class="text-h4 q-mb-md">Stanowiska pracy</div>
+                <positions-list />
               </q-tab-panel>
 
               <q-tab-panel name="movies">
@@ -90,11 +79,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import EmployeesList from 'components/company/EmployeesList.vue';
+import PositionsList from 'components/company/PositionsList.vue';
 
 export default defineComponent({
   name: 'ManageCompanyPage',
   components: {
     EmployeesList,
+    PositionsList,
   },
   setup() {
     return {
