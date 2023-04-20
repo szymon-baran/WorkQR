@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div style="width: 60vw; border: 1px solid black">
-      <div class="row q-px-md q-py-sm head">
+    <div style="width: 85.6mm; height: 54mm; border: 1px solid black">
+      <div class="row q-px-sm q-py-xs head">
         <div class="col">
           <span
             class="header-font header-sm q-ml-sm text-dark text-h5 self-center"
@@ -12,14 +12,16 @@
           IDENTYFIKATOR
         </div>
       </div>
-      <div class="row q-px-lg q-py-md">
-        <div class="col self-center">
-          <div class="text-h4 text-dark">{{ authStore.getFullName }}</div>
-          <div class="text-body2 text-dark">
-            [Stanowisko] firmy [NazwaFirmy]
+      <div class="row q-pt-xs">
+        <div class="col q-px-md self-center">
+          <div class="text-h5 text-dark q-mb-sm">
+            {{ authStore.getFullName }}
           </div>
+          <div class="text-body2 text-dark">Magazynier</div>
+          <div class="text-body2 text-dark">Januszex Industries</div>
         </div>
-        <div class="col text-right">
+        <div style="border-left: 1px solid black"></div>
+        <div class="col q-px-sm q-pt-sm self-center text-right">
           <img v-bind:src="image" />
         </div>
       </div>
@@ -47,6 +49,9 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+.text-body2 {
+  font-size: 0.8rem;
+}
 .head {
   border-bottom: 1px solid black;
   text-shadow: none;

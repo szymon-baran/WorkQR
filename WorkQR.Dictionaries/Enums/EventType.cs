@@ -22,7 +22,7 @@ namespace WorkQR.Dictionaries
             {
                 EventType.StartWork => EventType.StartBreak,
                 EventType.StartBreak => EventType.EndBreak,
-                EventType.EndBreak => EventType.EndWork,
+                EventType.EndBreak => EventType.StartBreak,
                 EventType.EndWork => EventType.StartWork,
                 _ => EventType.StartWork,
             };

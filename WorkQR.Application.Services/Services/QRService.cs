@@ -1,4 +1,5 @@
-﻿using WorkQR.Data.Abstraction;
+﻿using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
 
@@ -28,8 +29,13 @@ namespace WorkQR.Application
             EventType newEventType = (worktimeEvents.Any() ? worktimeEvents.Last().EventType : EventType.EndWork).GetDefaultNewEventType();
             double breakMinutesLeftToday = CalculateBreakMinutesLeftToday(worktimeEvents, newEventType, user.Position?.BreakMinsPerDay ?? 0);
 
-            if (newEventType == EventType.StartBreak && breakMinutesLeftToday <= 0)
-                throw new Exception($"Dzisiejszy czas przerwy został już wykorzystany! Masz do dyspozycji {user.Position?.BreakMinsPerDay ?? 0} minut przerwy dziennie.");
+            if (breakMinutesLeftToday < 1)
+            {
+                newEventType = EventType.EndWork;
+            }
+
+            //if (newEventType == EventType.StartBreak && breakMinutesLeftToday <= 0)
+            //    throw new Exception($"Dzisiejszy czas przerwy został już wykorzystany! Masz do dyspozycji {user.Position?.BreakMinsPerDay ?? 0} minut przerwy dziennie.");
 
             WorktimeEvent worktimeEvent = new()
             {
@@ -43,6 +49,8 @@ namespace WorkQR.Application
 
             return new()
             {
+                Id = worktimeEvent.Id,
+                FullName = $"{user.FirstName} {user.LastName}",
                 EventType = worktimeEvent.EventType,
                 BreakMinutesLeftToday = breakMinutesLeftToday
             };
@@ -50,7 +58,7 @@ namespace WorkQR.Application
 
         private async Task<List<WorktimeEvent>> GetUserTodaysWorktimeEvents(string userId)
         {
-            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == userId && x.EventTime == DateTime.Today);
+            IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == userId && x.EventTime.Date == DateTime.Today);
             if (worktimeEvents.Any())
                 return worktimeEvents.OrderBy(x => x.EventTime).ToList();
             else
@@ -100,6 +108,27 @@ namespace WorkQR.Application
             await _applicationUserRepository.SaveChangesAsync();
 
             return user.QrAuthorizationKey;
+        }
+
+        public async Task CancelEventById(Guid id)
+        {
+            var worktimeEvent = await _worktimeEventRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (worktimeEvent != null)
+            {
+                _worktimeEventRepository.Remove(worktimeEvent);
+                await _worktimeEventRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task ChangeEventTypeToEndById(Guid id)
+        {
+            var worktimeEvent = await _worktimeEventRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (worktimeEvent != null)
+            {
+                worktimeEvent.EventType = EventType.EndWork;
+                _worktimeEventRepository.Update(worktimeEvent);
+                await _worktimeEventRepository.SaveChangesAsync();
+            }
         }
     }
 }

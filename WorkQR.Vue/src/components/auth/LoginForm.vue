@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-card class="card" flat>
+    <q-card :class="[$q.screen.lt.md ? 'card-mobile' : 'card-large']" flat>
       <q-card-section style="height: 100%" horizontal>
         <transition
           enter-active-class="animated fadeIn"
@@ -217,11 +217,16 @@ a {
   text-decoration: none;
   color: $primary;
 }
-.card {
+.card-large {
   width: 75rem;
   max-width: 94vw;
   height: 43rem;
   max-height: 100vh;
+  background: rgba($dark, 0.95);
+}
+.card-mobile {
+  width: 100vw;
+  height: 100vh;
   background: rgba($dark, 0.95);
 }
 .background {

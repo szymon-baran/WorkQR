@@ -21,6 +21,13 @@ export interface CompanyRegisterResultDTO {
   scannerPassword: string;
 }
 
+export interface EventScanDTO {
+  id: string;
+  fullName: string;
+  eventType: number;
+  breakMinutesLeftToday: number;
+}
+
 export class GetEventsVM {
   UserId: string;
   DateFrom: string;

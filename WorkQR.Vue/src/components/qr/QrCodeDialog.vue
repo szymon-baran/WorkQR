@@ -12,7 +12,7 @@
             <q-btn
               icon="refresh"
               color="primary"
-              label="Przeładuj"
+              label="Odnów"
               @click="authStore.setQRAuthorizationKey()"
             />
           </div>
@@ -44,7 +44,7 @@
         <div ref="qrCodeImage">
           <qrcode-vue
             :value="getQrCode"
-            :size="size * 0.6"
+            :size="size * 0.53"
             level="H"
             v-if="authStore.getQrAuthorizationKey || companyUserCode"
             v-show="false"

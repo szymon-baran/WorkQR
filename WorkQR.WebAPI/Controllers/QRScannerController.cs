@@ -34,5 +34,33 @@ namespace WorkQR.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("cancelEvent")]
+        public async Task<ActionResult<EventScanDTO>> CancelEvent(Guid id)
+        {
+            try
+            {
+                await _qrService.CancelEventById(id);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("endWork")]
+        public async Task<ActionResult<EventScanDTO>> EndWork(Guid id)
+        {
+            try
+            {
+                await _qrService.ChangeEventTypeToEndById(id);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
