@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using QuestPDF.Infrastructure;
 using System.Collections.Generic;
 using System.Text;
 using WorkQR.Application;

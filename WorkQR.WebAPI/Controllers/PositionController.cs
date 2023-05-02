@@ -19,27 +19,12 @@ namespace WorkQR.WebAPI.Controllers
         }
 
         [HttpGet("getCompanyPositionsForUser")]
-        public async Task<ActionResult<List<EmployeeDTO>>> GetCompanyPositionsForUser()
+        public async Task<ActionResult<List<FullEmployeeDTO>>> GetCompanyPositionsForUser()
         {
             string userName = User.Identity.Name;
             try
             {
                 var companyPositions = await _positionService.GetCompanyPositionsByUserName(userName);
-                return Ok(companyPositions);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpGet("getCompanyPositionsForUserToSelect")]
-        public async Task<ActionResult<List<SelectVM<Guid>>>> GetCompanyPositionsForUserToSelect()
-        {
-            string userName = User.Identity.Name;
-            try
-            {
-                var companyPositions = await _positionService.GetCompanyPositionsForUserToSelect(userName);
                 return Ok(companyPositions);
             }
             catch (Exception ex)

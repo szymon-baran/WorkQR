@@ -22,7 +22,7 @@ namespace WorkQR.Application
             _mapper = mapper;
         }
 
-        public async Task<List<EmployeeDTO>> GetCompanyEmployees(string username)
+        public async Task<List<FullEmployeeDTO>> GetCompanyEmployeesForModerator(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -32,7 +32,7 @@ namespace WorkQR.Application
             IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null
                                                                                                                         && x.Position.CompanyId == user.Position.CompanyId);
 
-            return applicationUsers.OrderByDescending(x => x.Position.BreakMinsPerDay).Select(x => new EmployeeDTO()
+            return applicationUsers.OrderByDescending(x => x.Position.BreakMinsPerDay).Select(x => new FullEmployeeDTO()
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -42,6 +42,29 @@ namespace WorkQR.Application
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
                 IsDisabled = IsUserDisabled(x)
+            }).ToList();
+        }
+
+        public async Task<List<EmployeeDTO>> GetCompanyEmployees(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null || user.Position == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => (!x.LockoutEnd.HasValue
+                                                                                                                        || x.LockoutEnd.Value <= DateTime.Now)
+                                                                                                                        && x.Position != null
+                                                                                                                        && x.Position.CompanyId == user.Position.CompanyId
+                                                                                                                        && x.Position.UserRoleName != "QRScanner");
+
+            return applicationUsers.OrderByDescending(x => x.Position.BreakMinsPerDay).Select(x => new EmployeeDTO()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Username = x.UserName ?? "",
+                PositionName = x.Position?.Name ?? ""
             }).ToList();
         }
 

@@ -15,8 +15,8 @@
           >
             <q-card-section class="row q-pb-none">
               <q-img
-                src="~assets/logo.png"
-                width="5.75rem"
+                src="~assets/logo-new2.png"
+                width="6.5rem"
                 class="logo-md q-ml-sm"
                 no-spinner
               />

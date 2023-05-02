@@ -1,11 +1,10 @@
 ﻿namespace WorkQR.Application
 {
-    public class EmployeeDTO
+    public class RaportEmployeeDTO
     {
         public string Id { get; set; } = "";
-        public string Username { get; set; } = "";
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
-        public string PositionName { get; set; } = "";
+        public double WorkedHours { get; set; } = 0;
     }
 }

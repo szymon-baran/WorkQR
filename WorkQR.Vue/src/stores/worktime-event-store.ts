@@ -18,9 +18,12 @@ export const useWorktimeEventStore = defineStore('worktime-event', {
       this.worktimeEvents = response.data;
     },
     async setCompanyEmployeeWorktimeEvents() {
-      const response = await api.get('company/getEmployeeWorktimeEvents', {
-        params: this.settings,
-      });
+      const response = await api.get(
+        'companyModeration/getEmployeeWorktimeEvents',
+        {
+          params: this.settings,
+        }
+      );
       this.worktimeEvents = response.data;
     },
   },

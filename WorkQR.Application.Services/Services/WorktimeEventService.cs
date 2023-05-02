@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using WorkQR.Application;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
@@ -18,11 +12,13 @@ namespace WorkQR.Application
     public class WorktimeEventService : IWorktimeEventService
     {
         private readonly IWorktimeEventRepository _worktimeEventRepository;
+        private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public WorktimeEventService(IWorktimeEventRepository worktimeEventRepository, UserManager<ApplicationUser> userManager)
+        public WorktimeEventService(IWorktimeEventRepository worktimeEventRepository, IApplicationUserRepository applicationUserRepository, UserManager<ApplicationUser> userManager)
         {
             _worktimeEventRepository = worktimeEventRepository;
+            _applicationUserRepository = applicationUserRepository;
             _userManager = userManager;
         }
 
@@ -100,6 +96,39 @@ namespace WorkQR.Application
             }
 
             return worktimeEventsDTO;
+        }
+
+        public async Task<byte[]> GetCompanyRaportForDate(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => x.Position.CompanyId == user.Position.CompanyId && x.Position.UserRoleName != "QRScanner");
+            
+            List<RaportEmployeeDTO> employeesDTO = new();
+            foreach (var employee in employees.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
+            {
+                double workedMinutes = 0;
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.OrderBy(x => x.EventTime));
+                for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
+                {
+                    var worktimeEvent = element.Value;
+                    workedMinutes += worktimeEvent.EventType != EventType.EndWork ? ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalMinutes : 0;
+                }
+                employeesDTO.Add(new RaportEmployeeDTO()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    WorkedHours = double.Round(workedMinutes / 60, 2)
+                });
+            }
+
+            RaportDocument raportDocument = new(model, employeesDTO);
+
+            byte[] bytes = raportDocument.GeneratePdf();
+            return bytes;
         }
     }
 }

@@ -39,6 +39,14 @@ const routes: RouteRecordRaw[] = [
           requiresModerator: true,
         },
       },
+      {
+        name: 'Company',
+        path: 'company',
+        component: () => import('pages/CompanyPage.vue'),
+        meta: {
+          title: 'Twoja firma | WorkQR',
+        },
+      },
     ],
   },
   {

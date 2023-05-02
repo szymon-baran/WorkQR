@@ -18,12 +18,12 @@
 
         <q-toolbar-title class="q-ml-sm q-mt-xs" shrink
           ><q-img
-            src="~assets/logo.png"
-            width="3rem"
+            src="~assets/logo-new2.png"
+            width="3.4rem"
             class="logo-sm"
             no-spinner
           />
-          <span class="header-font header-sm q-ml-sm text-accent text-h5"
+          <span class="header-font q-ml-sm header-sm text-accent text-h5"
             >workQR</span
           >
         </q-toolbar-title>
@@ -121,7 +121,7 @@ const linksList = [
     title: 'Twoja firma',
     caption: 'Informacje o współpracownikach',
     icon: 'work',
-    routerTo: '/',
+    routerTo: 'Company',
     isBlank: false,
   },
 ];

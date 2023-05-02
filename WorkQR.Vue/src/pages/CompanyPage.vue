@@ -3,7 +3,7 @@
     <q-card dark bordered flat>
       <q-card-section>
         <div class="row">
-          <span class="text-h4">Zarządzenie firmą</span>
+          <span class="text-h4">Twoja firma</span>
         </div>
       </q-card-section>
       <q-separator dark inset />
@@ -16,39 +16,33 @@
             narrow-indicator
             align="justify"
           >
-            <q-tab name="employees" icon="groups" label="Pracownicy" />
             <q-tab
-              name="positions"
-              icon="event_seat"
-              label="Stanowiska pracy"
+              name="employees"
+              icon="group"
+              label="Lista współpracowników"
             />
+            <q-tab name="analytics" icon="analytics" label="Twoje statystyki" />
             <q-tab
-              name="created-accounts"
-              icon="movie"
-              label="Założone konta"
+              name="insights"
+              icon="insights"
+              label="Statystyki na tle firmy"
             />
-            <q-tab name="reports" icon="description" label="Raporty" />
           </q-tabs>
         </div>
         <q-tab-panels
           v-model="tab"
           animated
           swipeable
+          vertical
           transition-prev="jump-up"
           transition-next="jump-up"
         >
           <q-tab-panel name="employees">
-            <div class="text-h4 q-mb-md">Pracownicy</div>
-            <employees-list />
+            <employees-grid />
           </q-tab-panel>
 
-          <q-tab-panel name="positions">
-            <div class="text-h4 q-mb-md">Stanowiska pracy</div>
-            <positions-list />
-          </q-tab-panel>
-
-          <q-tab-panel name="created-accounts">
-            <div class="text-h4 q-mb-md">Założone konta</div>
+          <q-tab-panel name="analytics">
+            <div class="text-h4 q-mb-md">Statystyki pracy</div>
             <p>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
               praesentium cumque magnam odio iure quidem, quod illum numquam
@@ -69,9 +63,26 @@
             </p>
           </q-tab-panel>
 
-          <q-tab-panel name="reports">
-            <div class="text-h4 q-mb-md">Raporty</div>
-            <download-report />
+          <q-tab-panel name="insights">
+            <div class="text-h4 q-mb-md">Statystyki pracy 2</div>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
+              praesentium cumque magnam odio iure quidem, quod illum numquam
+              possimus obcaecati commodi minima assumenda consectetur culpa fuga
+              nulla ullam. In, libero.
+            </p>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
+              praesentium cumque magnam odio iure quidem, quod illum numquam
+              possimus obcaecati commodi minima assumenda consectetur culpa fuga
+              nulla ullam. In, libero.
+            </p>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
+              praesentium cumque magnam odio iure quidem, quod illum numquam
+              possimus obcaecati commodi minima assumenda consectetur culpa fuga
+              nulla ullam. In, libero.
+            </p>
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
@@ -81,21 +92,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import EmployeesList from 'components/companyModeration/EmployeesList.vue';
-import PositionsList from 'components/companyModeration/PositionsList.vue';
-import DownloadReport from 'components/companyModeration/DownloadReport.vue';
+import { useQuasar } from 'quasar';
+import EmployeesGrid from 'components/company/EmployeesGrid.vue';
 
 export default defineComponent({
-  name: 'ManageCompanyPage',
+  name: 'CompanyPage',
   components: {
-    EmployeesList,
-    PositionsList,
-    DownloadReport,
+    EmployeesGrid,
   },
   setup() {
+    const $q = useQuasar();
     return {
       tab: ref('employees'),
-      splitterModel: ref(20),
     };
   },
 });

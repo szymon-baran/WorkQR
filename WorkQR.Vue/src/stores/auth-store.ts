@@ -62,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async resetQRAuthorizationKey(userId: string) {
       const response = await api.post(
-        'company/resetUserQRAuthorizationKey',
+        'companyModeration/resetUserQRAuthorizationKey',
         null,
         {
           params: {

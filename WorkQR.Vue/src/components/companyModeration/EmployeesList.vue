@@ -251,7 +251,7 @@ export default defineComponent({
       const recordsToSave = employees.value.filter((x) =>
         editedRecords.value.includes(x.index)
       );
-      await api.post('company/updateCompanyEmployees', recordsToSave);
+      await api.post('companyModeration/updateCompanyEmployees', recordsToSave);
       Notify.create({
         type: 'positive',
         message: 'Zaktualizowano pomyślnie!',
@@ -260,13 +260,15 @@ export default defineComponent({
       editedRecords.value = [];
     };
     onMounted(async () => {
-      const employeesResponse = await api.get('company/getCompanyEmployees');
+      const employeesResponse = await api.get(
+        'companyModeration/getCompanyEmployees'
+      );
       employees.value = employeesResponse.data;
       employees.value.forEach((row, index) => {
         row.index = index + 1;
       });
       const positionsResponse = await api.get(
-        'position/getCompanyPositionsForUserToSelect'
+        'companyModeration/getCompanyPositionsForUserToSelect'
       );
       positions.value = positionsResponse.data;
     });
