@@ -1,10 +1,19 @@
 <template>
-  <q-layout view="hHh Lpr lff">
+  <q-layout
+    view="hHh Lpr lff"
+    style="
+      background-image: linear-gradient(
+        to left top,
+        #051937,
+        #2b142f,
+        #3a1220,
+        #3c1a12,
+        #342408
+      );
+    "
+  >
     <q-header>
-      <q-toolbar
-        class="bg-secondary q-px-md q-py-xs"
-        style="height: 6vh; min-height: 62px"
-      >
+      <q-toolbar class="q-px-md q-py-xs" style="height: 6vh; min-height: 62px">
         <q-btn
           flat
           dense
@@ -16,10 +25,10 @@
           v-if="$q.screen.lt.md && $route.name !== 'QRScanner'"
         />
 
-        <q-toolbar-title class="q-ml-sm q-mt-xs" shrink
+        <q-toolbar-title class="q-ml-sm" shrink
           ><q-img
             src="~assets/logo-new2.png"
-            width="3.4rem"
+            width="3.5rem"
             class="logo-sm"
             no-spinner
           />
@@ -40,7 +49,7 @@
           v-if="authStore.isUserAuthenticated && $route.name !== 'QRScanner'"
         >
           <span class="pointer">
-            <q-chip color="dark-page" :clickable="false">
+            <q-chip :clickable="false">
               <q-avatar color="primary" text-color="white">{{
                 authStore.getInitials
               }}</q-avatar>

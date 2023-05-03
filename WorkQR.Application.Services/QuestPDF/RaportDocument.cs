@@ -40,7 +40,7 @@ namespace WorkQR.Application
 
         void ComposeHeader(IContainer container)
         {
-            var headerStyle = TextStyle.Default.FontSize(22).SemiBold().FontColor("#d8904d");
+            var headerStyle = TextStyle.Default.FontSize(22).SemiBold().FontColor("#d8904d").LetterSpacing(1);
             var titleStyle = TextStyle.Default.FontSize(18).SemiBold();
 
             container.BorderBottom(1).BorderColor(Colors.Black).Row(row =>

@@ -53,6 +53,7 @@
                 width="38rem"
                 class="q-mb-sm"
                 no-spinner
+                :class="[$q.screen.lt.md ? 'q-mt-xl' : '']"
               />
               <div style="width: 100%; height: 0; margin: 0; border: 0"></div>
               <p class="text-h6 q-mb-xs text-center">Zarządzaj czasem pracy</p>
@@ -220,9 +221,9 @@ a {
 .card-large {
   width: 75rem;
   max-width: 94vw;
-  height: 43rem;
+  height: 44rem;
   max-height: 100vh;
-  background: rgba($dark, 0.95);
+  background: rgba($dark, 0.8) !important;
 }
 .card-mobile {
   width: 100vw;

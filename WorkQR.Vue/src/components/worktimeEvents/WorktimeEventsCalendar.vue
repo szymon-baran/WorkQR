@@ -353,8 +353,8 @@ export default defineComponent({
 }
 .calendar {
   --calendar-border-dark: black 1px solid;
-  --calendar-background-dark: #2a2a2a;
-  --calendar-disabled-date-background: #201f1f;
+  --calendar-background-dark: rgba(255, 255, 255, 0.05);
+  --calendar-disabled-date-background: rgba(255, 255, 255, 0.15);
   --calendar-border-current-dark: #f0ac00 2px solid;
   padding: 5px;
 }

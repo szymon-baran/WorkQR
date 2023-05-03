@@ -10,6 +10,8 @@
             label="Przedział czasu"
             mask="YYYY-MM-DD"
             style="width: 100%"
+            flat
+            bordered
           />
         </div>
         <div class="col-md-6 col-sm-12">
