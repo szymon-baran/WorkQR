@@ -1,5 +1,5 @@
 <template>
-  <div class="background" style="height: 94vh; width: 100vw">
+  <div style="height: 88vh; width: 100vw; margin-bottom: auto">
     <q-card class="card" flat>
       <q-card-section style="padding: 0">
         <p
@@ -290,13 +290,10 @@ export default defineComponent({
   height: 100%;
 }
 .video {
-  height: 80vh;
-  width: 94vw;
+  height: 82vh;
+  width: 100vw;
   margin: 0 auto;
-  border: 2px solid $primary;
+  border: 3px solid $primary;
   border-radius: 4px;
-}
-.background {
-  background-color: $secondary;
 }
 </style>

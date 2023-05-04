@@ -25,7 +25,7 @@
             />
           </div>
         </div>
-        <div class="row q-mb-md flex-center" v-if="companyUsername">
+        <div class="row q-mb-md flex-center" v-if="companyUser">
           <q-btn
             icon="restart_alt"
             color="primary"
@@ -39,14 +39,20 @@
           level="H"
           :foreground="foreground"
           :background="background"
-          v-if="authStore.getQrAuthorizationKey || companyUserCode"
+          v-if="
+            authStore.getQrAuthorizationKey ||
+            (companyUser && companyUser.qrAuthorizationKey)
+          "
         />
         <div ref="qrCodeImage">
           <qrcode-vue
             :value="getQrCode"
             :size="size * 0.53"
             level="H"
-            v-if="authStore.getQrAuthorizationKey || companyUserCode"
+            v-if="
+              authStore.getQrAuthorizationKey ||
+              (companyUser && companyUser.qrAuthorizationKey)
+            "
             v-show="false"
           />
         </div>
@@ -84,7 +90,13 @@
         </transition>
       </q-card-section>
     </q-card>
-    <print-qr-code :image="getImage" ref="printComponent" v-show="false" />
+    <print-qr-code
+      :image="getImage"
+      :companyUser="companyUser"
+      :companyUserPositionName="companyUserPositionName"
+      ref="printComponent"
+      v-show="false"
+    />
   </q-dialog>
 </template>
 <script lang="ts">
@@ -99,17 +111,11 @@ const { getPaletteColor } = colors;
 export default defineComponent({
   name: 'QrCodeDialog',
   props: {
-    companyUserId: {
-      type: String,
-      default: '',
+    companyUser: {
+      type: Object,
     },
-    companyUsername: {
+    companyUserPositionName: {
       type: String,
-      default: '',
-    },
-    companyUserCode: {
-      type: String,
-      default: '',
     },
   },
   components: {
@@ -130,8 +136,8 @@ export default defineComponent({
       () => qrCode.value ?? authStore.getQrAuthorizationKey
     );
     const getTitle = () => {
-      return props.companyUsername
-        ? `Kod QR ${props.companyUsername}`
+      return props.companyUser
+        ? `Kod QR ${props.companyUser.username}`
         : 'Twój kod QR';
     };
     const confirmCodeReset = () => {
@@ -143,10 +149,12 @@ export default defineComponent({
         persistent: true,
         focus: 'cancel',
       }).onOk(async () => {
-        const response = await authStore.resetQRAuthorizationKey(
-          props.companyUserId
-        );
-        qrCode.value = response;
+        if (props.companyUser) {
+          const response = await authStore.resetQRAuthorizationKey(
+            props.companyUser.id
+          );
+          qrCode.value = response;
+        }
       });
     };
     const getImage = computed(() => {
@@ -186,8 +194,8 @@ export default defineComponent({
       }
     };
     onMounted(() => {
-      if (props.companyUserCode) {
-        qrCode.value = props.companyUserCode;
+      if (props.companyUser) {
+        qrCode.value = props.companyUser.qrAuthorizationKey;
       } else if (!authStore.getQrAuthorizationKey) {
         authStore.setQRAuthorizationKey();
       }

@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using Org.BouncyCastle.Asn1.Pkcs;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,13 +28,15 @@ namespace WorkQR.Application
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IApplicationUserService _applicationUserService;
+        private readonly MailSettings _mailSettings;
 
         public AuthService(IApplicationUserRepository applicationUserRepository,
                            ICompanyRepository companyRepository,
                            IPositionRepository positionRepository,
                            UserManager<ApplicationUser> userManager,
                            IConfiguration configuration,
-                           IApplicationUserService applicationUserService)
+                           IApplicationUserService applicationUserService,
+                           IOptions<MailSettings> mailSettings)
         {
             _applicationUserRepository = applicationUserRepository;
             _companyRepository = companyRepository;
@@ -38,6 +44,7 @@ namespace WorkQR.Application
             _userManager = userManager;
             _configuration = configuration;
             _applicationUserService = applicationUserService;
+            _mailSettings = mailSettings.Value;
         }
 
         public async Task<UserDTO> LoginAsync(UserLoginVM model)
@@ -85,22 +92,6 @@ namespace WorkQR.Application
             };
 
             return userDTO;
-        }
-
-        public async Task<IdentityResult> RegisterAsync(UserRegisterVM model)
-        {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                throw new Exception("Istnieje już użytkownik o podanej nazwie!");
-
-            ApplicationUser user = new()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            return result;
         }
 
         public async Task<CompanyRegisterResultDTO> CompanyRegisterAsync(CompanyRegisterVM model)
@@ -177,20 +168,6 @@ namespace WorkQR.Application
             };
         }
 
-        private string GenerateRandomPassword()
-        {
-            string lgLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string smLetters = "abcdefghijklmnopqrstuvwxyz";
-            string numbers = "1234567890";
-            string chars = "!@#$%^&*()_+";
-            Random random = new();
-            string password = new string(Enumerable.Repeat(lgLetters, 4).Select(s => s[random.Next(s.Length)]).ToArray());
-            password += new string(Enumerable.Repeat(smLetters, 3).Select(s => s[random.Next(s.Length)]).ToArray());
-            password += new string(Enumerable.Repeat(numbers, 3).Select(s => s[random.Next(s.Length)]).ToArray());
-            password += new string(Enumerable.Repeat(chars, 2).Select(s => s[random.Next(s.Length)]).ToArray());
-            return password;
-        }
-
         public async Task<UserTokenDTO> RefreshAccessTokenAsync(UserTokenVM model)
         {
             var tokenValidationParameters = new TokenValidationParameters
@@ -259,5 +236,88 @@ namespace WorkQR.Application
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
+
+        public async Task AddEmployee(EmployeeAddVM model, string userName)
+        {
+            ApplicationUser? moderatorUser = await _userManager.FindByNameAsync(userName);
+            if (moderatorUser == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                throw new Exception("Istnieje już użytkownik o podanej nazwie!");
+
+            ApplicationUser user = new()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                PositionId = model.PositionId,
+                LockoutEnd = DateTime.MaxValue
+            };
+            
+            await _userManager.CreateAsync(user, GenerateRandomPassword());
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
+
+            RegistrationEmailDTO dto = new()
+            {
+                FullName = $"{model.FirstName} {model.LastName}",
+                CompanyName = moderatorUser.Position?.Company?.Name ?? "-",
+                MailTo = model.Email,
+                VerificationCode = GenerateVerificationCode()
+            };
+            await SendRegistrationEmail(dto);
+        }
+
+        private string GenerateVerificationCode()
+        {
+            string lgLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string numbers = "1234567890";
+            Random random = new();
+            string code = new(Enumerable.Repeat(lgLetters, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+            code += new string(Enumerable.Repeat(numbers, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+            return code;
+        }
+
+        private async Task SendRegistrationEmail(RegistrationEmailDTO dto)
+        {
+            using (MimeMessage emailMessage = new MimeMessage())
+            {
+                MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
+                emailMessage.From.Add(emailFrom);
+                MailboxAddress emailTo = new MailboxAddress(dto.FullName, dto.MailTo);
+                emailMessage.To.Add(emailTo);
+
+                emailMessage.Subject = "Potwierdzenie rejestracji w serwisie workQR";
+
+                BodyBuilder emailBodyBuilder = new BodyBuilder();
+                emailBodyBuilder.TextBody = $"Witamy w firmie {dto.CompanyName}! Twój kod weryfikacyjny to: {dto.VerificationCode}.";
+
+                emailMessage.Body = emailBodyBuilder.ToMessageBody();
+
+                using (SmtpClient mailClient = new SmtpClient())
+                {
+                    await mailClient.ConnectAsync(_mailSettings.Server, _mailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+                    await mailClient.AuthenticateAsync(_mailSettings.UserName, _mailSettings.Password);
+                    await mailClient.SendAsync(emailMessage);
+                    await mailClient.DisconnectAsync(true);
+                }
+            }
+        }
+
+        private string GenerateRandomPassword()
+        {
+            string lgLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string smLetters = "abcdefghijklmnopqrstuvwxyz";
+            string numbers = "1234567890";
+            string chars = "!@#$%^&*()_+";
+            Random random = new();
+            string password = new string(Enumerable.Repeat(lgLetters, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+            password += new string(Enumerable.Repeat(smLetters, 3).Select(s => s[random.Next(s.Length)]).ToArray());
+            password += new string(Enumerable.Repeat(numbers, 3).Select(s => s[random.Next(s.Length)]).ToArray());
+            password += new string(Enumerable.Repeat(chars, 2).Select(s => s[random.Next(s.Length)]).ToArray());
+            return password;
+        }
+
     }
 }

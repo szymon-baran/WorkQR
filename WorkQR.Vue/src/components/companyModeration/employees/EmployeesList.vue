@@ -150,10 +150,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, toRaw } from 'vue';
 import { api } from 'boot/axios';
 import { useQuasar, Notify } from 'quasar';
 import EmployeeDetailsDialog from './EmployeeDetailsDialog.vue';
+import EmployeeAddDialog from './EmployeeAddDialog.vue';
 import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
 
 export default defineComponent({
@@ -228,9 +229,10 @@ export default defineComponent({
       $q.dialog({
         component: QrCodeDialog,
         componentProps: {
-          companyUserId: row.id,
-          companyUsername: row.username,
-          companyUserCode: row.qrAuthorizationKey,
+          companyUser: toRaw(row),
+          companyUserPositionName:
+            positions.value.find((x) => x.value == row.positionId)?.label ??
+            'Brak stanowiska',
         },
       })
         .onOk(() => {

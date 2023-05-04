@@ -16,14 +16,19 @@ namespace WorkQR.WebAPI.Controllers
         private readonly IWorktimeEventService _worktimeEventService;
         private readonly IQRService _qrService;
         private readonly IPositionService _positionService;
+        private readonly IAuthService _authService;
 
-        public CompanyModerationController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService, IQRService qrService, IPositionService positionService)
+        public CompanyModerationController(IApplicationUserService applicationUserService,
+                                           IWorktimeEventService worktimeEventService,
+                                           IQRService qrService,
+                                           IPositionService positionService,
+                                           IAuthService authService)
         {
             _applicationUserService = applicationUserService;
             _worktimeEventService = worktimeEventService;
             _qrService = qrService;
             _positionService = positionService;
-            _positionService=positionService;
+            _authService = authService;
         }
 
         [HttpGet("getCompanyEmployees")]
@@ -107,6 +112,21 @@ namespace WorkQR.WebAPI.Controllers
             {
                 var bytes = await _worktimeEventService.GetCompanyRaportForDate(model, userName);
                 return File(bytes, "application/pdf", $"{DateTime.Today.ToShortDateString()}-raport.pdf");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("addEmployee")]
+        public async Task<ActionResult<Guid>> AddEmployee(EmployeeAddVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                await _authService.AddEmployee(model, userName);
+                return Ok(true);
             }
             catch (Exception ex)
             {

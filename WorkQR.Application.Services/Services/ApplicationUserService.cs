@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using WorkQR.Data.Abstraction;
-using WorkQR.Dictionaries;
 using WorkQR.Domain;
-using WorkQR.EntityFramework;
 
 namespace WorkQR.Application
 {
@@ -13,8 +11,10 @@ namespace WorkQR.Application
         private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly IPositionRepository _positionRepository;
         private readonly IMapper _mapper;
-
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, IApplicationUserRepository applicationUserRepository, IPositionRepository positionRepository, IMapper mapper)
+        public ApplicationUserService(UserManager<ApplicationUser> userManager,
+                                      IApplicationUserRepository applicationUserRepository,
+                                      IPositionRepository positionRepository,
+                                      IMapper mapper)
         {
             _userManager = userManager;
             _applicationUserRepository = applicationUserRepository;
@@ -92,7 +92,7 @@ namespace WorkQR.Application
                 }
                 else
                 {
-                    user.LockoutEnd = null; 
+                    user.LockoutEnd = null;
                     user.LockoutEnabled = false;
                 }
                 if (modelEmployee.PositionId != user.PositionId)

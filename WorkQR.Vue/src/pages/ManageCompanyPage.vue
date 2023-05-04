@@ -38,7 +38,14 @@
           transition-next="jump-up"
         >
           <q-tab-panel name="employees">
-            <div class="text-h4 q-mb-md">Pracownicy</div>
+            <div class="row q-mb-md">
+              <div class="col text-h4">Pracownicy</div>
+              <q-btn
+                color="primary"
+                label="Dodaj nowego pracownika"
+                @click="showAddEmployeeDialog"
+              />
+            </div>
             <employees-list />
           </q-tab-panel>
 
@@ -81,7 +88,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import EmployeesList from 'components/companyModeration/EmployeesList.vue';
+import { useQuasar } from 'quasar';
+import EmployeesList from 'components/companyModeration/employees/EmployeesList.vue';
+import EmployeeAddDialog from 'components/companyModeration/employees/EmployeeAddDialog.vue';
 import PositionsList from 'components/companyModeration/PositionsList.vue';
 import DownloadReport from 'components/companyModeration/DownloadReport.vue';
 
@@ -93,9 +102,16 @@ export default defineComponent({
     DownloadReport,
   },
   setup() {
+    const $q = useQuasar();
+    const showAddEmployeeDialog = async () => {
+      $q.dialog({
+        component: EmployeeAddDialog,
+      });
+    };
     return {
       tab: ref('employees'),
       splitterModel: ref(20),
+      showAddEmployeeDialog,
     };
   },
 });

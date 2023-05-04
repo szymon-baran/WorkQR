@@ -119,3 +119,14 @@ body {
   background: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(10px);
 }
+
+.gradient-bg {
+  background-image: linear-gradient(
+    to left top,
+    #051937,
+    #2b142f,
+    #3a1220,
+    #3c1a12,
+    #342408
+  );
+}

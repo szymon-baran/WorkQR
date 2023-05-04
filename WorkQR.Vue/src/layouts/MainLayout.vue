@@ -1,17 +1,5 @@
 <template>
-  <q-layout
-    view="hHh Lpr lff"
-    style="
-      background-image: linear-gradient(
-        to left top,
-        #051937,
-        #2b142f,
-        #3a1220,
-        #3c1a12,
-        #342408
-      );
-    "
-  >
+  <q-layout view="hHh Lpr lff" class="gradient-bg">
     <q-header>
       <q-toolbar class="q-px-md q-py-xs" style="height: 6vh; min-height: 62px">
         <q-btn

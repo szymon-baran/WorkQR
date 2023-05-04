@@ -15,9 +15,13 @@
       <div class="row q-pt-xs">
         <div class="col q-px-md self-center">
           <div class="text-h5 text-dark q-mb-sm">
-            {{ authStore.getFullName }}
+            {{
+              companyUser
+                ? `${companyUser.firstName} ${companyUser.lastName}`
+                : authStore.getFullName
+            }}
           </div>
-          <div class="text-body2 text-dark">Magazynier</div>
+          <div class="text-body2 text-dark">{{ companyUserPositionName }}</div>
           <div class="text-body2 text-dark">Januszex Industries</div>
         </div>
         <div style="border-left: 1px solid black"></div>
@@ -38,6 +42,13 @@ export default defineComponent({
     image: {
       type: Object,
       required: true,
+    },
+    companyUser: {
+      type: Object,
+    },
+    companyUserPositionName: {
+      type: String,
+      default: '',
     },
   },
   setup() {

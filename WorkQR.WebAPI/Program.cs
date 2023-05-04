@@ -107,6 +107,8 @@ namespace WorkQR.WebAPI
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
             // Dependency injection
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<Seed>();

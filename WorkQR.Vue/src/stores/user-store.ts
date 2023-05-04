@@ -15,6 +15,13 @@ export const useUserStore = defineStore('user', {
       ModeratorEmail: null,
       CompanyName: null,
     },
+    registerEmployeeForm: {
+      Username: null,
+      Email: null,
+      FirstName: null,
+      LastName: null,
+      PositionId: null,
+    },
   }),
   actions: {
     async login() {
@@ -33,6 +40,13 @@ export const useUserStore = defineStore('user', {
       const response = await api.post(
         'auth/registerCompany',
         this.registerCompanyForm
+      );
+      return response.data;
+    },
+    async addEmployee() {
+      const response = await api.post(
+        'companyModeration/addEmployee',
+        this.registerEmployeeForm
       );
       return response.data;
     },

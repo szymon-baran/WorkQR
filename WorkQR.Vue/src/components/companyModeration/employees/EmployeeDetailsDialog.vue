@@ -84,7 +84,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useWorktimeEventStore } from 'stores/worktime-event-store';
-import WorktimeEventsList from '../worktimeEvents/WorktimeEventsList.vue';
+import WorktimeEventsList from '../../worktimeEvents/WorktimeEventsList.vue';
 
 export default defineComponent({
   name: 'EmployeeDetailsDialog',
