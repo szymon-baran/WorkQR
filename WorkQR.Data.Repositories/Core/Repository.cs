@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityModel;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WorkQR.Data.Abstraction;
 using WorkQR.EntityFramework;
@@ -61,6 +62,10 @@ namespace WorkQR.Data.Repositories
         public Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
+        }
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> whereCondition)
+        {
+            return _context.Set<T>().AnyAsync(whereCondition);
         }
     }
 }

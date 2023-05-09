@@ -261,7 +261,7 @@ export default defineComponent({
       });
       editedRecords.value = [];
     };
-    onMounted(async () => {
+    const setEmployees = async () => {
       const employeesResponse = await api.get(
         'companyModeration/getCompanyEmployees'
       );
@@ -269,6 +269,9 @@ export default defineComponent({
       employees.value.forEach((row, index) => {
         row.index = index + 1;
       });
+    };
+    onMounted(async () => {
+      await setEmployees();
       const positionsResponse = await api.get(
         'companyModeration/getCompanyPositionsForUserToSelect'
       );
@@ -283,6 +286,7 @@ export default defineComponent({
       showQrCode,
       onValueUpdate,
       saveChanges,
+      setEmployees,
     };
   },
 });

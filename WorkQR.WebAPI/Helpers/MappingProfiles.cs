@@ -9,6 +9,7 @@ namespace WorkQR.WebAPI.Helpers
         public MappingProfiles()
         {
             CreateMap<Position, CompanyPositionDTO>();
+            CreateMap<ApplicationUser, RegistrationCodeUserDTO>();
         }
     }
 }

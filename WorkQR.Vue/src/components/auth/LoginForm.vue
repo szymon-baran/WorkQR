@@ -161,10 +161,9 @@
   </div>
 </template>
 <script>
-import { ref, defineComponent } from 'vue';
+import { ref, defineComponent, onMounted } from 'vue';
 import { useUserStore } from 'stores/user-store';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useQuasar, Notify } from 'quasar';
 import RegisterDialog from './RegisterDialog.vue';
@@ -173,6 +172,7 @@ export default defineComponent({
   name: 'LoginForm',
   setup() {
     const store = useUserStore();
+    const route = useRoute();
     const router = useRouter();
     const { loginForm } = storeToRefs(store);
     const $q = useQuasar();
@@ -190,6 +190,11 @@ export default defineComponent({
           console.log('Called on OK or Cancel');
         });
     };
+    onMounted(() => {
+      if (route.params['regCode']) {
+        register();
+      }
+    });
     return {
       isPwd: ref(true),
       isLoginOpen: ref(false),

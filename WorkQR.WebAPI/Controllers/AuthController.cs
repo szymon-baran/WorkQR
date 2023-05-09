@@ -73,5 +73,33 @@ namespace WorkQR.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("getUserDataByRegistrationCode")]
+        public async Task<ActionResult<RegistrationCodeUserDTO>> GetUserDataByRegistrationCode([FromQuery]string registrationCode)
+        {
+            try
+            {
+                var result = await _authService.GetUserDataByRegistrationCode(registrationCode);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("activateEmployee")]
+        public async Task<ActionResult> ActivateEmployee(EmployeeActivateVM model)
+        {
+            try
+            {
+                await _authService.ActivateEmployee(model);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

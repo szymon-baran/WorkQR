@@ -5,6 +5,6 @@
         public string FullName { get; set; } = "";
         public string CompanyName { get; set; } = "";
         public string MailTo { get; set; } = ""; 
-        public string VerificationCode { get; set; } = "";
+        public string RegistrationCode { get; set; } = "";
     }
 }

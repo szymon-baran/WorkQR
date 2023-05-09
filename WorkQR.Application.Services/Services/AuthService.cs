@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using AutoMapper;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace WorkQR.Application
         private readonly IConfiguration _configuration;
         private readonly IApplicationUserService _applicationUserService;
         private readonly MailSettings _mailSettings;
+        private readonly IMapper _mapper;
 
         public AuthService(IApplicationUserRepository applicationUserRepository,
                            ICompanyRepository companyRepository,
@@ -36,7 +38,8 @@ namespace WorkQR.Application
                            UserManager<ApplicationUser> userManager,
                            IConfiguration configuration,
                            IApplicationUserService applicationUserService,
-                           IOptions<MailSettings> mailSettings)
+                           IOptions<MailSettings> mailSettings,
+                           IMapper mapper)
         {
             _applicationUserRepository = applicationUserRepository;
             _companyRepository = companyRepository;
@@ -45,6 +48,7 @@ namespace WorkQR.Application
             _configuration = configuration;
             _applicationUserService = applicationUserService;
             _mailSettings = mailSettings.Value;
+            _mapper = mapper;
         }
 
         public async Task<UserDTO> LoginAsync(UserLoginVM model)
@@ -214,6 +218,17 @@ namespace WorkQR.Application
             return true;
         }
 
+        public async Task<RegistrationCodeUserDTO> GetUserDataByRegistrationCode(string registrationCode)
+        {
+            var user = await _applicationUserRepository.FirstOrDefaultAsync(x => x.RegistrationCode == registrationCode
+                                                                                 && x.LockoutEnd.HasValue
+                                                                                 && x.LockoutEnd.Value > DateTime.Now);
+            if (user == null)
+                throw new Exception("Nie znaleziono użytkownika przypisanego do podanego kodu!");
+
+            return _mapper.Map<RegistrationCodeUserDTO>(user);
+        }
+
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -247,16 +262,21 @@ namespace WorkQR.Application
             if (userExists != null)
                 throw new Exception("Istnieje już użytkownik o podanej nazwie!");
 
+            string registrationCode = await GenerateUniqueRegistrationCodeAsync();
+
             ApplicationUser user = new()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
                 PositionId = model.PositionId,
-                LockoutEnd = DateTime.MaxValue
+                LockoutEnd = DateTime.MaxValue,
+                RegistrationCode = registrationCode,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
             
-            await _userManager.CreateAsync(user, GenerateRandomPassword());
+            await _userManager.CreateAsync(user);
             await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             RegistrationEmailDTO dto = new()
@@ -264,18 +284,37 @@ namespace WorkQR.Application
                 FullName = $"{model.FirstName} {model.LastName}",
                 CompanyName = moderatorUser.Position?.Company?.Name ?? "-",
                 MailTo = model.Email,
-                VerificationCode = GenerateVerificationCode()
+                RegistrationCode = registrationCode
             };
             await SendRegistrationEmail(dto);
         }
 
-        private string GenerateVerificationCode()
+        public async Task ActivateEmployee(EmployeeActivateVM model)
         {
-            string lgLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string numbers = "1234567890";
-            Random random = new();
-            string code = new(Enumerable.Repeat(lgLetters, 4).Select(s => s[random.Next(s.Length)]).ToArray());
-            code += new string(Enumerable.Repeat(numbers, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+            ApplicationUser? user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null || model.RegistrationCode.ToUpper() != user.RegistrationCode.ToUpper())
+                throw new Exception("Nie znaleziono użytkownika do aktywacji.");
+
+            user.LockoutEnd = null;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            await _userManager.AddPasswordAsync(user, model.Password);
+            await _userManager.UpdateAsync(user);
+        }
+
+        private async Task<string> GenerateUniqueRegistrationCodeAsync()
+        {
+            string code = "";
+            bool isCodeNotUnique = true;
+            while (isCodeNotUnique)
+            {
+                string lgLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                string numbers = "1234567890";
+                Random random = new();
+                code = new string(Enumerable.Repeat(lgLetters, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+                code += new string(Enumerable.Repeat(numbers, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+                isCodeNotUnique = await _applicationUserRepository.AnyAsync(x => x.RegistrationCode.ToUpper() == code.ToUpper());
+            }
             return code;
         }
 
@@ -291,7 +330,7 @@ namespace WorkQR.Application
                 emailMessage.Subject = "Potwierdzenie rejestracji w serwisie workQR";
 
                 BodyBuilder emailBodyBuilder = new BodyBuilder();
-                emailBodyBuilder.TextBody = $"Witamy w firmie {dto.CompanyName}! Twój kod weryfikacyjny to: {dto.VerificationCode}.";
+                emailBodyBuilder.TextBody = $"Witamy w firmie {dto.CompanyName}! Twój kod weryfikacyjny to: {dto.RegistrationCode}.";
 
                 emailMessage.Body = emailBodyBuilder.ToMessageBody();
 

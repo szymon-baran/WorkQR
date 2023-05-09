@@ -16,5 +16,6 @@ namespace WorkQR.Data.Abstraction
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
         Task<int> SaveChangesAsync();
+        Task<bool> AnyAsync(Expression<Func<T, bool>> whereCondition);
     }
 }

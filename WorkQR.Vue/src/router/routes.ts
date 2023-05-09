@@ -50,17 +50,18 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/login',
+    path: '/welcome',
     component: () => import('layouts/LoginLayout.vue'),
     children: [
       {
         name: 'Login',
-        path: '',
+        path: ':regCode?',
         component: () => import('pages/LoginPage.vue'),
         meta: {
           title: 'Zaloguj się | WorkQR',
           requiresNonAuth: true,
         },
+        props: true,
       },
     ],
   },
