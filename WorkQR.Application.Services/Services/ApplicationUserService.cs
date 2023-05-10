@@ -30,9 +30,10 @@ namespace WorkQR.Application
                 throw new Exception("Nie znaleziono użytkownika!");
 
             IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null
-                                                                                                                        && x.Position.CompanyId == user.Position.CompanyId);
+                                                                                                                        && x.Position.CompanyId == user.Position.CompanyId 
+                                                                                                                        && (x.LockoutEnd == null || x.LockoutEnd <= DateTime.Now || x.RegistrationCode == ""));
 
-            return applicationUsers.OrderByDescending(x => x.Position.BreakMinsPerDay).Select(x => new FullEmployeeDTO()
+            return applicationUsers.Select(x => new FullEmployeeDTO()
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -41,8 +42,33 @@ namespace WorkQR.Application
                 PositionId = x.Position.Id,
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
-                IsDisabled = IsUserDisabled(x)
-            }).ToList();
+                LastActivity = x.WorktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault()?.EventTime ?? null,
+            }).OrderByDescending(x => x.LastActivity).ToList();
+        }
+
+        public async Task<List<FullEmployeeDTO>> GetCompanyInactiveAccounts(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null || user.Position == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null
+                                                                                                                        && x.Position.CompanyId == user.Position.CompanyId 
+                                                                                                                        && x.LockoutEnd > DateTime.Now
+                                                                                                                        && x.RegistrationCode != "");
+
+            return applicationUsers.Select(x => new FullEmployeeDTO()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Username = x.UserName ?? "",
+                PositionId = x.Position.Id,
+                RegistrationCode = x.RegistrationCode ?? "",
+                QrAuthorizationKey = x.QrAuthorizationKey,
+                LastActivity = x.WorktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault()?.EventTime ?? null,
+            }).OrderByDescending(x => x.LastActivity).ToList();
         }
 
         public async Task<List<EmployeeDTO>> GetCompanyEmployees(string username)

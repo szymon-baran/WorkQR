@@ -46,6 +46,21 @@ namespace WorkQR.WebAPI.Controllers
             }
         }
 
+        [HttpGet("getCompanyInactiveAccounts")]
+        public async Task<ActionResult<List<FullEmployeeDTO>>> GetCompanyInactiveAccounts()
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var companyEmployees = await _applicationUserService.GetCompanyInactiveAccounts(userName);
+                return Ok(companyEmployees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("getCompanyPositionsForUserToSelect")]
         public async Task<ActionResult<List<SelectVM<Guid>>>> GetCompanyPositionsForUserToSelect()
         {

@@ -9,6 +9,6 @@
         public Guid PositionId { get; set; }
         public string RegistrationCode { get; set; } = "";
         public Guid QrAuthorizationKey { get; set; }
-        public bool IsDisabled { get; set; }
+        public DateTime? LastActivity { get; set; }
     }
 }

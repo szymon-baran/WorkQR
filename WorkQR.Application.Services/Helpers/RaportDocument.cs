@@ -9,11 +9,13 @@ namespace WorkQR.Application
     {
         private RaportDocumentVM _model { get; }
         private List<RaportEmployeeDTO> _employees { get; }
+        private string _companyName { get; }
 
-        public RaportDocument(RaportDocumentVM model, List<RaportEmployeeDTO> employees)
+        public RaportDocument(RaportDocumentVM model, List<RaportEmployeeDTO> employees, string companyName)
         {
             _model = model;
             _employees = employees;
+            _companyName = companyName;
         }
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -40,14 +42,16 @@ namespace WorkQR.Application
 
         void ComposeHeader(IContainer container)
         {
-            var headerStyle = TextStyle.Default.FontSize(22).SemiBold().FontColor("#d8904d").LetterSpacing(1);
-            var titleStyle = TextStyle.Default.FontSize(18).SemiBold();
+            var headerStyle = TextStyle.Default.FontSize(22).SemiBold().FontColor("#d8904d").LetterSpacing((float)0.05);
+            var companyNameStyle = TextStyle.Default.FontSize(18).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
 
             container.BorderBottom(1).BorderColor(Colors.Black).Row(row =>
             {
                 row.RelativeItem().Column(column =>
                 {
                     column.Item().PaddingBottom(10).Text($"workQR").Style(headerStyle);
+                    column.Item().Text(_companyName).Style(companyNameStyle);
                     column.Item().PaddingBottom(5).Text($"Raport").Style(titleStyle);
 
                     column.Item().Text(text =>

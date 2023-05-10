@@ -292,12 +292,13 @@ namespace WorkQR.Application
         public async Task ActivateEmployee(EmployeeActivateVM model)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(model.Username);
-            if (user == null || model.RegistrationCode.ToUpper() != user.RegistrationCode.ToUpper())
+            if (user == null || user.RegistrationCode == "" || model.RegistrationCode.ToUpper() != user.RegistrationCode.ToUpper())
                 throw new Exception("Nie znaleziono użytkownika do aktywacji.");
 
             user.LockoutEnd = null;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
+            user.RegistrationCode = "";
             await _userManager.AddPasswordAsync(user, model.Password);
             await _userManager.UpdateAsync(user);
         }

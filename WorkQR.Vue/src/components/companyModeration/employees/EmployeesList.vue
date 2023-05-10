@@ -101,19 +101,14 @@
               </q-select>
             </q-popup-edit>
           </q-td>
-          <q-td key="isDisabled" :props="props" class="pointer">
-            <q-icon
-              :name="props.row.isDisabled ? 'check' : 'close'"
-              size="1.3rem"
-            />
-            <q-popup-edit
-              title="Zablokuj konto"
-              auto-save
-              v-model="props.row.isDisabled"
-              v-slot="scope"
-            >
-              <q-checkbox v-model="scope.value" label="Konto zablokowane" />
-            </q-popup-edit>
+          <q-td
+            key="lastActivity"
+            :props="props"
+            class="pointer"
+            :style="getLastActivityStyle(props.row.lastActivity)"
+          >
+            <q-icon name="schedule" size="1.3rem" />
+            {{ getLastActivityText(props.row.lastActivity) }}
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
@@ -127,11 +122,27 @@
                 >Pokaż kod QR</q-tooltip
               ></q-btn
             >
-            <q-btn dense round flat color="grey" icon="delete"
-              ><q-tooltip anchor="bottom middle" self="top middle"
-                >Usuń</q-tooltip
-              ></q-btn
-            >
+            <q-btn
+              dense
+              round
+              flat
+              :color="props.row.isDisabled ? 'red' : 'green'"
+              :icon="props.row.isDisabled ? 'close' : 'check'"
+              v-if="!isInactiveView"
+              ><q-tooltip anchor="bottom middle" self="top middle">{{
+                props.row.isDisabled ? 'Odblokuj konto' : 'Zablokuj konto'
+              }}</q-tooltip>
+              <q-popup-edit
+                title="Zablokuj konto"
+                auto-save
+                v-model="props.row.isDisabled"
+                v-slot="scope"
+              >
+                <q-checkbox
+                  v-model="scope.value"
+                  label="Konto zablokowane"
+                /> </q-popup-edit
+            ></q-btn>
             <q-btn
               dense
               round
@@ -154,12 +165,17 @@ import { defineComponent, ref, onMounted, toRaw } from 'vue';
 import { api } from 'boot/axios';
 import { useQuasar, Notify } from 'quasar';
 import EmployeeDetailsDialog from './EmployeeDetailsDialog.vue';
-import EmployeeAddDialog from './EmployeeAddDialog.vue';
 import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
 
 export default defineComponent({
   name: 'EmployeesList',
-  setup() {
+  props: {
+    isInactiveView: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props) {
     const $q = useQuasar();
     const employees = ref([]);
     const positions = ref([]);
@@ -199,10 +215,10 @@ export default defineComponent({
         sortable: false,
       },
       {
-        name: 'isDisabled',
-        field: 'isDisabled',
+        name: 'lastActivity',
+        field: 'lastActivity',
         align: 'center',
-        label: 'Konto zablokowane',
+        label: 'Ostatnia aktywność',
         sortable: false,
       },
       { name: 'actions', label: 'Akcje', field: '', align: 'right' },
@@ -262,16 +278,57 @@ export default defineComponent({
       editedRecords.value = [];
     };
     const setEmployees = async () => {
-      const employeesResponse = await api.get(
-        'companyModeration/getCompanyEmployees'
-      );
-      employees.value = employeesResponse.data;
+      const response = await api.get('companyModeration/getCompanyEmployees');
+      employees.value = response.data;
       employees.value.forEach((row, index) => {
         row.index = index + 1;
       });
     };
+    const setInactiveAccounts = async () => {
+      const response = await api.get(
+        'companyModeration/getCompanyInactiveAccounts'
+      );
+      employees.value = response.data;
+      employees.value.forEach((row, index) => {
+        row.index = index + 1;
+      });
+    };
+    const getLastActivityText = (lastActivity: Date) => {
+      if (lastActivity) {
+        let diffMins = Math.floor(
+          (new Date().getTime() - Date.parse(lastActivity)) / (1000 * 60)
+        );
+        if (diffMins <= 60) {
+          return `${Math.round(diffMins)} minut temu`;
+        } else if (diffMins / 60 <= 24) {
+          return `${Math.round(diffMins / 60)} godzin temu`;
+        } else {
+          return `${Math.round(diffMins / (60 * 24))} dni temu`;
+        }
+      }
+      return 'Nigdy';
+    };
+    const getLastActivityStyle = (lastActivity: Date) => {
+      if (lastActivity) {
+        let diffMins = Math.floor(
+          (new Date().getTime() - Date.parse(lastActivity)) / (1000 * 60)
+        );
+        if (diffMins <= 60) {
+          return 'color: green;';
+        } else if (diffMins / 60 <= 24) {
+          return 'color: yellow;';
+        } else if (diffMins / (60 * 24) <= 28) {
+          return 'color: orange;';
+        }
+      }
+      return 'color: red;';
+    };
     onMounted(async () => {
-      await setEmployees();
+      if (props.isInactiveView) {
+        await setInactiveAccounts();
+      } else {
+        await setEmployees();
+      }
       const positionsResponse = await api.get(
         'companyModeration/getCompanyPositionsForUserToSelect'
       );
@@ -287,6 +344,9 @@ export default defineComponent({
       onValueUpdate,
       saveChanges,
       setEmployees,
+      setInactiveAccounts,
+      getLastActivityText,
+      getLastActivityStyle,
     };
   },
 });

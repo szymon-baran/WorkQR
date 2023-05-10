@@ -43,11 +43,6 @@
                 >Usuń</q-tooltip
               ></q-btn
             >
-            <q-btn dense round flat color="primary" icon="arrow_forward_ios"
-              ><q-tooltip anchor="bottom middle" self="top middle"
-                >Szczegóły</q-tooltip
-              ></q-btn
-            >
           </q-td>
         </q-tr>
       </template>

@@ -110,7 +110,7 @@ namespace WorkQR.Application
             foreach (var employee in employees.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
             {
                 double workedMinutes = 0;
-                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.OrderBy(x => x.EventTime));
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo).OrderBy(x => x.EventTime));
                 for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
                 {
                     var worktimeEvent = element.Value;
@@ -125,7 +125,7 @@ namespace WorkQR.Application
                 });
             }
 
-            RaportDocument raportDocument = new(model, employeesDTO);
+            RaportDocument raportDocument = new(model, employeesDTO, user.Position.Company.Name);
 
             byte[] bytes = raportDocument.GeneratePdf();
             return bytes;
