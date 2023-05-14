@@ -43,7 +43,7 @@
           transition-next="jump-up"
         >
           <q-tab-panel name="employees">
-            <employees-grid />
+            <employees-list />
           </q-tab-panel>
 
           <q-tab-panel name="analytics">
@@ -69,7 +69,14 @@
           </q-tab-panel>
 
           <q-tab-panel name="vacations">
-            <div class="text-h4 q-mb-md">Wnioski urlopowe</div>
+            <div class="row q-mb-md">
+              <div class="col text-h4">Wnioski urlopowe</div>
+              <q-btn
+                color="primary"
+                label="Nowy wniosek urlopowy"
+                @click="showAddVacationRequestDialog"
+              />
+            </div>
             <vacation-requests-list />
           </q-tab-panel>
 
@@ -104,18 +111,25 @@
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import EmployeesList from 'components/companyEmployee/EmployeesList.vue';
-import VacationRequestsList from 'components/companyEmployee/VacationRequestsList.vue';
+import VacationRequestsList from 'components/companyEmployee/vacationRequests/VacationRequestsList.vue';
+import VacationRequestAddDialog from 'components/companyEmployee/vacationRequests/VacationRequestAddDialog.vue';
 
 export default defineComponent({
-  name: 'CompanyPage',
+  name: 'CompanyEmployeePage',
   components: {
     EmployeesList,
     VacationRequestsList,
   },
   setup() {
     const $q = useQuasar();
+    const showAddVacationRequestDialog = async () => {
+      $q.dialog({
+        component: VacationRequestAddDialog,
+      });
+    };
     return {
       tab: ref('employees'),
+      showAddVacationRequestDialog,
     };
   },
 });

@@ -29,7 +29,7 @@ namespace WorkQR.Application
             return _mapper.Map<IEnumerable<Position>, List<CompanyPositionDTO>>(positions);
         }
 
-        public async Task<List<SelectVM<Guid>>> GetCompanyPositionsForUserToSelect(string userName)
+        public async Task<List<SelectDTO<Guid>>> GetCompanyPositionsForUserToSelect(string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -37,7 +37,7 @@ namespace WorkQR.Application
 
             IEnumerable<Position> positions = await _positionRepository.GetWithConditionAsync(x => x.CompanyId == user.Position.CompanyId);
 
-            return positions.Select(x => new SelectVM<Guid>()
+            return positions.Select(x => new SelectDTO<Guid>()
             {
                 Label = x.Name,
                 Value = x.Id

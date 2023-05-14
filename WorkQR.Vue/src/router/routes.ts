@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
         path: 'company-management',
         component: () => import('pages/ManageCompanyPage.vue'),
         meta: {
-          title: 'Zarządzanie firmą | WorkQR',
+          title: 'Panel moderacyjny | WorkQR',
           requiresModerator: true,
         },
       },

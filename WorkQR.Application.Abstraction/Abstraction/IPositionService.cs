@@ -3,6 +3,6 @@
     public interface IPositionService
     {
         Task<List<CompanyPositionDTO>> GetCompanyPositionsByUserName(string userName);
-        Task<List<SelectVM<Guid>>> GetCompanyPositionsForUserToSelect(string userName);
+        Task<List<SelectDTO<Guid>>> GetCompanyPositionsForUserToSelect(string userName);
     }
 }

@@ -109,18 +109,27 @@ namespace WorkQR.WebAPI
 
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
-            // Dependency injection
+            #region DependencyInjection
+
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<Seed>();
+
+            // Services
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IQRService, QRService>();
+            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            builder.Services.AddScoped<IPositionService, PositionService>();
             builder.Services.AddScoped<IWorktimeEventService, WorktimeEventService>();
+            builder.Services.AddScoped<IVacationService, VacationService>();
+
+            // Repositories
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IWorktimeEventRepository, WorktimeEventRepository>();
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
             builder.Services.AddScoped<IPositionRepository, PositionRepository>();
-            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
-            builder.Services.AddScoped<IPositionService, PositionService>();
+            builder.Services.AddScoped<IVacationRepository, VacationRepository>();
+
+            #endregion
 
             var app = builder.Build();
 

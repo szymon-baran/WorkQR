@@ -3,7 +3,7 @@
     <q-card dark bordered flat>
       <q-card-section>
         <div class="row">
-          <span class="text-h4">Zarządzenie firmą</span>
+          <span class="text-h4">Panel moderacyjny</span>
         </div>
       </q-card-section>
       <q-separator dark inset />
@@ -28,6 +28,7 @@
               label="Konta nieaktywowane"
             />
             <q-tab name="reports" icon="description" label="Raporty" />
+            <q-tab name="vacations" icon="beach_access" label="Urlopy" />
           </q-tabs>
         </div>
         <q-tab-panels
@@ -62,6 +63,10 @@
           <q-tab-panel name="reports">
             <div class="text-h4 q-mb-md">Raporty</div>
             <download-report />
+          </q-tab-panel>
+
+          <q-tab-panel name="vacations">
+            <div class="text-h4 q-mb-md">Urlopy</div>
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using WorkQR.Application;
+using WorkQR.Dictionaries;
 using WorkQR.EntityFramework;
 
 namespace WorkQR.WebAPI.Controllers
@@ -12,14 +13,12 @@ namespace WorkQR.WebAPI.Controllers
     public class CompanyEmployeeController : ControllerBase
     {
         private readonly IApplicationUserService _applicationUserService;
-        private readonly IWorktimeEventService _worktimeEventService;
-        private readonly IPositionService _positionService;
+        private readonly IVacationService _vacationService;
 
-        public CompanyEmployeeController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService, IPositionService positionService)
+        public CompanyEmployeeController(IApplicationUserService applicationUserService, IVacationService vacationService)
         {
             _applicationUserService = applicationUserService;
-            _worktimeEventService = worktimeEventService;
-            _positionService = positionService;
+            _vacationService = vacationService;
         }
 
         [HttpGet("getCompanyEmployees")]
@@ -38,13 +37,42 @@ namespace WorkQR.WebAPI.Controllers
         }
 
         [HttpGet("getVacationRequests")]
-        public async Task<ActionResult<List<EmployeeDTO>>> GetVacationRequests()
+        public async Task<ActionResult<List<VacationRequestDTO>>> GetVacationRequests()
         {
             string userName = User.Identity.Name;
             try
             {
-                var companyEmployees = await _applicationUserService.GetCompanyEmployees(userName);
-                return Ok(companyEmployees);
+                var vacationRequests = await _vacationService.GetVacationRequestsByUsername(userName);
+                return Ok(vacationRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getVacationTypes")]
+        public ActionResult<List<SelectDTO<VacationType>>> GetVacationTypes()
+        {
+            try
+            {
+                var vacationTypes = _vacationService.GetVacationTypes();
+                return Ok(vacationTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("addVacationRequest")]
+        public async Task<ActionResult> AddVacationRequest(VacationRequestVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                await _vacationService.AddVacationRequest(userName, model);
+                return Ok(true);
             }
             catch (Exception ex)
             {

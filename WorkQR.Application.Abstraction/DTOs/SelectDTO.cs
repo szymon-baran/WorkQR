@@ -1,6 +1,6 @@
 ﻿namespace WorkQR.Application
 {
-    public class SelectVM<T>
+    public class SelectDTO<T>
     {
         public string Label { get; set; } = "";
         public T? Value { get; set; }

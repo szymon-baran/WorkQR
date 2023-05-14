@@ -154,7 +154,7 @@ export default defineComponent({
       }
       if (authStore.isModerator) {
         const companyManagementLink = {
-          title: 'Zarządzanie firmą',
+          title: 'Panel moderacyjny',
           caption: 'Funkcjonalność moderacyjna',
           icon: 'apartment',
           routerTo: 'CompanyManagement',

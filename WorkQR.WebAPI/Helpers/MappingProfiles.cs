@@ -10,6 +10,8 @@ namespace WorkQR.WebAPI.Helpers
         {
             CreateMap<Position, CompanyPositionDTO>();
             CreateMap<ApplicationUser, RegistrationCodeUserDTO>();
+            CreateMap<Vacation, VacationRequestDTO>();
+            CreateMap<VacationRequestVM, Vacation>();
         }
     }
 }

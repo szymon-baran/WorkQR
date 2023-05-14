@@ -62,7 +62,7 @@ namespace WorkQR.WebAPI.Controllers
         }
 
         [HttpGet("getCompanyPositionsForUserToSelect")]
-        public async Task<ActionResult<List<SelectVM<Guid>>>> GetCompanyPositionsForUserToSelect()
+        public async Task<ActionResult<List<SelectDTO<Guid>>>> GetCompanyPositionsForUserToSelect()
         {
             string userName = User.Identity.Name;
             try
