@@ -75,12 +75,12 @@
         >
           <div class="" v-show="isHelpOpen">
             <p class="text-body-2 q-mb-none">
-              <span class="text-weight-bold">Krok 1.</span> Spróbuj odnowić kod
-              przyciskiem znajdującym się powyżej.
+              <span class="text-weight-bold">Krok 1.</span> Dostosuj jasność na
+              swoim urządzeniu, tak aby kod był wyraźnie widoczny na podglądzie.
             </p>
             <p class="text-body-2 q-mb-none">
-              <span class="text-weight-bold">Krok 2.</span> Jeżeli przeładowanie
-              nie pomogło, wprowadź na skanerze następujący kod: 000 000.
+              <span class="text-weight-bold">Krok 2.</span> Odnów kod
+              przyciskiem znajdującym się powyżej.
             </p>
             <p class="text-body-2">
               <span class="text-weight-bold">Krok 3.</span> Skontaktuj się z

@@ -56,7 +56,7 @@ import { api } from 'boot/axios';
 import { useQuasar } from 'quasar';
 
 export default defineComponent({
-  name: 'EmployeesGrid',
+  name: 'EmployeesList',
   setup() {
     const $q = useQuasar();
     const employees = ref([]);
@@ -116,7 +116,9 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      const employeesResponse = await api.get('company/getCompanyEmployees');
+      const employeesResponse = await api.get(
+        'companyEmployee/getCompanyEmployees'
+      );
       employees.value = employeesResponse.data;
     });
     return {

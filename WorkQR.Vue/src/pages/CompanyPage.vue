@@ -23,6 +23,11 @@
             />
             <q-tab name="analytics" icon="analytics" label="Twoje statystyki" />
             <q-tab
+              name="vacations"
+              icon="beach_access"
+              label="Wnioski urlopowe"
+            />
+            <q-tab
               name="insights"
               icon="insights"
               label="Statystyki na tle firmy"
@@ -63,6 +68,11 @@
             </p>
           </q-tab-panel>
 
+          <q-tab-panel name="vacations">
+            <div class="text-h4 q-mb-md">Wnioski urlopowe</div>
+            <vacation-requests-list />
+          </q-tab-panel>
+
           <q-tab-panel name="insights">
             <div class="text-h4 q-mb-md">Statystyki pracy 2</div>
             <p>
@@ -93,12 +103,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
-import EmployeesGrid from 'components/company/EmployeesGrid.vue';
+import EmployeesList from 'components/companyEmployee/EmployeesList.vue';
+import VacationRequestsList from 'components/companyEmployee/VacationRequestsList.vue';
 
 export default defineComponent({
   name: 'CompanyPage',
   components: {
-    EmployeesGrid,
+    EmployeesList,
+    VacationRequestsList,
   },
   setup() {
     const $q = useQuasar();

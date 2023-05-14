@@ -9,13 +9,13 @@ namespace WorkQR.WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class CompanyController : ControllerBase
+    public class CompanyEmployeeController : ControllerBase
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IWorktimeEventService _worktimeEventService;
         private readonly IPositionService _positionService;
 
-        public CompanyController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService, IPositionService positionService)
+        public CompanyEmployeeController(IApplicationUserService applicationUserService, IWorktimeEventService worktimeEventService, IPositionService positionService)
         {
             _applicationUserService = applicationUserService;
             _worktimeEventService = worktimeEventService;
@@ -24,6 +24,21 @@ namespace WorkQR.WebAPI.Controllers
 
         [HttpGet("getCompanyEmployees")]
         public async Task<ActionResult<List<EmployeeDTO>>> GetCompanyEmployees()
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var companyEmployees = await _applicationUserService.GetCompanyEmployees(userName);
+                return Ok(companyEmployees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getVacationRequests")]
+        public async Task<ActionResult<List<EmployeeDTO>>> GetVacationRequests()
         {
             string userName = User.Identity.Name;
             try

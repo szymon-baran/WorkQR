@@ -168,7 +168,7 @@ import EmployeeDetailsDialog from './EmployeeDetailsDialog.vue';
 import QrCodeDialog from 'components/qr/QrCodeDialog.vue';
 
 export default defineComponent({
-  name: 'EmployeesList',
+  name: 'EmployeesModeratorList',
   props: {
     isInactiveView: {
       type: Boolean,

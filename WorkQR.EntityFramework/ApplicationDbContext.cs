@@ -24,5 +24,6 @@ namespace WorkQR.EntityFramework
         public DbSet<Company> Companies { get; set; }
         public DbSet<WorktimeEvent> WorktimeEvents { get; set; }
         public DbSet<Position> Positions { get; set; }
+        public DbSet<Vacation> Vacations { get; set; }
     }
 }

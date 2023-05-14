@@ -11,7 +11,10 @@ namespace WorkQR.Domain
         public Guid? PositionId { get; set; }
         public Guid QrAuthorizationKey { get; set; } = Guid.NewGuid();
         public string RegistrationCode { get; set; } = "";
+        public DateTime? ContractSignDate { get; set; }
+        public int? VacationDaysPerYear { get; set; }
         public virtual Position? Position { get; set; }
         public virtual ICollection<WorktimeEvent> WorktimeEvents { get; set; }
+        public virtual ICollection<Vacation> Vacations { get; set; }
     }
 }
