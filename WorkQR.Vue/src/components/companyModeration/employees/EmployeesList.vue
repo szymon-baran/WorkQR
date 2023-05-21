@@ -104,11 +104,36 @@
           <q-td
             key="lastActivity"
             :props="props"
-            class="pointer"
             :style="getLastActivityStyle(props.row.lastActivity)"
           >
-            <q-icon name="schedule" size="1.3rem" />
+            <q-icon name="schedule" size="1.3rem" class="q-mr-xs" />
             {{ getLastActivityText(props.row.lastActivity) }}
+          </q-td>
+          <q-td key="isOnVacation" :props="props">
+            <span>
+              <q-icon
+                name="beach_access"
+                size="1.3rem"
+                :color="getVacationColor(props.row.isOnVacation)"
+                class="q-mr-xs"
+              ></q-icon>
+              {{ props.row.isOnVacation ? 'Tak' : 'Nie' }}
+              <q-tooltip anchor="bottom middle" self="top middle">{{
+                props.row.vacationDaysThisYearLeft
+              }}</q-tooltip>
+            </span>
+          </q-td>
+          <q-td key="vacationDaysPerYear" :props="props">
+            {{ props.row.vacationDaysPerYear }}
+            <q-popup-edit
+              title="Edytuj liczbę dni urlopu rocznie"
+              auto-save
+              v-model="props.row.vacationDaysPerYear"
+              v-slot="scope"
+              @change="onValueUpdate(props.row)"
+            >
+              <q-input v-model="scope.value" dense autofocus />
+            </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
@@ -221,6 +246,20 @@ export default defineComponent({
         label: 'Ostatnia aktywność',
         sortable: false,
       },
+      {
+        name: 'isOnVacation',
+        field: 'isOnVacation',
+        align: 'center',
+        label: 'Urlop',
+        sortable: false,
+      },
+      {
+        name: 'vacationDaysPerYear',
+        field: 'vacationDaysPerYear',
+        align: 'center',
+        label: 'Dni urlopu rocznie',
+        sortable: false,
+      },
       { name: 'actions', label: 'Akcje', field: '', align: 'right' },
     ];
     const showDetails = (row: any) => {
@@ -323,6 +362,9 @@ export default defineComponent({
       }
       return 'color: red;';
     };
+    const getVacationColor = (isOnVacation: boolean) => {
+      return isOnVacation ? 'amber' : 'blue-grey-6';
+    };
     onMounted(async () => {
       if (props.isInactiveView) {
         await setInactiveAccounts();
@@ -347,6 +389,7 @@ export default defineComponent({
       setInactiveAccounts,
       getLastActivityText,
       getLastActivityStyle,
+      getVacationColor,
     };
   },
 });

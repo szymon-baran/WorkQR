@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using WorkQR.Data.Abstraction;
+using WorkQR.Dictionaries;
 using WorkQR.Domain;
 
 namespace WorkQR.Application
@@ -43,7 +44,10 @@ namespace WorkQR.Application
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
                 LastActivity = x.WorktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault()?.EventTime ?? null,
-            }).OrderByDescending(x => x.LastActivity).ToList();
+                IsOnVacation = x.Vacations.Any(x => x.IsApproved && x.DateFrom <= DateTime.Now && x.DateTo >= DateTime.Now),
+                VacationDaysPerYear = x.VacationDaysPerYear ?? 0,
+                VacationDaysThisYearLeft = ((x.VacationDaysPerYear ?? 0 - (int)Math.Round(x.Vacations.Where(x => x.IsApproved && !x.IsRejected && x.DateTo.Year == DateTime.Today.Year && x.VacationType == VacationType.AnnualLeave).Sum(x => (x.DateTo - x.DateFrom).TotalDays))))
+            }).OrderByDescending(x => x.IsOnVacation).ThenByDescending(x => x.LastActivity).ToList();
         }
 
         public async Task<List<FullEmployeeDTO>> GetCompanyInactiveAccounts(string username)
@@ -135,6 +139,7 @@ namespace WorkQR.Application
                 user.FirstName = modelEmployee.FirstName;
                 user.LastName = modelEmployee.LastName;
                 user.PositionId = modelEmployee.PositionId;
+                user.VacationDaysPerYear = modelEmployee.VacationDaysPerYear;
             }
 
             await _applicationUserRepository.SaveChangesAsync();

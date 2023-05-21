@@ -10,5 +10,8 @@
         public string RegistrationCode { get; set; } = "";
         public Guid QrAuthorizationKey { get; set; }
         public DateTime? LastActivity { get; set; }
+        public bool IsOnVacation { get; set; }
+        public int VacationDaysPerYear { get; set; }
+        public int VacationDaysThisYearLeft { get; set; }
     }
 }

@@ -1,21 +1,7 @@
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md">
     <div class="row q-col-gutter-sm">
-      <div class="col-xs-12 col-sm-6">
-        <q-date
-          range
-          filled
-          v-model="datesRange"
-          label="Przedział czasu"
-          mask="YYYY-MM-DD"
-          style="width: 100%"
-          flat
-          bordered
-          lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Podaj przedział czasu']"
-        />
-      </div>
-      <div class="col-xs-12 col-sm-6">
+      <div class="col-12">
         <q-input
           filled
           v-model="addForm.Description"
@@ -25,6 +11,8 @@
             (val) => (val && val.length > 0) || 'Opisz swój wniosek urlopowy',
           ]"
         />
+      </div>
+      <div class="col-xs-12 col-sm-6">
         <q-select
           v-model="addForm.VacationType"
           label="Typ *"
@@ -41,6 +29,39 @@
             }}
           </template>
         </q-select>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <q-input
+          filled
+          :model-value="`${datesRange.from} - ${datesRange.to}`"
+          :rules="[vacationStore.validateVacationRequest(datesRange)]"
+          label="Przedział czasu"
+          lazy-rules
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date
+                  v-model="datesRange"
+                  range
+                  mask="YYYY-MM-DD"
+                  filled
+                  flat
+                  bordered
+                  :options="disableDatesBeforeToday"
+                >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Zamknij" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
     </div>
     <div class="row">
@@ -59,6 +80,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
+import { date } from 'quasar';
 import { useVacationStore } from 'stores/vacation-store';
 
 export default defineComponent({
@@ -74,11 +96,19 @@ export default defineComponent({
       ),
       to: new Date(now.setDate(now.getDate() + 7)).toLocaleDateString('en-CA'),
     });
+    const disableDatesBeforeToday = (d: string) => {
+      return d >= date.formatDate(Date.now(), 'YYYY/MM/DD');
+    };
     const onSubmit = async () => {
       addForm.value.DateFrom = datesRange.value.from;
       addForm.value.DateTo = datesRange.value.to;
-      let response = await vacationStore.addVacationRequest();
-      context.emit('success', response);
+      let validationAsync = await vacationStore.validateVacationRequest(
+        datesRange.value
+      );
+      if (validationAsync) {
+        let response = await vacationStore.addVacationRequest();
+        context.emit('success', response);
+      }
     };
     onMounted(async () => {
       const vacationTypesResponse = await vacationStore.getVacationTypes();
@@ -90,6 +120,7 @@ export default defineComponent({
       addForm,
       now,
       datesRange,
+      disableDatesBeforeToday,
       onSubmit,
     };
   },

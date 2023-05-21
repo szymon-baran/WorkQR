@@ -36,6 +36,8 @@ namespace WorkQR.WebAPI.Controllers
             }
         }
 
+        #region Vacation
+
         [HttpGet("getVacationRequests")]
         public async Task<ActionResult<List<VacationRequestDTO>>> GetVacationRequests()
         {
@@ -79,5 +81,22 @@ namespace WorkQR.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("validateVacationRequest")]
+        public async Task<ActionResult<bool>> ValidateVacationRequest([FromQuery] VacationValidationVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                bool result = await _vacationService.ValidateVacationRequest(userName, model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion Vacation
     }
 }

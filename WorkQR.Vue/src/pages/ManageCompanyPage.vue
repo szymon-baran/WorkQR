@@ -28,7 +28,11 @@
               label="Konta nieaktywowane"
             />
             <q-tab name="reports" icon="description" label="Raporty" />
-            <q-tab name="vacations" icon="beach_access" label="Urlopy" />
+            <q-tab
+              name="vacations"
+              icon="beach_access"
+              label="Wnioski urlopowe"
+            />
           </q-tabs>
         </div>
         <q-tab-panels
@@ -66,7 +70,8 @@
           </q-tab-panel>
 
           <q-tab-panel name="vacations">
-            <div class="text-h4 q-mb-md">Urlopy</div>
+            <div class="text-h4 q-mb-md">Wnioski urlopowe</div>
+            <vacation-requests-list />
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
@@ -81,6 +86,7 @@ import EmployeesList from 'components/companyModeration/employees/EmployeesList.
 import EmployeeAddDialog from 'components/companyModeration/employees/EmployeeAddDialog.vue';
 import PositionsList from 'components/companyModeration/positions/PositionsList.vue';
 import DownloadReport from 'components/companyModeration/reports/DownloadReport.vue';
+import VacationRequestsList from 'components/companyModeration/vacations/VacationRequestsList.vue';
 
 export default defineComponent({
   name: 'ManageCompanyPage',
@@ -88,6 +94,7 @@ export default defineComponent({
     EmployeesList,
     PositionsList,
     DownloadReport,
+    VacationRequestsList,
   },
   setup() {
     const $q = useQuasar();

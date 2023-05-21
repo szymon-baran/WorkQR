@@ -16,13 +16,6 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="isApproved" :props="props" auto-width>
-            <q-icon
-              :name="props.row.isApproved ? 'check' : 'close'"
-              :color="props.row.isApproved ? 'green' : 'red'"
-              size="1.2rem"
-            ></q-icon>
-          </q-td>
           <q-td key="dateFrom" :props="props">
             {{ new Date(props.row.dateFrom).toLocaleDateString() }}
           </q-td>
@@ -34,6 +27,36 @@
               vacationTypes.find((x) => x.value == props.row.vacationType)
                 ?.label ?? 'Brak'
             }}
+          </q-td>
+          <q-td key="isApproved" :props="props" auto-width>
+            <q-icon
+              :name="
+                props.row.isApproved || props.row.isRejected ? 'check' : 'close'
+              "
+              :color="
+                props.row.isApproved || props.row.isRejected ? 'green' : 'red'
+              "
+              size="1.2rem"
+            ></q-icon>
+          </q-td>
+          <q-td key="isRejected" :props="props" auto-width>
+            <q-icon
+              :name="
+                props.row.isApproved
+                  ? 'check'
+                  : props.row.isRejected
+                  ? 'close'
+                  : ''
+              "
+              :color="props.row.isApproved ? 'green' : 'red'"
+              size="1.2rem"
+              ><q-tooltip
+                anchor="bottom middle"
+                self="top middle"
+                v-if="props.row.rejectionDescription"
+                >{{ props.row.rejectionDescription }}</q-tooltip
+              ></q-icon
+            >
           </q-td>
           <!-- <q-td key="actions" :props="props">
             <q-btn
@@ -75,7 +98,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { useQuasar } from 'quasar';
 import { useVacationStore } from 'stores/vacation-store';
 
@@ -86,13 +109,6 @@ export default defineComponent({
     const $q = useQuasar();
     const vacationTypes = ref([]);
     const columns = [
-      {
-        name: 'isApproved',
-        field: 'isApproved',
-        align: 'center',
-        label: 'Zatwierdzone',
-        sortable: false,
-      },
       {
         name: 'dateFrom',
         field: 'dateFrom',
@@ -114,6 +130,20 @@ export default defineComponent({
         label: 'Typ',
         sortable: false,
       },
+      {
+        name: 'isApproved',
+        field: 'isApproved',
+        align: 'center',
+        label: 'Sprawdzony',
+        sortable: false,
+      },
+      {
+        name: 'isRejected',
+        field: 'isRejected',
+        align: 'center',
+        label: 'Zatwierdzony',
+        sortable: false,
+      },
     ];
 
     onMounted(async () => {
@@ -122,6 +152,11 @@ export default defineComponent({
       const vacationTypesResponse = await vacationStore.getVacationTypes();
       vacationTypes.value = vacationTypesResponse;
     });
+
+    onBeforeUnmount(() => {
+      vacationStore.$reset();
+    });
+
     return {
       vacationStore,
       vacationTypes,

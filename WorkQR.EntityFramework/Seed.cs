@@ -136,7 +136,8 @@ namespace WorkQR.EntityFramework
                     Email = "jkowalski@workqr.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "jkowalski",
-                    Position = _company1Position1
+                    Position = _company1Position1,
+                    VacationDaysPerYear = 26
                 };
                 await _userManager.CreateAsync(modUser, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Moderator));
@@ -152,7 +153,8 @@ namespace WorkQR.EntityFramework
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "sbaran",
                     Position = _company1Position4,
-                    QrAuthorizationKey = Guid.Empty
+                    QrAuthorizationKey = Guid.Empty,
+                    VacationDaysPerYear = 20
                 };
                 await _userManager.CreateAsync(_company1Position4User1, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));

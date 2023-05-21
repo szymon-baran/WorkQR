@@ -17,18 +17,21 @@ namespace WorkQR.WebAPI.Controllers
         private readonly IQRService _qrService;
         private readonly IPositionService _positionService;
         private readonly IAuthService _authService;
+        private readonly IVacationService _vacationService;
 
         public CompanyModerationController(IApplicationUserService applicationUserService,
                                            IWorktimeEventService worktimeEventService,
                                            IQRService qrService,
                                            IPositionService positionService,
-                                           IAuthService authService)
+                                           IAuthService authService,
+                                           IVacationService vacationService)
         {
             _applicationUserService = applicationUserService;
             _worktimeEventService = worktimeEventService;
             _qrService = qrService;
             _positionService = positionService;
             _authService = authService;
+            _vacationService = vacationService;
         }
 
         [HttpGet("getCompanyEmployees")]
@@ -148,6 +151,55 @@ namespace WorkQR.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        #region Vacation
+
+        [HttpGet("getVacationRequests")]
+        public async Task<ActionResult<List<VacationRequestModeratorDTO>>> GetVacationRequests()
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var vacationRequests = await _vacationService.GetModeratorVacationRequestsByUsername(userName);
+                return Ok(vacationRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("acceptVacationRequest")]
+        public async Task<ActionResult> AcceptVacationRequest(Guid id)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                await _vacationService.AcceptVacationRequest(userName, id);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("rejectVacationRequest")]
+        public async Task<ActionResult> RejectVacationRequest(ModeratorVacationRejectionVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                await _vacationService.RejectVacationRequest(userName, model);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion Vacation
 
     }
 }
