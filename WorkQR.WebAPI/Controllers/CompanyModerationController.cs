@@ -49,6 +49,21 @@ namespace WorkQR.WebAPI.Controllers
             }
         }
 
+        [HttpGet("getCompanyEmployeesToSelect")]
+        public async Task<ActionResult<List<SelectDTO<string>>>> GetCompanyEmployeesToSelect()
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var companyEmployees = await _applicationUserService.GetCompanyEmployeesToSelect(userName);
+                return Ok(companyEmployees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("getCompanyInactiveAccounts")]
         public async Task<ActionResult<List<FullEmployeeDTO>>> GetCompanyInactiveAccounts()
         {
@@ -130,6 +145,21 @@ namespace WorkQR.WebAPI.Controllers
             {
                 var bytes = await _worktimeEventService.GetCompanyRaportForDate(model, userName);
                 return File(bytes, "application/pdf", $"{DateTime.Today.ToShortDateString()}-raport.pdf");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getEmployeesPresenceData")]
+        public async Task<ActionResult<EmployeePresenceDTO>> GetEmployeesPresenceData([FromQuery]RaportDocumentVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var presenceData = await _worktimeEventService.GetEmployeesPresenceData(model, userName);
+                return Ok(presenceData);
             }
             catch (Exception ex)
             {

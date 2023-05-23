@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
+using System.Linq;
 using WorkQR.Data.Abstraction;
 using WorkQR.Dictionaries;
 using WorkQR.Domain;
@@ -104,7 +105,7 @@ namespace WorkQR.Application
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
 
-            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => x.Position.CompanyId == user.Position.CompanyId && x.Position.UserRoleName != "QRScanner");
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => model.Employees.Contains(x.Id));
             
             List<RaportEmployeeDTO> employeesDTO = new();
             foreach (var employee in employees.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
@@ -129,6 +130,28 @@ namespace WorkQR.Application
 
             byte[] bytes = raportDocument.GeneratePdf();
             return bytes;
+        }
+
+        public async Task<List<EmployeePresenceDTO>> GetEmployeesPresenceData(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => model.Employees.Contains(x.Id));
+            var daysSpan = Enumerable.Range(0, 1 + model.DateTo.Subtract(model.DateFrom).Days).Select(offset => model.DateFrom.AddDays(offset)).Count();
+
+            return employees.Select(x => new EmployeePresenceDTO()
+            {
+                Id = x.Id,
+                FullName = $"{x.LastName} {x.FirstName}",
+                DaysPresent = x.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo)
+                                              .DistinctBy(x => x.EventTime.Date).Count(),
+                DaysOnVacation = (int)Math.Round(x.Vacations.Where(x => x.DateFrom <= model.DateTo && model.DateFrom <= x.DateTo).Select(x => (x.DateTo - x.DateFrom).TotalDays).Sum()),
+                AllDaysCount = daysSpan,
+                //DaysAbsent = daysSpan.Except(x.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo)
+                //                              .DistinctBy(x => x.EventTime.Date).Select(x => x.EventTime.Date)).Count(),
+            }).ToList();
         }
     }
 }

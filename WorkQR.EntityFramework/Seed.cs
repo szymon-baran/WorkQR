@@ -31,6 +31,7 @@ namespace WorkQR.EntityFramework
             await AddPositions();
             await AddUsers();
             await AddWorktimeEvents();
+            await AddVacations();
         }
 
         private async Task AddCompanies()
@@ -212,6 +213,26 @@ namespace WorkQR.EntityFramework
             //    EventTime = DateTime.Now,
             //    Description = "Koniec pracy"
             //});
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task AddVacations()
+        {
+            if (_context.Vacations.Any())
+            {
+                return;
+            }
+            await _context.Vacations.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                IsApproved = true,
+                IsRejected = false,
+                VacationType = VacationType.AnnualLeave,
+                DateFrom = DateTime.Today.AddDays(-14),
+                DateTo = DateTime.Today.AddDays(-7),
+            });
+
 
             await _context.SaveChangesAsync();
         }

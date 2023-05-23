@@ -27,7 +27,11 @@
               icon="warning"
               label="Konta nieaktywowane"
             />
-            <q-tab name="reports" icon="description" label="Raporty" />
+            <q-tab
+              name="reports"
+              icon="analytics"
+              label="Raporty i statystyki"
+            />
             <q-tab
               name="vacations"
               icon="beach_access"
@@ -65,7 +69,7 @@
           </q-tab-panel>
 
           <q-tab-panel name="reports">
-            <div class="text-h4 q-mb-md">Raporty</div>
+            <div class="text-h4 q-mb-md">Raporty i statystyki</div>
             <download-report />
           </q-tab-panel>
 

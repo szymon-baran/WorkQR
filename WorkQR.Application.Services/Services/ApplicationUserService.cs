@@ -50,6 +50,22 @@ namespace WorkQR.Application
             }).OrderByDescending(x => x.IsOnVacation).ThenByDescending(x => x.LastActivity).ToList();
         }
 
+        public async Task<List<SelectDTO<string>>> GetCompanyEmployeesToSelect(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null || user.Position == null)
+                throw new Exception("Nie znaleziono użytkownika!");
+
+            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null && x.Position.CompanyId == user.Position.CompanyId && x.Position.UserRoleName != "QRScanner");
+
+            return applicationUsers.Select(x => new SelectDTO<string>()
+            {
+                Value = x.Id,
+                Label = $"{x.LastName} {x.FirstName}"
+            }).OrderBy(x => x.Label).ToList();
+        }
+
         public async Task<List<FullEmployeeDTO>> GetCompanyInactiveAccounts(string username)
         {
             var user = await _userManager.FindByNameAsync(username);

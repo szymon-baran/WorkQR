@@ -8,5 +8,6 @@ namespace WorkQR.Application
         Task<List<WorktimeEventDTO>> GetEmployeeWorkHours(GetEventsVM model);
         Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDatesForCalendar(DaysSpanVM model, string userName);
         Task<byte[]> GetCompanyRaportForDate(RaportDocumentVM model, string userName);
+        Task<List<EmployeePresenceDTO>> GetEmployeesPresenceData(RaportDocumentVM model, string userName);
     }
 }
