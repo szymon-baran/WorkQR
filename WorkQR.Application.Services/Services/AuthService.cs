@@ -15,9 +15,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 using WorkQR.Application;
-using WorkQR.Data.Abstraction;
-using WorkQR.Domain;
-using WorkQR.EntityFramework;
+using WorkQR.Infrastructure.Abstraction;
+using WorkQR.Domain.Models;
+using WorkQR.Infrastructure.EntityFramework;
 
 namespace WorkQR.Application
 {

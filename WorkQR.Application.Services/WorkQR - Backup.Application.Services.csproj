@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="QuestPDF" Version="2022.12.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj" />
+    <ProjectReference Include="..\WorkQR.InfrastructureInfrastructure.Abstraction\WorkQR.InfrastructureInfrastructure.Abstraction.csproj" />
+    <ProjectReference Include="..\WorkQR.Domain.Models\WorkQR.Domain.Models.csproj" />
+    <ProjectReference Include="..\WorkQR.EntityFramework\WorkQR.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>

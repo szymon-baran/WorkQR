@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using System.Linq;
-using WorkQR.Data.Abstraction;
-using WorkQR.Dictionaries;
-using WorkQR.Domain;
+using WorkQR.Infrastructure.Abstraction;
+using WorkQR.Domain.Dictionaries;
+using WorkQR.Domain.Models;
 
 namespace WorkQR.Application
 {

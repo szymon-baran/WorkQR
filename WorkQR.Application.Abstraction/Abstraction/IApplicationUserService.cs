@@ -1,4 +1,4 @@
-﻿using WorkQR.Domain;
+﻿using WorkQR.Domain.Models;
 
 namespace WorkQR.Application
 {

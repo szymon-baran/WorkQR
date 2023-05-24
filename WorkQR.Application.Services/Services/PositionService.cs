@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using WorkQR.Data.Abstraction;
-using WorkQR.Domain;
+using WorkQR.Infrastructure.Abstraction;
+using WorkQR.Domain.Models;
 
 namespace WorkQR.Application
 {

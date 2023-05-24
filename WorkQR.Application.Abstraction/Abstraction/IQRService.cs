@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WorkQR.Dictionaries;
+using WorkQR.Domain.Dictionaries;
 
 namespace WorkQR.Application
 {

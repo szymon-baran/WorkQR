@@ -15,9 +15,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WorkQR.Application.Abstraction\WorkQR.Application.Abstraction.csproj" />
-    <ProjectReference Include="..\WorkQR.Data.Abstraction\WorkQR.Data.Abstraction.csproj" />
-    <ProjectReference Include="..\WorkQR.Domain\WorkQR.Domain.csproj" />
-    <ProjectReference Include="..\WorkQR.EntityFramework\WorkQR.EntityFramework.csproj" />
+    <ProjectReference Include="..\WorkQR.Infrastructure.Abstraction\WorkQR.Infrastructure.Abstraction.csproj" />
+    <ProjectReference Include="..\WorkQR.Domain.Models\WorkQR.Domain.Models.csproj" />
+    <ProjectReference Include="..\WorkQR.Infrastructure.EntityFramework\WorkQR.Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
 </Project>
