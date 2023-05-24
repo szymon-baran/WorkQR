@@ -13,7 +13,7 @@
           </div>
           <div class="row q-col-gutter-md items-stretch q-px-sm">
             <div
-              class="col-6 pointer"
+              class="col-lg-6 col-xs-12 pointer"
               @mouseover="() => (isLeftHovered = true)"
               @mouseleave="() => (isLeftHovered = false)"
               @click="isRegisterCompany = true"
@@ -33,7 +33,7 @@
               </q-img>
             </div>
             <div
-              class="col-6 pointer"
+              class="col-lg-6 col-xs-12 pointer"
               @mouseover="() => (isRightHovered = true)"
               @mouseleave="() => (isRightHovered = false)"
               @click="isActivateEmployee = true"

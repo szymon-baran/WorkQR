@@ -90,6 +90,12 @@
       </div>
     </div>
 
+    <div class="row q-col-gutter-xs q-mt-sm">
+      <div class="col">
+        <Checkbox v-model="captchaResponse" theme="dark" />
+      </div>
+    </div>
+
     <div class="row q-col-gutter-xs q-mt-md">
       <div class="col">
         <q-btn label="Zarejestruj" type="submit" color="primary" />
@@ -103,9 +109,13 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { Notify } from 'quasar';
 import { useUserStore } from 'stores/user-store';
+import { Checkbox } from 'vue-recaptcha/head';
 
 export default defineComponent({
   name: 'RegisterCompanyForm',
+  components: {
+    Checkbox,
+  },
   setup(props, context) {
     const q = useQuasar();
     const userStore = useUserStore();
@@ -115,11 +125,18 @@ export default defineComponent({
     const isPwd = ref(true);
     const repeatPassword = ref('');
     const { registerCompanyForm } = storeToRefs(userStore);
+    const captchaResponse = ref(false);
     const onSubmit = async () => {
       if (isLicenceAccepted.value !== true) {
         Notify.create({
           type: 'negative',
           message: 'Musisz zaakceptować regulamin!',
+          icon: 'error',
+        });
+      } else if (captchaResponse.value === false) {
+        Notify.create({
+          type: 'negative',
+          message: 'Musisz potwierdzić, że jesteś człowiekiem!',
           icon: 'error',
         });
       } else {
@@ -134,6 +151,7 @@ export default defineComponent({
       isPwd,
       repeatPassword,
       registerCompanyForm,
+      captchaResponse,
       onSubmit,
     };
   },

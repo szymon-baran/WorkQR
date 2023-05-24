@@ -6,11 +6,8 @@
   </router-view>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import 'cal-sans';
-
-export default defineComponent({
-  name: 'App',
-});
+import { useRecaptchaProvider } from 'vue-recaptcha/head';
+useRecaptchaProvider();
 </script>
