@@ -28,6 +28,9 @@
                 ?.label ?? 'Brak'
             }}
           </q-td>
+          <q-td key="requestDescription" :props="props">
+            {{ props.row.requestDescription }}
+          </q-td>
           <q-td key="isApproved" :props="props" auto-width>
             <q-icon
               :name="
@@ -131,6 +134,13 @@ export default defineComponent({
         sortable: false,
       },
       {
+        name: 'requestDescription',
+        field: 'requestDescription',
+        align: 'center',
+        label: 'Opis',
+        sortable: false,
+      },
+      {
         name: 'isApproved',
         field: 'isApproved',
         align: 'center',
@@ -147,8 +157,6 @@ export default defineComponent({
     ];
 
     onMounted(async () => {
-      await vacationStore.getVacationRequests();
-
       const vacationTypesResponse = await vacationStore.getVacationTypes();
       vacationTypes.value = vacationTypesResponse;
     });

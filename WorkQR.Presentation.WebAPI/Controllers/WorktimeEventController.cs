@@ -58,5 +58,24 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             }
         }
 
+        [HttpPost("updateTodayEventDescription")]
+        public async Task<ActionResult<WorktimeEventsTimestampsDTO>> UpdateTodayEventDescription(WorktimeEventTodayEditVM model)
+        {
+            try
+            {
+                string userName = User.Identity.Name;
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+                await _worktimeEventService.UpdateTodayEventDescription(userName, model);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
     }
 }

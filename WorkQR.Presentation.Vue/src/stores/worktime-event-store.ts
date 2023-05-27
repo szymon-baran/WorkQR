@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia';
-import { GetEventsVM } from '../components/models';
 import { api } from 'boot/axios';
+import { useEmployeeStore } from './employee-store';
 
 export const useWorktimeEventStore = defineStore('worktime-event', {
   state: () => ({
     worktimeEvents: [],
-    settings: new GetEventsVM(),
   }),
   getters: {
     getWorktimeEvents: (state) => state.worktimeEvents,
@@ -17,11 +16,19 @@ export const useWorktimeEventStore = defineStore('worktime-event', {
       );
       this.worktimeEvents = response.data;
     },
+    async updateTodayEventDescription(description: string, id: string) {
+      const object = {
+        Id: id,
+        Description: description,
+      };
+      await api.post('worktimeEvent/updateTodayEventDescription', object);
+    },
     async setCompanyEmployeeWorktimeEvents() {
+      const employeeStore = useEmployeeStore();
       const response = await api.get(
         'companyModeration/getEmployeeWorktimeEvents',
         {
-          params: this.settings,
+          params: employeeStore.userDetailsVM,
         }
       );
       this.worktimeEvents = response.data;

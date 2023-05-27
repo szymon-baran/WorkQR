@@ -17,6 +17,13 @@
         />
       </div>
     </div>
+
+    <div class="row q-col-gutter-xs q-mt-sm">
+      <div class="col">
+        <Checkbox v-model="captchaResponse" theme="dark" />
+      </div>
+    </div>
+
     <div class="row q-col-gutter-xs q-mt-md">
       <div class="col">
         <q-btn label="Dalej" type="submit" color="primary" />
@@ -124,9 +131,13 @@ import { storeToRefs } from 'pinia';
 import { useQuasar, Notify } from 'quasar';
 import { useRoute } from 'vue-router';
 import { useUserStore } from 'stores/user-store';
+import { Checkbox } from 'vue-recaptcha/head';
 
 export default defineComponent({
   name: 'ActivateEmployeeForm',
+  components: {
+    Checkbox,
+  },
   setup(props, context) {
     const q = useQuasar();
     const userStore = useUserStore();
@@ -138,6 +149,7 @@ export default defineComponent({
     const repeatPassword = ref('');
     const regCode = ref('');
     const isRegCodeValidated = ref(false);
+    const captchaResponse = ref(false);
     const { activateEmployeeForm } = storeToRefs(userStore);
     const onSubmit = async () => {
       if (isLicenceAccepted.value !== true) {
@@ -157,14 +169,22 @@ export default defineComponent({
       }
     };
     const onRegCodeSubmit = async () => {
-      let response = await userStore.getUserDataByRegistrationCode(
-        regCode.value
-      );
-      isRegCodeValidated.value = true;
-      activateEmployeeForm.value.Username = response.username;
-      activateEmployeeForm.value.FirstName = response.firstName;
-      activateEmployeeForm.value.LastName = response.lastName;
-      activateEmployeeForm.value.RegistrationCode = regCode.value;
+      if (captchaResponse.value === false) {
+        Notify.create({
+          type: 'negative',
+          message: 'Musisz potwierdzić, że jesteś człowiekiem!',
+          icon: 'error',
+        });
+      } else {
+        let response = await userStore.getUserDataByRegistrationCode(
+          regCode.value
+        );
+        isRegCodeValidated.value = true;
+        activateEmployeeForm.value.Username = response.username;
+        activateEmployeeForm.value.FirstName = response.firstName;
+        activateEmployeeForm.value.LastName = response.lastName;
+        activateEmployeeForm.value.RegistrationCode = regCode.value;
+      }
     };
     onMounted(() => {
       if (
@@ -183,6 +203,7 @@ export default defineComponent({
       activateEmployeeForm,
       regCode,
       isRegCodeValidated,
+      captchaResponse,
       onSubmit,
       onRegCodeSubmit,
     };

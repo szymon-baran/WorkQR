@@ -78,7 +78,7 @@ namespace WorkQR.Application
 
         #region Moderation
 
-        public async Task<List<VacationRequestModeratorDTO>> GetModeratorVacationRequestsByUsername(string userName)
+        public async Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests(string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -87,7 +87,7 @@ namespace WorkQR.Application
             IEnumerable<Vacation> vacationRequests = await _vacationRepository.GetWithConditionAsync(x => x.ApplicationUser.Position.CompanyId == user.Position.CompanyId
                                                                                                           && !x.IsApproved
                                                                                                           && !x.IsRejected);
-            return vacationRequests.Select(x => new VacationRequestModeratorDTO()
+            return vacationRequests.Select(x => new ModeratorVacationRequestDTO()
             {
                 Id = x.Id,
                 RequestDescription = x.RequestDescription,
@@ -99,6 +99,17 @@ namespace WorkQR.Application
                 LastName = x.ApplicationUser.LastName,
                 Username = x.ApplicationUser.UserName ?? "",
             }).ToList();
+        }
+
+        public async Task<List<ModeratorEmployeeVacationDetailsDTO>> GetModeratorVacationRequestsByUser(GetUserDetailsVM model)
+        {
+            IEnumerable<Vacation> vacationRequests = await _vacationRepository.GetWithConditionAsync(x => x.ApplicationUserId == model.UserId 
+                                                                            && x.DateFrom.Date <= model.DateTo.Date
+                                                                            && model.DateFrom.Date <= x.DateTo.Date
+                                                                            && (string.IsNullOrEmpty(model.Description)
+                                                                                || x.RejectionDescription.Contains(model.Description) 
+                                                                                || x.RequestDescription.Contains(model.Description)));
+            return _mapper.Map<IEnumerable<Vacation>, List<ModeratorEmployeeVacationDetailsDTO>>(vacationRequests);
         }
 
         public async Task AcceptVacationRequest(string userName, Guid id)

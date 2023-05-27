@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/axios';
+import { useEmployeeStore } from './employee-store';
 
 const addFormDefaultState = {
   Description: null,
@@ -20,6 +21,16 @@ export const useVacationStore = defineStore('vacation', {
     },
     async getModeratorVacationRequests() {
       const response = await api.get('companyModeration/getVacationRequests');
+      this.vacationRequests = response.data;
+    },
+    async getModeratorCompanyEmployeeVacationRequests() {
+      const employeeStore = useEmployeeStore();
+      const response = await api.get(
+        'companyModeration/getCompanyEmployeeVacationRequests',
+        {
+          params: employeeStore.userDetailsVM,
+        }
+      );
       this.vacationRequests = response.data;
     },
     async getVacationTypes() {

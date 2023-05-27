@@ -22,7 +22,7 @@
             }}
           </div>
           <div class="text-body2 text-dark">{{ companyUserPositionName }}</div>
-          <div class="text-body2 text-dark">Januszex Industries</div>
+          <div class="text-body2 text-dark">Firma test</div>
         </div>
         <div style="border-left: 1px solid black"></div>
         <div class="col q-px-sm q-pt-sm self-center text-right">

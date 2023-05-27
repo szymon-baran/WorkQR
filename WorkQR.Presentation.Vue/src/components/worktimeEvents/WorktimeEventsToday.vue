@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-5 q-mt-xl text-center text-h5 q-pa-lg">
+    <div class="col-lg-5 col-xs-12 q-mt-xl text-center text-h5 q-pa-lg">
       <span v-if="worktimeEventStore.getWorktimeEvents.length > 0">
         <div>
           Aktualnie
@@ -21,7 +21,7 @@
         </span>
       </span>
     </div>
-    <div class="col-7">
+    <div class="col-lg-7 col-xs-12">
       <worktime-events-list :title="'Dzisiejsze wydarzenia'" />
     </div>
   </div>
@@ -53,7 +53,9 @@ export default defineComponent({
         let difference =
           Date.now() -
           new Date(
-            worktimeEventStore.getWorktimeEvents[0]['eventTime']
+            worktimeEventStore.getWorktimeEvents[
+              worktimeEventStore.getWorktimeEvents.length - 1
+            ]['eventTime']
           ).getTime();
 
         seconds.value = Math.floor(difference / 1000);

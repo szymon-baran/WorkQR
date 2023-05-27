@@ -171,46 +171,194 @@ namespace WorkQR.Infrastructure.EntityFramework
             {
                 return;
             }
+ /*           await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartWork,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(10).AddMinutes(3),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(13).AddMinutes(30),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(13).AddMinutes(50),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(16).AddMinutes(6),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(16).AddMinutes(18),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndWork,
+                EventTime = DateTime.Today.AddDays(-4).AddHours(17).AddMinutes(50),
+            });              
+            
             await _context.WorktimeEvents.AddAsync(new()
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.StartWork,
-                EventTime = DateTime.Now.AddHours(-8),
+                EventTime = DateTime.Today.AddDays(-3).AddHours(8).AddMinutes(18),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-3).AddHours(10).AddMinutes(52),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-3).AddHours(11).AddMinutes(10),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-3).AddHours(14).AddMinutes(32),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-3).AddHours(14).AddMinutes(47),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndWork,
+                EventTime = DateTime.Today.AddDays(-3).AddHours(17),
+            });             
+            
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartWork,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(9).AddMinutes(10),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(12),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(12).AddMinutes(13),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(13).AddMinutes(1),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(13).AddMinutes(15),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndWork,
+                EventTime = DateTime.Today.AddDays(-2).AddHours(15),
+            });            
+            
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartWork,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(8).AddMinutes(45),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(11),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(11).AddMinutes(20),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartBreak,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(13),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndBreak,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(13).AddMinutes(15),
+            });
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.EndWork,
+                EventTime = DateTime.Today.AddDays(-1).AddHours(16).AddMinutes(30),
+            });            
+            */
+            await _context.WorktimeEvents.AddAsync(new()
+            {
+                ApplicationUser = _company1Position4User1,
+                EventType = EventType.StartWork,
+                EventTime = DateTime.Today.AddHours(14),
                 Description = "Przegląd maili, spotkanie z zespołem, praca z projektem"
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.StartBreak,
-                EventTime = DateTime.Now.AddHours(-6),
+                EventTime = DateTime.Today.AddHours(16),
                 Description = "Pierwsza przerwa"
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.EndBreak,
-                EventTime = DateTime.Now.AddHours(-5).AddMinutes(-45),
+                EventTime = DateTime.Today.AddHours(16).AddMinutes(15),
                 Description = "Powrót do prac nad projektem"
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.StartBreak,
-                EventTime = DateTime.Now.AddHours(-2),
+                EventTime = DateTime.Today.AddHours(19),
                 Description = "Druga przerwa"
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.EndBreak,
-                EventTime = DateTime.Now.AddHours(-1).AddMinutes(-40),
+                EventTime = DateTime.Today.AddHours(19).AddMinutes(20),
                 Description = "Spotkanie z klientem"
             });
             //await _context.WorktimeEvents.AddAsync(new()
             //{
             //    ApplicationUser = _company1Position4User1,
             //    EventType = EventType.EndWork,
-            //    EventTime = DateTime.Now,
+            //    EventTime = DateTime.Today.AddHours(16),
             //    Description = "Koniec pracy"
             //});
 

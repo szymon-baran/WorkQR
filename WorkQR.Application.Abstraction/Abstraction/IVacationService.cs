@@ -8,7 +8,8 @@ namespace WorkQR.Application
         List<SelectDTO<VacationType>> GetVacationTypes();
         Task AddVacationRequest(string userName, VacationRequestVM model);
         Task<bool> ValidateVacationRequest(string userName, VacationValidationVM model);
-        Task<List<VacationRequestModeratorDTO>> GetModeratorVacationRequestsByUsername(string userName);
+        Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests(string userName);
+        Task<List<ModeratorEmployeeVacationDetailsDTO>> GetModeratorVacationRequestsByUser(GetUserDetailsVM model);
         Task AcceptVacationRequest(string userName, Guid id);
         Task RejectVacationRequest(string userName, ModeratorVacationRejectionVM model);
     }

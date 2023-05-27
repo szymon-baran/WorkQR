@@ -68,10 +68,12 @@
       </div>
     </q-form>
     <div class="row">
-      <div class="col">
+      <div class="col-xs-12 col-md-6">
         <presence-chart ref="presenceChart" />
       </div>
-      <div class="col">a</div>
+      <div class="col-xs-12 col-md-6">
+        <worked-hours-chart ref="workedHoursChart" />
+      </div>
     </div>
   </div>
 </template>
@@ -81,11 +83,13 @@ import { useReportStore } from 'stores/report-store';
 import { storeToRefs } from 'pinia';
 import { Notify, date } from 'quasar';
 import PresenceChart from './PresenceChart.vue';
+import WorkedHoursChart from './WorkedHoursChart.vue';
 
 const reportStore = useReportStore();
 const { reportForm } = storeToRefs(reportStore);
 const employees = ref([]);
 const presenceChart = ref(null);
+const workedHoursChart = ref(null);
 
 const onSubmit = async () => {
   if (
@@ -113,6 +117,7 @@ const onSubmit = async () => {
 
 const onChange = () => {
   presenceChart.value.loadEmployeesPresenceData();
+  workedHoursChart.value.loadEmployeesWorkedHoursData();
 };
 
 const disableDatesAfterToday = (d: string) => {

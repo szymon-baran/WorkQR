@@ -154,7 +154,6 @@ export default defineComponent({
     };
 
     const rejectRequest = async (event: string, id: string) => {
-      debugger;
       await vacationStore.rejectRequest(id, event);
       Notify.create({
         type: 'positive',

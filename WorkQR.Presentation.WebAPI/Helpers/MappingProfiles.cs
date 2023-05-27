@@ -12,6 +12,7 @@ namespace WorkQR.Presentation.WebAPI.Helpers
             CreateMap<ApplicationUser, RegistrationCodeUserDTO>();
             CreateMap<Vacation, VacationRequestDTO>();
             CreateMap<VacationRequestVM, Vacation>();
+            CreateMap<Vacation, ModeratorEmployeeVacationDetailsDTO>();
         }
     }
 }

@@ -4,7 +4,6 @@
       grid
       flat
       bordered
-      :card-container-class="cardContainerClass"
       :rows="employees"
       :columns="columns"
       row-key="name"
@@ -106,11 +105,6 @@ export default defineComponent({
       page: 1,
       rowsPerPage: getItemsPerPage(),
     });
-    const cardContainerClass = computed(() => {
-      return $q.screen.gt.xs
-        ? 'grid-masonry grid-masonry--' + ($q.screen.gt.sm ? '3' : '2')
-        : null;
-    });
     const rowsPerPageOptions = computed(() => {
       return $q.screen.gt.md ? [4, 8, 12] : [3, 6, 9];
     });
@@ -125,7 +119,6 @@ export default defineComponent({
       employees,
       filter,
       columns,
-      cardContainerClass,
       pagination,
       rowsPerPageOptions,
       getItemsPerPage,

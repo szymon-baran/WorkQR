@@ -18,10 +18,12 @@
               @mouseleave="() => (isLeftHovered = false)"
               @click="isRegisterCompany = true"
             >
-              <q-img src="~assets/employer.jpeg" height="100%">
-                <div
-                  class="absolute-bottom text-subtitle1 text-center item-card"
-                >
+              <q-img
+                src="~assets/employer.jpeg"
+                height="100%"
+                class="item-card"
+              >
+                <div class="absolute-bottom text-subtitle1 text-center">
                   <p class="text-subtitle1 q-mt-md">Firma</p>
                   <div class="text-body2" v-if="isLeftHovered">
                     <p class="q-my-none">
@@ -38,10 +40,8 @@
               @mouseleave="() => (isRightHovered = false)"
               @click="isActivateEmployee = true"
             >
-              <q-img src="~assets/worker.jpeg" height="100%">
-                <div
-                  class="absolute-bottom text-subtitle1 text-center item-card"
-                >
+              <q-img src="~assets/worker.jpeg" height="100%" class="item-card">
+                <div class="absolute-bottom text-subtitle1 text-center">
                   <p class="text-subtitle1 q-mt-md">Pracownik</p>
                   <div class="text-body2" v-if="isRightHovered">
                     <p class="q-my-none">
@@ -132,5 +132,8 @@ export default defineComponent({
 .card {
   width: 900px;
   max-width: 95vw;
+}
+.item-card {
+  border-radius: 10px;
 }
 </style>

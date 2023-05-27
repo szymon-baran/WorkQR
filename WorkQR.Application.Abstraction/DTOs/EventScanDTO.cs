@@ -8,5 +8,7 @@ namespace WorkQR.Application
         public string FullName { get; set; } = "";
         public EventType EventType { get; set; }
         public double BreakMinutesLeftToday { get; set; }
+        public bool IsOnVacation { get; set; }
+        public DateTime? VacationTo { get; set; }
     }
 }

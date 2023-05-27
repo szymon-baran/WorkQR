@@ -11,7 +11,7 @@ const certificateArg = process.argv
   .filter(Boolean)[0];
 const certificateName = certificateArg
   ? certificateArg.groups.value
-  : 'WorkQR.Presentation.Vue';
+  : 'work-qr';
 
 if (!certificateName) {
   console.error(
@@ -25,10 +25,7 @@ const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
 module.exports = {
   devServer: {
-    https: {
-      key: fs.readFileSync(keyFilePath),
-      cert: fs.readFileSync(certFilePath),
-    },
+    https: false,
     proxy: {
       '^/weatherforecast': {
         target: 'https://localhost:5001/',

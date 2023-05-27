@@ -42,18 +42,19 @@
         <q-tab-panels
           v-model="tab"
           animated
-          swipeable
           transition-prev="jump-up"
           transition-next="jump-up"
         >
           <q-tab-panel name="employees">
             <div class="row q-mb-md">
-              <div class="col text-h4">Pracownicy</div>
-              <q-btn
-                color="primary"
-                label="Dodaj nowego pracownika"
-                @click="showAddEmployeeDialog"
-              />
+              <div class="col-xs-12 col-lg-9 text-h4">Pracownicy</div>
+              <div class="col-xs-12 col-lg-3 text-right">
+                <q-btn
+                  color="primary"
+                  label="Dodaj nowego pracownika"
+                  @click="showAddEmployeeDialog"
+                />
+              </div>
             </div>
             <employees-list :is-inactive-view="false" />
           </q-tab-panel>

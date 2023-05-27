@@ -22,11 +22,7 @@
               label="Lista współpracowników"
             />
             <q-tab name="analytics" icon="analytics" label="Twoje statystyki" />
-            <q-tab
-              name="vacations"
-              icon="beach_access"
-              label="Wnioski urlopowe"
-            />
+            <q-tab name="vacations" icon="beach_access" label="Urlopy" />
             <q-tab
               name="insights"
               icon="insights"
@@ -70,12 +66,14 @@
 
           <q-tab-panel name="vacations">
             <div class="row q-mb-md">
-              <div class="col text-h4">Wnioski urlopowe</div>
-              <q-btn
-                color="primary"
-                label="Nowy wniosek urlopowy"
-                @click="showAddVacationRequestDialog"
-              />
+              <div class="col-xs-12 col-lg-9 text-h4">Urlopy</div>
+              <div class="col-xs-12 col-lg-3 text-right">
+                <q-btn
+                  color="primary"
+                  label="Nowy wniosek urlopowy"
+                  @click="showAddVacationRequestDialog"
+                />
+              </div>
             </div>
             <vacation-requests-list />
           </q-tab-panel>
@@ -108,11 +106,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import EmployeesList from 'components/companyEmployee/EmployeesList.vue';
 import VacationRequestsList from 'components/companyEmployee/vacationRequests/VacationRequestsList.vue';
 import VacationRequestAddDialog from 'components/companyEmployee/vacationRequests/VacationRequestAddDialog.vue';
+import { useVacationStore } from 'src/stores/vacation-store';
 
 export default defineComponent({
   name: 'CompanyEmployeePage',
@@ -127,8 +126,13 @@ export default defineComponent({
         component: VacationRequestAddDialog,
       });
     };
+    const vacationStore = useVacationStore();
+    onMounted(async () => {
+      await vacationStore.getVacationRequests();
+    });
     return {
       tab: ref('employees'),
+      vacationStore,
       showAddVacationRequestDialog,
     };
   },

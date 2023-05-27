@@ -5,6 +5,6 @@ namespace WorkQR.Infrastructure.Abstraction
 {
     public interface IWorktimeEventRepository : IRepository<WorktimeEvent>
     {
-        Task<IEnumerable<WorktimeEvent>> GetWorktimeEvents(GetEventsVM model);
+        Task<IEnumerable<WorktimeEvent>> GetWorktimeEvents(GetUserDetailsVM model);
     }
 }

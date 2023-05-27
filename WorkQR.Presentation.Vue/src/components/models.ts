@@ -28,18 +28,19 @@ export interface EventScanDTO {
   breakMinutesLeftToday: number;
 }
 
-export class GetEventsVM {
+const date = new Date();
+date.setMonth(date.getMonth() - 1);
+
+export class GetUserDetailsVM {
   UserId: string;
   DateFrom: string;
   DateTo: string;
   Description: string;
-  EventType: number;
 
   constructor() {
     this.UserId = '';
-    this.DateFrom = new Date().toISOString().slice(0, 10);
+    this.DateFrom = date.toISOString().slice(0, 10);
     this.DateTo = new Date().toISOString().slice(0, 10);
     this.Description = '';
-    this.EventType = 0;
   }
 }

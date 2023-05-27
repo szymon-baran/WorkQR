@@ -62,6 +62,21 @@ export const useReportStore = defineStore('report', {
       );
       return response.data;
     },
+    async getEmployeesWorkedHoursData() {
+      const params = new URLSearchParams();
+      params.append('DateFrom', this.getDateFrom);
+      params.append('DateTo', this.getDateTo);
+      this.reportForm.Employees.forEach((x) => {
+        params.append('Employees', x);
+      });
+      const response = await api.get(
+        'companyModeration/getEmployeesWorkedHoursData',
+        {
+          params: params,
+        }
+      );
+      return response.data;
+    },
     reset() {
       Object.assign(this.reportForm, reportFormDefaultState);
     },

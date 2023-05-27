@@ -101,7 +101,7 @@ body {
 .q-table--dark,
 .q-tab-panels,
 .q-date {
-  background-color: rgba(245, 164, 86, 0.05) !important;
+  background-color: rgba(245, 164, 86, 0.04) !important;
 }
 
 .q-dialog__inner--minimized > div,
@@ -113,20 +113,24 @@ body {
   background: rgba(0, 0, 0, 0.3) !important;
 }
 
-.q-dialog__inner--minimized > div,
 .q-popup-edit,
-.q-menu {
+.q-menu,
+.q-dialog__backdrop {
   background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+}
+
+.q-dialog__inner--minimized > div {
+  background: rgba(0, 0, 0, 0.7) !important;
 }
 
 .gradient-bg {
   background-image: linear-gradient(
     to left top,
-    #051937,
-    #2b142f,
-    #3a1220,
-    #3c1a12,
-    #342408
+    #001723,
+    #081d29,
+    #0f232f,
+    #172a35,
+    #1e303b
   );
 }

@@ -147,11 +147,11 @@ namespace WorkQR.Application
 
             Random random = new();
 
-            string scannerUsername = $"{model.CompanyName}qr";
+            string scannerUsername = $"{model.CompanyName.Replace(" ", "")}qr";
             while (await _userManager.FindByNameAsync(scannerUsername) != null)
             {
                 int randomNumber = random.Next(1000, 9999);
-                scannerUsername = $"{model.CompanyName}qr{randomNumber}";
+                scannerUsername = $"{model.CompanyName.Replace(" ", "")}qr{randomNumber}";
             }
 
             ApplicationUser scanner = new()

@@ -2,7 +2,7 @@
 
 namespace WorkQR.Application
 {
-    public class GetEventsVM
+    public class GetUserDetailsVM
     {
         [Required]
         public string UserId { get; set; } = "";

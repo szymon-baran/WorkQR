@@ -110,7 +110,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         [HttpGet("getEmployeeWorktimeEvents")]
-        public async Task<ActionResult<List<FullEmployeeDTO>>> GetEmployeeWorkHours([FromQuery]GetEventsVM model)
+        public async Task<ActionResult<List<FullEmployeeDTO>>> GetEmployeeWorkHours([FromQuery]GetUserDetailsVM model)
         {
             try
             {
@@ -153,13 +153,28 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         [HttpGet("getEmployeesPresenceData")]
-        public async Task<ActionResult<EmployeePresenceDTO>> GetEmployeesPresenceData([FromQuery]RaportDocumentVM model)
+        public async Task<ActionResult<ModeratorEmployeePresenceDTO>> GetEmployeesPresenceData([FromQuery]RaportDocumentVM model)
         {
             string userName = User.Identity.Name;
             try
             {
                 var presenceData = await _worktimeEventService.GetEmployeesPresenceData(model, userName);
                 return Ok(presenceData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getEmployeesWorkedHoursData")]
+        public async Task<ActionResult<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData([FromQuery]RaportDocumentVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var workedHours = await _worktimeEventService.GetEmployeesWorkedHoursData(model, userName);
+                return Ok(workedHours);
             }
             catch (Exception ex)
             {
@@ -185,12 +200,26 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         #region Vacation
 
         [HttpGet("getVacationRequests")]
-        public async Task<ActionResult<List<VacationRequestModeratorDTO>>> GetVacationRequests()
+        public async Task<ActionResult<List<ModeratorVacationRequestDTO>>> GetVacationRequests()
         {
             string userName = User.Identity.Name;
             try
             {
-                var vacationRequests = await _vacationService.GetModeratorVacationRequestsByUsername(userName);
+                var vacationRequests = await _vacationService.GetModeratorAllVacationRequests(userName);
+                return Ok(vacationRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getCompanyEmployeeVacationRequests")]
+        public async Task<ActionResult<List<ModeratorVacationRequestDTO>>> GetCompanyEmployeeVacationRequests([FromQuery]GetUserDetailsVM model)
+        {
+            try
+            {
+                var vacationRequests = await _vacationService.GetModeratorVacationRequestsByUser(model);
                 return Ok(vacationRequests);
             }
             catch (Exception ex)

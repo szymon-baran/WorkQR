@@ -1,19 +1,22 @@
 <template>
   <q-dialog>
     <q-card flat class="card q-pa-sm">
-      <q-card-section class="row items-center q-pb-md">
+      <q-card-section class="items-center q-pb-sm">
         <div class="text-h6">Szczegóły użytkownika {{ username }}</div>
+        <p class="text-subtitle2 q-mt-sm">
+          Poniższe filtry mają wpływ na wszystkie tabele z danymi!
+        </p>
       </q-card-section>
       <q-card-section class="row items-center q-pb-md q-col-gutter-sm">
         <q-input
           dense
           filled
-          v-model="worktimeEventStore.settings.DateFrom"
+          v-model="employeeStore.userDetailsVM.DateFrom"
           mask="####-##-##"
           class="col"
           label="Data od"
           clearable
-          @blur="worktimeEventStore.setCompanyEmployeeWorktimeEvents()"
+          @blur="reloadData()"
         >
           <template v-slot:append>
             <q-icon name="event" class="pointer">
@@ -23,7 +26,7 @@
                 transition-hide="scale"
               >
                 <q-date
-                  v-model="worktimeEventStore.settings.DateFrom"
+                  v-model="employeeStore.userDetailsVM.DateFrom"
                   mask="YYYY-MM-DD"
                 >
                   <div class="row items-center justify-end">
@@ -37,12 +40,12 @@
         <q-input
           dense
           filled
-          v-model="worktimeEventStore.settings.DateTo"
+          v-model="employeeStore.userDetailsVM.DateTo"
           mask="####-##-##"
           class="col"
           label="Data do"
           clearable
-          @blur="worktimeEventStore.setCompanyEmployeeWorktimeEvents()"
+          @blur="reloadData()"
         >
           <template v-slot:append>
             <q-icon name="event" class="pointer">
@@ -52,7 +55,7 @@
                 transition-hide="scale"
               >
                 <q-date
-                  v-model="worktimeEventStore.settings.DateTo"
+                  v-model="employeeStore.userDetailsVM.DateTo"
                   mask="YYYY-MM-DD"
                 >
                   <div class="row items-center justify-end">
@@ -66,25 +69,38 @@
         <q-input
           dense
           filled
-          v-model="worktimeEventStore.settings.Description"
+          v-model="employeeStore.userDetailsVM.Description"
           label="Opis"
           class="col"
           clearable
-          @blur="worktimeEventStore.setCompanyEmployeeWorktimeEvents()"
+          @blur="reloadData()"
         />
       </q-card-section>
       <q-card-section class="q-pb-md">
-        <worktime-events-list
-          :title="`Wydarzenia spełniające wybrane filtry`"
-        />
+        <div class="row q-col-gutter-xs">
+          <div class="col-xs-12 col-lg-7">
+            <div class="text-h5 q-mb-md">
+              Wydarzenia spełniające wybrane filtry
+            </div>
+            <worktime-events-list />
+          </div>
+          <div class="col-xs-12 col-lg-5">
+            <div class="text-h5 q-mb-md">Urlopy</div>
+            <vacation-requests-list />
+          </div>
+        </div>
       </q-card-section>
+      <q-card-section class="q-pb-md"> </q-card-section>
     </q-card>
   </q-dialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
 import { useWorktimeEventStore } from 'stores/worktime-event-store';
+import { useVacationStore } from 'stores/vacation-store';
+import { useEmployeeStore } from 'stores/employee-store';
 import WorktimeEventsList from '../../worktimeEvents/WorktimeEventsList.vue';
+import VacationRequestsList from 'src/components/companyEmployee/vacationRequests/VacationRequestsList.vue';
 
 export default defineComponent({
   name: 'EmployeeDetailsDialog',
@@ -100,21 +116,33 @@ export default defineComponent({
   },
   components: {
     WorktimeEventsList,
+    VacationRequestsList,
   },
   setup(props) {
     const worktimeEventStore = useWorktimeEventStore();
+    const vacationStore = useVacationStore();
+    const employeeStore = useEmployeeStore();
+
+    const reloadData = async () => {
+      await worktimeEventStore.setCompanyEmployeeWorktimeEvents();
+      await vacationStore.getModeratorCompanyEmployeeVacationRequests();
+    };
 
     onMounted(async () => {
-      worktimeEventStore.settings.UserId = props.userId;
-      let date = new Date();
-      date.setMonth(date.getMonth() - 1);
-      worktimeEventStore.settings.DateFrom = date.toISOString().slice(0, 10);
-      worktimeEventStore.settings.DateTo = new Date()
-        .toISOString()
-        .slice(0, 10);
+      employeeStore.userDetailsVM.UserId = props.userId;
+      await worktimeEventStore.setCompanyEmployeeWorktimeEvents();
+      await vacationStore.getModeratorCompanyEmployeeVacationRequests();
     });
+
+    onBeforeUnmount(() => {
+      vacationStore.reset();
+    });
+
     return {
       worktimeEventStore,
+      vacationStore,
+      employeeStore,
+      reloadData,
     };
   },
 });

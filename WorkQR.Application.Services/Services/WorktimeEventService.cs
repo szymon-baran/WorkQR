@@ -37,17 +37,17 @@ namespace WorkQR.Application
                 Description = null
             });
 
-            return await FromWorktimeEventsToLinkedDTO(worktimeEvents);
+            return FromWorktimeEventsToLinkedDTO(worktimeEvents);
         }
 
-        public async Task<List<WorktimeEventDTO>> GetEmployeeWorkHours(GetEventsVM model)
+        public async Task<List<WorktimeEventDTO>> GetEmployeeWorkHours(GetUserDetailsVM model)
         {
             IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWorktimeEvents(model);
-            return await FromWorktimeEventsToLinkedDTO(worktimeEvents);
+            return FromWorktimeEventsToLinkedDTO(worktimeEvents);
         }
 
         // TODO: move to converter
-        private async Task<List<WorktimeEventDTO>> FromWorktimeEventsToLinkedDTO(IEnumerable<WorktimeEvent> worktimeEvents)
+        private List<WorktimeEventDTO> FromWorktimeEventsToLinkedDTO(IEnumerable<WorktimeEvent> worktimeEvents)
         {
             LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderByDescending(x => x.EventTime));
             List<WorktimeEventDTO> worktimeEventsList = new();
@@ -76,8 +76,8 @@ namespace WorkQR.Application
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
 
             IEnumerable<WorktimeEvent> worktimeEvents = await _worktimeEventRepository.GetWithConditionAsync(x => x.ApplicationUserId == user.Id
-                                                                                                                  && x.EventTime >= model.DateFrom
-                                                                                                                  && x.EventTime <= model.DateTo);
+                                                                                                                  && x.EventTime.Date >= model.DateFrom.Date
+                                                                                                                  && x.EventTime.Date <= model.DateTo.Date);
             LinkedList<WorktimeEvent> linkedWorktimeEvents = new(worktimeEvents.OrderBy(x => x.EventTime));
             WorktimeEventsTimestampsDTO worktimeEventsDTO = new();
 
@@ -111,7 +111,7 @@ namespace WorkQR.Application
             foreach (var employee in employees.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
             {
                 double workedMinutes = 0;
-                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo).OrderBy(x => x.EventTime));
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime.Date >= model.DateFrom.Date && x.EventTime.Date <= model.DateTo.Date).OrderBy(x => x.EventTime));
                 for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
                 {
                     var worktimeEvent = element.Value;
@@ -132,7 +132,7 @@ namespace WorkQR.Application
             return bytes;
         }
 
-        public async Task<List<EmployeePresenceDTO>> GetEmployeesPresenceData(RaportDocumentVM model, string userName)
+        public async Task<List<ModeratorEmployeePresenceDTO>> GetEmployeesPresenceData(RaportDocumentVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -141,17 +141,73 @@ namespace WorkQR.Application
             IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => model.Employees.Contains(x.Id));
             var daysSpan = Enumerable.Range(0, 1 + model.DateTo.Subtract(model.DateFrom).Days).Select(offset => model.DateFrom.AddDays(offset)).Count();
 
-            return employees.Select(x => new EmployeePresenceDTO()
+            return employees.Select(x => new ModeratorEmployeePresenceDTO()
             {
                 Id = x.Id,
                 FullName = $"{x.LastName} {x.FirstName}",
-                DaysPresent = x.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo)
+                DaysPresent = x.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime.Date >= model.DateFrom.Date && x.EventTime.Date <= model.DateTo.Date)
                                               .DistinctBy(x => x.EventTime.Date).Count(),
-                DaysOnVacation = (int)Math.Round(x.Vacations.Where(x => x.DateFrom <= model.DateTo && model.DateFrom <= x.DateTo).Select(x => (x.DateTo - x.DateFrom).TotalDays).Sum()),
-                AllDaysCount = daysSpan,
-                //DaysAbsent = daysSpan.Except(x.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime >= model.DateFrom && x.EventTime <= model.DateTo)
-                //                              .DistinctBy(x => x.EventTime.Date).Select(x => x.EventTime.Date)).Count(),
+                DaysOnVacation = (int)Math.Round(x.Vacations.Where(x => x.DateFrom.Date <= model.DateTo.Date && model.DateFrom.Date <= x.DateTo.Date).Select(x => (x.DateTo - x.DateFrom).TotalDays).Sum()),
+                AllDaysCount = daysSpan
             }).ToList();
+        }
+
+        public async Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => model.Employees.Contains(x.Id));
+            List<ModeratorEmployeeWorkedHoursDTO> workedHoursDTOList = new();
+
+            foreach (var employee in employees)
+            {
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime.Date >= model.DateFrom.Date
+                                                                                                    && x.EventTime.Date <= model.DateTo.Date).OrderBy(x => x.EventTime));
+
+                ModeratorEmployeeWorkedHoursDTO workedHoursDTO = new()
+                {
+                    Id = employee.Id,
+                    FullName = $"{employee.LastName} {employee.FirstName}"
+                };
+
+                for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
+                {
+                    var worktimeEvent = element.Value;
+                    if (worktimeEvent.EventType != EventType.EndWork) 
+                    {
+                        if (worktimeEvent.EventType == EventType.StartWork || worktimeEvent.EventType == EventType.EndBreak)
+                        {
+                            workedHoursDTO.WorkedHours += ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalHours;
+                        }
+                        else
+                        {
+                            workedHoursDTO.BreakHours += ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalHours;
+                        }
+                    }
+                }
+
+                workedHoursDTO.WorkedHours = Math.Round(workedHoursDTO.WorkedHours, 2);
+                workedHoursDTO.BreakHours = Math.Round(workedHoursDTO.BreakHours, 2);
+
+                workedHoursDTOList.Add(workedHoursDTO);
+            }
+
+            return workedHoursDTOList;
+        }
+
+        public async Task UpdateTodayEventDescription(string userName, WorktimeEventTodayEditVM model)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            WorktimeEvent worktimeEvent = await _worktimeEventRepository.FirstOrDefaultAsync(x => x.Id == model.Id) ?? throw new KeyNotFoundException("Brak danych");
+            worktimeEvent.Description = model.Description;
+
+            _worktimeEventRepository.Update(worktimeEvent);
+            await _worktimeEventRepository.SaveChangesAsync();
         }
     }
 }

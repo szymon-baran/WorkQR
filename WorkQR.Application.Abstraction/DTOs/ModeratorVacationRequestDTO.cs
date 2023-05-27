@@ -2,7 +2,7 @@
 
 namespace WorkQR.Application
 {
-    public class VacationRequestModeratorDTO
+    public class ModeratorVacationRequestDTO
     {
         public Guid Id { get; set; }
         public string RequestDescription { get; set; } = "";
