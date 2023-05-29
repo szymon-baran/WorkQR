@@ -60,22 +60,22 @@
           </q-tab-panel>
 
           <q-tab-panel name="positions">
-            <div class="text-h4 q-mb-md">Stanowiska pracy</div>
+            <div class="text-h5 q-mb-md">Stanowiska pracy</div>
             <positions-list />
           </q-tab-panel>
 
           <q-tab-panel name="created-accounts">
-            <div class="text-h4 q-mb-md">Konta nieaktywowane</div>
+            <div class="text-h5 q-mb-md">Konta nieaktywowane</div>
             <employees-list :is-inactive-view="true" />
           </q-tab-panel>
 
           <q-tab-panel name="reports">
-            <div class="text-h4 q-mb-md">Raporty i statystyki</div>
+            <div class="text-h5 q-mb-md">Raporty i statystyki</div>
             <download-report />
           </q-tab-panel>
 
           <q-tab-panel name="vacations">
-            <div class="text-h4 q-mb-md">Wnioski urlopowe</div>
+            <div class="text-h5 q-mb-md">Wnioski urlopowe</div>
             <vacation-requests-list />
           </q-tab-panel>
         </q-tab-panels>

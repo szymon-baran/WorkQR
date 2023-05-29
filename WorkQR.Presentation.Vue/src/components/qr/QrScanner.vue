@@ -46,6 +46,17 @@
                   <p class="text-h4 text-center text-primary q-my-lg">
                     Cześć, {{ responseEvent?.fullName }}!
                   </p>
+                  <p
+                    class="text-body1 text-center text-primary q-mb-xs q-mt-none"
+                    v-if="responseEvent?.isOnVacation"
+                  >
+                    Aktualnie jesteś na urlopie, który potrwa do
+                    {{
+                      new Date(responseEvent?.vacationTo).toLocaleDateString()
+                    }}. Miłego odpoczynku!
+                  </p>
+                </div>
+                <div v-if="!responseEvent?.isOnVacation">
                   <p class="text-h5 text-center text-primary q-mb-xs q-mt-none">
                     {{ getResponseEventName() }}
                   </p>
@@ -60,7 +71,10 @@
                     minut przerwy.
                   </p>
                 </div>
-                <div class="row text-center">
+                <div
+                  class="row text-center"
+                  v-if="!responseEvent?.isOnVacation"
+                >
                   <div class="col-6 col-xs-12 q-mb-lg">
                     <q-btn
                       icon="cancel"

@@ -138,7 +138,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         [HttpGet("getCompanyRaportForDate")]
-        public async Task<IActionResult> GetCompanyRaportForDate([FromQuery]RaportDocumentVM model)
+        public async Task<IActionResult> GetCompanyRaportForDate([FromQuery]ModeratorRaportDocumentVM model)
         {
             string userName = User.Identity.Name;
             try
@@ -153,12 +153,12 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         [HttpGet("getEmployeesPresenceData")]
-        public async Task<ActionResult<ModeratorEmployeePresenceDTO>> GetEmployeesPresenceData([FromQuery]RaportDocumentVM model)
+        public async Task<ActionResult<EmployeePresenceDTO>> GetEmployeesPresenceData([FromQuery]ModeratorRaportDocumentVM model)
         {
             string userName = User.Identity.Name;
             try
             {
-                var presenceData = await _worktimeEventService.GetEmployeesPresenceData(model, userName);
+                var presenceData = await _worktimeEventService.GetModeratorEmployeesPresenceData(model, userName);
                 return Ok(presenceData);
             }
             catch (Exception ex)
@@ -168,7 +168,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         [HttpGet("getEmployeesWorkedHoursData")]
-        public async Task<ActionResult<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData([FromQuery]RaportDocumentVM model)
+        public async Task<ActionResult<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData([FromQuery]ModeratorRaportDocumentVM model)
         {
             string userName = User.Identity.Name;
             try

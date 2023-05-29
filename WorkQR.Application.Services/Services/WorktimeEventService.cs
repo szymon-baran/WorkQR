@@ -99,7 +99,7 @@ namespace WorkQR.Application
             return worktimeEventsDTO;
         }
 
-        public async Task<byte[]> GetCompanyRaportForDate(RaportDocumentVM model, string userName)
+        public async Task<byte[]> GetCompanyRaportForDate(ModeratorRaportDocumentVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -132,7 +132,80 @@ namespace WorkQR.Application
             return bytes;
         }
 
-        public async Task<List<ModeratorEmployeePresenceDTO>> GetEmployeesPresenceData(RaportDocumentVM model, string userName)
+        public async Task<EmployeePresenceDTO> GetEmployeePresenceData(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            var daysSpan = Enumerable.Range(0, 1 + model.DateTo.Subtract(model.DateFrom).Days).Select(offset => model.DateFrom.AddDays(offset)).Count();
+
+            return new()
+            {
+                Id = user.Id,
+                DaysPresent = user.WorktimeEvents.Where(x => x.EventType == EventType.StartWork && x.EventTime.Date >= model.DateFrom.Date && x.EventTime.Date <= model.DateTo.Date)
+                                              .DistinctBy(x => x.EventTime.Date).Count(),
+                DaysOnVacation = (int)Math.Round(user.Vacations.Where(x => x.DateFrom.Date <= model.DateTo.Date && model.DateFrom.Date <= x.DateTo.Date).Select(x => (x.DateTo - x.DateFrom).TotalDays).Sum()),
+                AllDaysCount = daysSpan
+            };
+        }
+
+        public async Task<EmployeeWorkTimeComparisonDTO> GetEmployeeWorkTimeComparisonData(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => x.Position.CompanyId == user.Position.CompanyId);
+
+            List<ModeratorEmployeeWorkedHoursDTO> workedHoursDTOList = new();
+
+            foreach (var employee in employees)
+            {
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime.Date >= model.DateFrom.Date
+                                                                                                    && x.EventTime.Date <= model.DateTo.Date).OrderBy(x => x.EventTime));
+
+                ModeratorEmployeeWorkedHoursDTO workedHoursDTO = new()
+                {
+                    Id = employee.Id,
+                    PositionId = employee.PositionId,
+                    FullName = $"{employee.LastName} {employee.FirstName}"
+                };
+
+                for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
+                {
+                    var worktimeEvent = element.Value;
+                    if (worktimeEvent.EventType != EventType.EndWork)
+                    {
+                        if (worktimeEvent.EventType == EventType.StartWork || worktimeEvent.EventType == EventType.EndBreak)
+                        {
+                            workedHoursDTO.WorkedHours += ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalHours;
+                        }
+                        else
+                        {
+                            workedHoursDTO.BreakHours += ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalHours;
+                        }
+                    }
+                }
+
+                workedHoursDTO.WorkedHours = Math.Round(workedHoursDTO.WorkedHours, 2);
+                workedHoursDTO.BreakHours = Math.Round(workedHoursDTO.BreakHours, 2);
+
+                workedHoursDTOList.Add(workedHoursDTO);
+            }
+
+            return new()
+            {
+                WorkedHours = workedHoursDTOList.First(x => x.Id == user.Id).WorkedHours,
+                BreakHours = workedHoursDTOList.First(x => x.Id == user.Id).BreakHours,
+                EveryoneWorkedHours = Math.Round(workedHoursDTOList.Average(x => x.WorkedHours), 2),
+                EveryoneBreakHours = Math.Round(workedHoursDTOList.Average(x => x.BreakHours), 2),
+                PositionWorkedHours = Math.Round(workedHoursDTOList.Where(x => x.PositionId == user.PositionId).Average(x => x.WorkedHours), 2),
+                PositionBreakHours = Math.Round(workedHoursDTOList.Where(x => x.PositionId == user.PositionId).Average(x => x.BreakHours), 2),
+            };
+        }
+
+        public async Task<List<EmployeePresenceDTO>> GetModeratorEmployeesPresenceData(ModeratorRaportDocumentVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -141,7 +214,7 @@ namespace WorkQR.Application
             IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => model.Employees.Contains(x.Id));
             var daysSpan = Enumerable.Range(0, 1 + model.DateTo.Subtract(model.DateFrom).Days).Select(offset => model.DateFrom.AddDays(offset)).Count();
 
-            return employees.Select(x => new ModeratorEmployeePresenceDTO()
+            return employees.Select(x => new EmployeePresenceDTO()
             {
                 Id = x.Id,
                 FullName = $"{x.LastName} {x.FirstName}",
@@ -152,7 +225,7 @@ namespace WorkQR.Application
             }).ToList();
         }
 
-        public async Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(RaportDocumentVM model, string userName)
+        public async Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(ModeratorRaportDocumentVM model, string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)

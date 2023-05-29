@@ -1,6 +1,6 @@
 ﻿namespace WorkQR.Application
 {
-    public class ModeratorEmployeePresenceDTO
+    public class EmployeePresenceDTO
     {
         public string Id { get; set; } = "";
         public string FullName { get; set; } = "";

@@ -21,13 +21,8 @@
               icon="group"
               label="Lista współpracowników"
             />
-            <q-tab name="analytics" icon="analytics" label="Twoje statystyki" />
+            <q-tab name="analytics" icon="analytics" label="Statystyki" />
             <q-tab name="vacations" icon="beach_access" label="Urlopy" />
-            <q-tab
-              name="insights"
-              icon="insights"
-              label="Statystyki na tle firmy"
-            />
           </q-tabs>
         </div>
         <q-tab-panels
@@ -39,34 +34,18 @@
           transition-next="jump-up"
         >
           <q-tab-panel name="employees">
+            <div class="text-h5 q-mb-md">Lista współpracowników</div>
             <employees-list />
           </q-tab-panel>
 
           <q-tab-panel name="analytics">
-            <div class="text-h4 q-mb-md">Statystyki pracy</div>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
+            <div class="text-h5 q-mb-md">Statystyki</div>
+            <employee-report />
           </q-tab-panel>
 
           <q-tab-panel name="vacations">
             <div class="row q-mb-md">
-              <div class="col-xs-12 col-lg-9 text-h4">Urlopy</div>
+              <div class="col-xs-12 col-lg-9 text-h5">Urlopy</div>
               <div class="col-xs-12 col-lg-3 text-right">
                 <q-btn
                   color="primary"
@@ -76,28 +55,6 @@
               </div>
             </div>
             <vacation-requests-list />
-          </q-tab-panel>
-
-          <q-tab-panel name="insights">
-            <div class="text-h4 q-mb-md">Statystyki pracy 2</div>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
@@ -109,6 +66,7 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import EmployeesList from 'components/companyEmployee/EmployeesList.vue';
+import EmployeeReport from 'components/companyEmployee/reports/EmployeeReport.vue';
 import VacationRequestsList from 'components/companyEmployee/vacationRequests/VacationRequestsList.vue';
 import VacationRequestAddDialog from 'components/companyEmployee/vacationRequests/VacationRequestAddDialog.vue';
 import { useVacationStore } from 'src/stores/vacation-store';
@@ -117,6 +75,7 @@ export default defineComponent({
   name: 'CompanyEmployeePage',
   components: {
     EmployeesList,
+    EmployeeReport,
     VacationRequestsList,
   },
   setup() {

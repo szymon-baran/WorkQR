@@ -7,11 +7,11 @@ namespace WorkQR.Application
 {
     public class RaportDocument : IDocument
     {
-        private RaportDocumentVM _model { get; }
+        private ModeratorRaportDocumentVM _model { get; }
         private List<RaportEmployeeDTO> _employees { get; }
         private string _companyName { get; }
 
-        public RaportDocument(RaportDocumentVM model, List<RaportEmployeeDTO> employees, string companyName)
+        public RaportDocument(ModeratorRaportDocumentVM model, List<RaportEmployeeDTO> employees, string companyName)
         {
             _model = model;
             _employees = employees;

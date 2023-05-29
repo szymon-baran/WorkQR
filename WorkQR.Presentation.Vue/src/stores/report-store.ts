@@ -62,6 +62,30 @@ export const useReportStore = defineStore('report', {
       );
       return response.data;
     },
+    async getCurrentEmployeePresenceData() {
+      const params = new URLSearchParams();
+      params.append('DateFrom', this.getDateFrom);
+      params.append('DateTo', this.getDateTo);
+      const response = await api.get(
+        'companyEmployee/getEmployeePresenceData',
+        {
+          params: params,
+        }
+      );
+      return response.data;
+    },
+    async getCurrentEmployeeWorkTimeComparisonData() {
+      const params = new URLSearchParams();
+      params.append('DateFrom', this.getDateFrom);
+      params.append('DateTo', this.getDateTo);
+      const response = await api.get(
+        'companyEmployee/getEmployeeWorkTimeComparisonData',
+        {
+          params: params,
+        }
+      );
+      return response.data;
+    },
     async getEmployeesWorkedHoursData() {
       const params = new URLSearchParams();
       params.append('DateFrom', this.getDateFrom);

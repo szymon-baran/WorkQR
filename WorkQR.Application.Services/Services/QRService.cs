@@ -23,6 +23,21 @@ namespace WorkQR.Application
             if (user == null)
                 throw new Exception("Nie znaleziono użytkownika!");
 
+            EventScanDTO dto = new()
+            {
+                FullName = $"{user.FirstName} {user.LastName}",
+                IsOnVacation = false,
+                VacationTo = null
+            };
+
+            Vacation currentVacation = user.Vacations.FirstOrDefault(x => x.DateFrom.Date <= DateTime.Now.Date && x.DateTo.Date >= DateTime.Now.Date && x.IsApproved && !x.IsRejected);
+
+            if (currentVacation != null)
+            {
+                dto.IsOnVacation = true;
+                dto.VacationTo = currentVacation.DateTo;
+            }       
+
             List<WorktimeEvent> worktimeEvents = await GetUserTodaysWorktimeEvents(user.Id);
 
 
@@ -47,13 +62,11 @@ namespace WorkQR.Application
             await _worktimeEventRepository.AddAsync(worktimeEvent);
             await _worktimeEventRepository.SaveChangesAsync();
 
-            return new()
-            {
-                Id = worktimeEvent.Id,
-                FullName = $"{user.FirstName} {user.LastName}",
-                EventType = worktimeEvent.EventType,
-                BreakMinutesLeftToday = breakMinutesLeftToday
-            };
+            dto.Id = worktimeEvent.Id;
+            dto.EventType = worktimeEvent.EventType;
+            dto.BreakMinutesLeftToday = breakMinutesLeftToday;
+
+            return dto;
         }
 
         private async Task<List<WorktimeEvent>> GetUserTodaysWorktimeEvents(string userId)
@@ -69,17 +82,17 @@ namespace WorkQR.Application
         {
             double breakMinutesToday = 0;
 
-            foreach (var breakStartEvent in worktimeEventsToday.Where(x => x.EventType == EventType.StartBreak)
-                                                            .Select((value, index) => new { index, value }))
+            foreach (var breakStartEvent in worktimeEventsToday.Where(x => x.EventType == EventType.StartBreak))
             {
-                var breakEndEvent = worktimeEventsToday.Skip(breakStartEvent.index).FirstOrDefault(x => x.EventType == EventType.EndBreak);
+                var index = worktimeEventsToday.IndexOf(breakStartEvent);
+                var breakEndEvent = worktimeEventsToday.Skip(index).FirstOrDefault(x => x.EventType == EventType.EndBreak);
                 if (breakEndEvent != null)
                 {
-                    breakMinutesToday += (breakEndEvent.EventTime - breakStartEvent.value.EventTime).TotalMinutes;
+                    breakMinutesToday += (breakEndEvent.EventTime - breakStartEvent.EventTime).TotalMinutes;
                 }
                 else if (newEventType == EventType.EndBreak)
                 {
-                    breakMinutesToday += (DateTime.Now - breakStartEvent.value.EventTime).TotalMinutes;
+                    breakMinutesToday += (DateTime.Now - breakStartEvent.EventTime).TotalMinutes;
                 }
             }
 

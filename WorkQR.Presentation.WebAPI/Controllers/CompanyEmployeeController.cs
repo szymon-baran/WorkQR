@@ -14,11 +14,13 @@ namespace WorkQR.Presentation.WebAPI.Controllers
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IVacationService _vacationService;
+        private readonly IWorktimeEventService _worktimeEventService;
 
-        public CompanyEmployeeController(IApplicationUserService applicationUserService, IVacationService vacationService)
+        public CompanyEmployeeController(IApplicationUserService applicationUserService, IVacationService vacationService, IWorktimeEventService worktimeEventService)
         {
             _applicationUserService = applicationUserService;
             _vacationService = vacationService;
+            _worktimeEventService = worktimeEventService;
         }
 
         [HttpGet("getCompanyEmployees")]
@@ -98,5 +100,39 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         #endregion Vacation
+
+        #region Raport
+
+        [HttpGet("getEmployeePresenceData")]
+        public async Task<ActionResult<EmployeePresenceDTO>> GetEmployeePresenceData([FromQuery] RaportDocumentVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var presenceData = await _worktimeEventService.GetEmployeePresenceData(model, userName);
+                return Ok(presenceData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getEmployeeWorkTimeComparisonData")]
+        public async Task<ActionResult<EmployeeWorkTimeComparisonDTO>> GetEmployeeWorkTimeComparisonData([FromQuery] RaportDocumentVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var presenceData = await _worktimeEventService.GetEmployeeWorkTimeComparisonData(model, userName);
+                return Ok(presenceData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion
     }
 }
