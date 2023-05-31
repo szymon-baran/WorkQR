@@ -1,4 +1,5 @@
 <template>
+  <p>&nbsp;</p>
   <Doughnut :data="chartData" :options="chartOptions" v-if="loaded" />
 </template>
 <script lang="ts">

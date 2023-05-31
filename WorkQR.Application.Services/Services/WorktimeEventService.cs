@@ -270,6 +270,81 @@ namespace WorkQR.Application
             return workedHoursDTOList;
         }
 
+        public async Task<List<ModeratorEmployeeWarningDTO>> GetModeratorEmployeeWarnings(RaportDocumentVM model, string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                throw new Exception("Nie znaleziono zalogowanego użytkownika!");
+
+            IEnumerable<ApplicationUser> employees = await _applicationUserRepository.GetWithConditionAsync(x => x.Position.CompanyId == user.Position.CompanyId);
+            List<ModeratorEmployeeWarningDTO> workedHoursDTOList = new();
+
+            foreach (var employee in employees)
+            {
+                LinkedList<WorktimeEvent> linkedWorktimeEvents = new(employee.WorktimeEvents.Where(x => x.EventTime.Date >= model.DateFrom.Date
+                                                                                                    && x.EventTime.Date <= model.DateTo.Date).OrderBy(x => x.EventTime));
+
+                ModeratorEmployeeWarningDTO warningDTO = new()
+                {
+                    Id = employee.Id,
+                    FullName = $"{employee.LastName} {employee.FirstName}"
+                };
+
+                List<WorkedTimeDTO> workedTimeListDTO = new();
+
+                for (var element = linkedWorktimeEvents.First; element != null; element = element.Next)
+                {
+                    var worktimeEvent = element.Value;
+                    if (worktimeEvent.EventType != EventType.EndWork) 
+                    {
+                        WorkedTimeDTO dateTimeObject = workedTimeListDTO.FirstOrDefault(x => x.DateTime.Date == worktimeEvent.EventTime.Date);
+                        if (worktimeEvent.EventType == EventType.StartWork || worktimeEvent.EventType == EventType.EndBreak)
+                        {
+                            double workedHours = ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalHours;
+                            if (dateTimeObject != null)
+                            {
+                                dateTimeObject.WorkedHours += workedHours;
+                            }
+                            else
+                            {
+                                workedTimeListDTO.Add(new()
+                                {
+                                    DateTime = worktimeEvent.EventTime.Date,
+                                    WorkedHours = workedHours
+                                });
+                            }
+                        }
+                        else
+                        {
+                            double breakMinutes = ((element.Next?.Value.EventTime ?? DateTime.Now) - element.Value.EventTime).TotalMinutes;
+                            if (dateTimeObject != null)
+                            {
+                                dateTimeObject.BreakMinutes += breakMinutes;
+                            }
+                            else
+                            {
+                                workedTimeListDTO.Add(new()
+                                {
+                                    DateTime = worktimeEvent.EventTime.Date,
+                                    BreakMinutes = breakMinutes
+                                });
+                            }
+                        }
+                    }
+                }
+
+                warningDTO.NotEnoughDailyWorkCount = workedTimeListDTO.Where(x => (x.WorkedHours + ((double)employee.Position.BreakMinsPerDay / 60)) < 8).Count();
+                warningDTO.OverextendedBreaksCount = workedTimeListDTO.Where(x => x.BreakMinutes > employee.Position.BreakMinsPerDay).Count();
+
+                if (warningDTO.NotEnoughDailyWorkCount != 0 || warningDTO.OverextendedBreaksCount != 0)
+                {
+                    workedHoursDTOList.Add(warningDTO);
+                }
+            }
+
+            return workedHoursDTOList;
+        }
+
         public async Task UpdateTodayEventDescription(string userName, WorktimeEventTodayEditVM model)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);

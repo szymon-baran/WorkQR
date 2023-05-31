@@ -7,7 +7,7 @@
   />
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -39,21 +39,21 @@ export default defineComponent({
       labels: [],
       datasets: [
         {
-          label: 'Obecny',
+          label: 'Obecny [dni]',
           data: [],
           backgroundColor: '#21ba45',
           order: 3,
           stack: 'stack1',
         },
         {
-          label: 'Na urlopie',
+          label: 'Na urlopie [dni]',
           data: [],
           backgroundColor: '#f5a456',
           order: 3,
           stack: 'stack1',
         },
         {
-          label: 'Nieobecny',
+          label: 'Nieobecny [dni]',
           data: [],
           backgroundColor: '#f73349',
           order: 3,
@@ -73,9 +73,6 @@ export default defineComponent({
       loaded.value = true;
     };
     ctx.expose({ loadEmployeesPresenceData });
-    onMounted(async () => {
-      await loadEmployeesPresenceData();
-    });
     return {
       reportStore,
       loaded,

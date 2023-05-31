@@ -37,6 +37,11 @@
               icon="beach_access"
               label="Wnioski urlopowe"
             />
+            <q-tab
+              name="warnings"
+              icon="warning"
+              label="Nadużycia pracowników"
+            />
           </q-tabs>
         </div>
         <q-tab-panels
@@ -47,7 +52,7 @@
         >
           <q-tab-panel name="employees">
             <div class="row q-mb-md">
-              <div class="col-xs-12 col-lg-9 text-h4">Pracownicy</div>
+              <div class="col-xs-12 col-lg-9 text-h5">Pracownicy</div>
               <div class="col-xs-12 col-lg-3 text-right">
                 <q-btn
                   color="primary"
@@ -60,7 +65,12 @@
           </q-tab-panel>
 
           <q-tab-panel name="positions">
-            <div class="text-h5 q-mb-md">Stanowiska pracy</div>
+            <div class="row q-mb-md">
+              <div class="col-xs-12 col-lg-9 text-h5">Stanowiska pracy</div>
+              <div class="col-xs-12 col-lg-3 text-right">
+                <q-btn color="primary" label="Dodaj nowe stanowisko" />
+              </div>
+            </div>
             <positions-list />
           </q-tab-panel>
 
@@ -78,6 +88,11 @@
             <div class="text-h5 q-mb-md">Wnioski urlopowe</div>
             <vacation-requests-list />
           </q-tab-panel>
+
+          <q-tab-panel name="warnings">
+            <div class="text-h5 q-mb-md">Nadużycia pracowników</div>
+            <warnings-list />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
     </q-card>
@@ -92,6 +107,7 @@ import EmployeeAddDialog from 'components/companyModeration/employees/EmployeeAd
 import PositionsList from 'components/companyModeration/positions/PositionsList.vue';
 import DownloadReport from 'components/companyModeration/reports/DownloadReport.vue';
 import VacationRequestsList from 'components/companyModeration/vacations/VacationRequestsList.vue';
+import WarningsList from 'components/companyModeration/warnings/WarningsList.vue';
 
 export default defineComponent({
   name: 'ManageCompanyPage',
@@ -100,6 +116,7 @@ export default defineComponent({
     PositionsList,
     DownloadReport,
     VacationRequestsList,
+    WarningsList,
   },
   setup() {
     const $q = useQuasar();

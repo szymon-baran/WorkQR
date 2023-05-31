@@ -101,6 +101,15 @@ export const useReportStore = defineStore('report', {
       );
       return response.data;
     },
+    async getModeratorWarningsList() {
+      const params = new URLSearchParams();
+      params.append('DateFrom', this.getDateFrom);
+      params.append('DateTo', this.getDateTo);
+      const response = await api.get('companyModeration/getEmployeesWarnings', {
+        params: params,
+      });
+      return response.data;
+    },
     reset() {
       Object.assign(this.reportForm, reportFormDefaultState);
     },

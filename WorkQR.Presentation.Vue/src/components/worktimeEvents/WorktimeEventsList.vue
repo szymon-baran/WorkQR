@@ -1,6 +1,6 @@
 <template>
   <q-table
-    :title="title"
+    :title="isHomePage ? 'Dzisiejsze wydarzenia' : ''"
     :rows="worktimeEventStore.getWorktimeEvents"
     :columns="columns"
     row-key="id"
@@ -39,6 +39,10 @@
       </q-tr>
     </template>
   </q-table>
+  <p class="q-mt-sm text-subtitle1 text-center" v-if="!isHomePage">
+    Pracownik pracował przez
+    {{ Math.round(worktimeEventStore.getWorkedTime / 60 / 60) }} godzin.
+  </p>
 </template>
 
 <script lang="ts">
@@ -49,9 +53,8 @@ import { Notify } from 'quasar';
 export default defineComponent({
   name: 'WorktimeEventsList',
   props: {
-    title: {
-      type: String,
-      required: false,
+    isHomePage: {
+      type: Boolean,
     },
   },
   setup() {

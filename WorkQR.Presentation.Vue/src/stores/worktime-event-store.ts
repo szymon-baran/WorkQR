@@ -8,6 +8,10 @@ export const useWorktimeEventStore = defineStore('worktime-event', {
   }),
   getters: {
     getWorktimeEvents: (state) => state.worktimeEvents,
+    getWorkedTime: (state) =>
+      state.worktimeEvents
+        ? state.worktimeEvents.reduce((s, a) => s + a.durationInSecs, 0)
+        : 0,
   },
   actions: {
     async setUserWorktimeEventsToday() {

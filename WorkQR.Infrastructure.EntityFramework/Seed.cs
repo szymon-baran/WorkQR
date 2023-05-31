@@ -69,7 +69,8 @@ namespace WorkQR.Infrastructure.EntityFramework
                 Company = _company1,
                 BreakMinsPerDay = 480,
                 IsSystemPosition = true,
-                UserRoleName = UserRoles.Moderator
+                UserRoleName = UserRoles.Moderator,
+                IsFullTime = true
             };
             await _context.Positions.AddAsync(_company1Position1);
 
@@ -79,7 +80,8 @@ namespace WorkQR.Infrastructure.EntityFramework
                 Company = _company1,
                 BreakMinsPerDay = 1000,
                 IsSystemPosition = true,
-                UserRoleName = UserRoles.QRScanner
+                UserRoleName = UserRoles.QRScanner,
+                IsFullTime = true
             };
             await _context.Positions.AddAsync(_company1Position2);
 
@@ -89,7 +91,8 @@ namespace WorkQR.Infrastructure.EntityFramework
                 Company = _company1,
                 BreakMinsPerDay = 20,
                 IsSystemPosition = false,
-                UserRoleName = UserRoles.User
+                UserRoleName = UserRoles.User,
+                IsFullTime = true
             };
             await _context.Positions.AddAsync(_company1Position3);
 
@@ -99,7 +102,8 @@ namespace WorkQR.Infrastructure.EntityFramework
                 Company = _company1,
                 BreakMinsPerDay = 15,
                 IsSystemPosition = false,
-                UserRoleName = UserRoles.User
+                UserRoleName = UserRoles.User,
+                IsFullTime = true
             };
             await _context.Positions.AddAsync(_company1Position4);
 
@@ -165,9 +169,6 @@ namespace WorkQR.Infrastructure.EntityFramework
                 await _userManager.CreateAsync(_company1Position3User1, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                 await _userManager.AddToRoleAsync(_company1Position3User1, UserRoles.User);
-            }
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-            {
                 _company1Position3User2 = new()
                 {
                     FirstName = "Jakub",
@@ -182,9 +183,6 @@ namespace WorkQR.Infrastructure.EntityFramework
                 await _userManager.CreateAsync(_company1Position3User2, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                 await _userManager.AddToRoleAsync(_company1Position3User2, UserRoles.User);
-            }
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-            {
                 _company1Position4User1 = new()
                 {
                     FirstName = "Mariusz",
@@ -199,9 +197,6 @@ namespace WorkQR.Infrastructure.EntityFramework
                 await _userManager.CreateAsync(_company1Position4User1, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                 await _userManager.AddToRoleAsync(_company1Position4User1, UserRoles.User);
-            }
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-            {
                 _company1Position4User2 = new()
                 {
                     FirstName = "Krzysztof",
@@ -216,9 +211,6 @@ namespace WorkQR.Infrastructure.EntityFramework
                 await _userManager.CreateAsync(_company1Position4User2, "Admin1!");
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                 await _userManager.AddToRoleAsync(_company1Position4User2, UserRoles.User);
-            }
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-            {
                 _company1Position4User3 = new()
                 {
                     FirstName = "Ludwik",
@@ -443,19 +435,19 @@ namespace WorkQR.Infrastructure.EntityFramework
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
-                ApplicationUser = _company1Position4User1,
+                ApplicationUser = _company1Position3User2,
                 EventType = EventType.StartBreak,
                 EventTime = DateTime.Today.AddDays(-5).AddHours(13)
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
-                ApplicationUser = _company1Position4User1,
+                ApplicationUser = _company1Position3User2,
                 EventType = EventType.EndBreak,
                 EventTime = DateTime.Today.AddDays(-5).AddHours(13).AddMinutes(17)
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
-                ApplicationUser = _company1Position4User1,
+                ApplicationUser = _company1Position3User2,
                 EventType = EventType.EndWork,
                 EventTime = DateTime.Today.AddDays(-5).AddHours(17)
             });

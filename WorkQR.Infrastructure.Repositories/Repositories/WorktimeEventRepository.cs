@@ -14,8 +14,8 @@ namespace WorkQR.Infrastructure.Repositories
         public async Task<IEnumerable<WorktimeEvent>> GetWorktimeEvents(GetUserDetailsVM model)
         {
             return await GetWithConditionAsync(x => x.ApplicationUserId == model.UserId
-                                                                        && x.EventTime >= model.DateFrom
-                                                                        && x.EventTime < model.DateTo
+                                                                        && x.EventTime.Date >= model.DateFrom.Date
+                                                                        && x.EventTime.Date <= model.DateTo.Date
                                                                         && (string.IsNullOrEmpty(model.Description) 
                                                                             || x.Description.Contains(model.Description)));
         }

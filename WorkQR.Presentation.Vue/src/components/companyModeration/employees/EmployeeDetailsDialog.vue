@@ -4,7 +4,7 @@
       <q-card-section class="items-center q-pb-sm">
         <div class="text-h6">Szczegóły użytkownika {{ username }}</div>
         <p class="text-subtitle2 q-mt-sm">
-          Poniższe filtry mają wpływ na wszystkie tabele z danymi!
+          Poniższe filtry mają wpływ na wszystkie wyświetlane wartości!
         </p>
       </q-card-section>
       <q-card-section class="row items-center q-pb-md q-col-gutter-sm">
@@ -90,7 +90,6 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="q-pb-md"> </q-card-section>
     </q-card>
   </q-dialog>
 </template>

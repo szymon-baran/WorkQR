@@ -12,6 +12,7 @@ namespace WorkQR.Application
         Task<EmployeeWorkTimeComparisonDTO> GetEmployeeWorkTimeComparisonData(RaportDocumentVM model, string userName);
         Task<List<EmployeePresenceDTO>> GetModeratorEmployeesPresenceData(ModeratorRaportDocumentVM model, string userName);
         Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(ModeratorRaportDocumentVM model, string userName);
+        Task<List<ModeratorEmployeeWarningDTO>> GetModeratorEmployeeWarnings(RaportDocumentVM model, string userName);
         Task UpdateTodayEventDescription(string userName, WorktimeEventTodayEditVM model);
     }
 }

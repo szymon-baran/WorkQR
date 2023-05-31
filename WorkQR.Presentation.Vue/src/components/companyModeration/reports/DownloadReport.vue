@@ -27,7 +27,7 @@
                     filled
                     flat
                     bordered
-                    @update:model-value="onChange"
+                    @update:model-value="loadData"
                     :options="disableDatesAfterToday"
                   >
                     <div class="row items-center justify-end">
@@ -54,7 +54,7 @@
             emit-value
             :rules="[(val) => val || val === 0 || 'Wybierz pracowników']"
             multiple
-            @update:model-value="onChange"
+            @update:model-value="loadData"
           >
             <template v-slot:selected>
               <span v-for="employee in reportForm.Employees" :key="employee">
@@ -115,9 +115,9 @@ const onSubmit = async () => {
   fileLink.click();
 };
 
-const onChange = () => {
-  presenceChart.value.loadEmployeesPresenceData();
-  workedHoursChart.value.loadEmployeesWorkedHoursData();
+const loadData = async () => {
+  await presenceChart.value.loadEmployeesPresenceData();
+  await workedHoursChart.value.loadEmployeesWorkedHoursData();
 };
 
 const disableDatesAfterToday = (d: string) => {
@@ -128,5 +128,6 @@ onMounted(async () => {
   const responseData = await reportStore.getEmployees();
   employees.value = responseData;
   reportForm.value.Employees = responseData.map((x) => x.value);
+  await loadData();
 });
 </script>

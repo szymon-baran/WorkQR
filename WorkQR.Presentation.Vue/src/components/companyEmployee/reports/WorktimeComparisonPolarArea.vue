@@ -1,4 +1,8 @@
 <template>
+  <p class="text-subtitle2 text-center">
+    Twój czas w pracy wyniósł
+    <span class="text-weight-bold">{{ sumHours }}</span> godzin.
+  </p>
   <PolarArea :data="chartData" :options="chartOptions" v-if="loaded" />
 </template>
 <script lang="ts">
@@ -21,8 +25,9 @@ export default defineComponent({
   setup(props, ctx) {
     const reportStore = useReportStore();
     const loaded = ref(false);
+    const sumHours = ref(null);
     const chartData = ref({
-      labels: ['Ty', 'Twój oddział', 'Wszyscy pracownicy'],
+      labels: ['Ty', 'Twoje stanowisko', 'Wszyscy pracownicy'],
       datasets: [
         {
           label: 'W pracy',
@@ -62,6 +67,7 @@ export default defineComponent({
       chartData.value.datasets[1].data[1] = response.positionBreakHours;
       chartData.value.datasets[0].data[2] = response.everyoneWorkedHours;
       chartData.value.datasets[1].data[2] = response.everyoneBreakHours;
+      sumHours.value = response.workedHours + response.breakHours;
       loaded.value = true;
     };
     ctx.expose({ loadEmployeeWorkTimeComparisonData });
@@ -72,6 +78,7 @@ export default defineComponent({
       reportStore,
       loaded,
       chartData,
+      sumHours,
       chartOptions: {
         responsive: true,
       },

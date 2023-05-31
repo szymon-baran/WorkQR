@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Dictionaries;
 using WorkQR.Domain.Models;
+using System.Data;
 
 namespace WorkQR.Application
 {
@@ -11,16 +12,13 @@ namespace WorkQR.Application
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly IPositionRepository _positionRepository;
-        private readonly IMapper _mapper;
         public ApplicationUserService(UserManager<ApplicationUser> userManager,
                                       IApplicationUserRepository applicationUserRepository,
-                                      IPositionRepository positionRepository,
-                                      IMapper mapper)
+                                      IPositionRepository positionRepository)
         {
             _userManager = userManager;
             _applicationUserRepository = applicationUserRepository;
             _positionRepository = positionRepository;
-            _mapper = mapper;
         }
 
         public async Task<List<FullEmployeeDTO>> GetCompanyEmployeesForModerator(string username)
@@ -41,6 +39,7 @@ namespace WorkQR.Application
                 LastName = x.LastName,
                 Username = x.UserName ?? "",
                 PositionId = x.Position.Id,
+                IsDisabled = IsUserDisabled(x),
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
                 LastActivity = x.WorktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault()?.EventTime ?? null,
@@ -87,6 +86,7 @@ namespace WorkQR.Application
                 PositionId = x.Position.Id,
                 RegistrationCode = x.RegistrationCode ?? "",
                 QrAuthorizationKey = x.QrAuthorizationKey,
+                VacationDaysPerYear = x.VacationDaysPerYear ?? 0,
                 LastActivity = x.WorktimeEvents.OrderByDescending(x => x.EventTime).FirstOrDefault()?.EventTime ?? null,
             }).OrderByDescending(x => x.LastActivity).ToList();
         }
@@ -96,13 +96,9 @@ namespace WorkQR.Application
             var user = await _userManager.FindByNameAsync(username);
 
             if (user == null || user.Position == null)
-                throw new Exception("Nie znaleziono użytkownika!");
+                throw new DataException("Nie znaleziono użytkownika!");
 
-            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => (!x.LockoutEnd.HasValue
-                                                                                                                        || x.LockoutEnd.Value <= DateTime.Now)
-                                                                                                                        && x.Position != null
-                                                                                                                        && x.Position.CompanyId == user.Position.CompanyId
-                                                                                                                        && x.Position.UserRoleName != "QRScanner");
+            IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetCompanyEmployeesListByCompanyId(user.Position.CompanyId.Value);
 
             return applicationUsers.OrderByDescending(x => x.Position.BreakMinsPerDay).Select(x => new EmployeeDTO()
             {
@@ -119,7 +115,7 @@ namespace WorkQR.Application
             var loggedUser = await _userManager.FindByNameAsync(username);
 
             if (loggedUser == null || loggedUser.Position == null)
-                throw new Exception("Nie znaleziono użytkownika!");
+                throw new DataException("Nie znaleziono użytkownika!");
 
             IEnumerable<ApplicationUser> applicationUsers = await _applicationUserRepository.GetWithConditionAsync(x => x.Position != null && x.Position.CompanyId == loggedUser.Position.CompanyId);
             applicationUsers = applicationUsers.Where(x => model.Any(y => y.Id == x.Id)).ToList();

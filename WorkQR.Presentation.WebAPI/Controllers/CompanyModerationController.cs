@@ -79,6 +79,23 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             }
         }
 
+        #region Positions
+
+        [HttpGet("getCompanyPositions")]
+        public async Task<ActionResult<List<CompanyPositionDTO>>> GetCompanyPositions()
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var companyPositions = await _positionService.GetCompanyPositionsByUserName(userName);
+                return Ok(companyPositions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("getCompanyPositionsForUserToSelect")]
         public async Task<ActionResult<List<SelectDTO<Guid>>>> GetCompanyPositionsForUserToSelect()
         {
@@ -93,6 +110,8 @@ namespace WorkQR.Presentation.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        #endregion Positions
 
         [HttpPost("updateCompanyEmployees")]
         public async Task<ActionResult> UpdateCompanyEmployees(List<CompanyEmployeeVM> model)
@@ -259,6 +278,25 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         }
 
         #endregion Vacation
+
+        #region Warnings
+
+        [HttpGet("getEmployeesWarnings")]
+        public async Task<ActionResult<List<ModeratorEmployeeWarningDTO>>> GetEmployeesWarnings([FromQuery] RaportDocumentVM model)
+        {
+            string userName = User.Identity.Name;
+            try
+            {
+                var vacationRequests = await _worktimeEventService.GetModeratorEmployeeWarnings(model, userName);
+                return Ok(vacationRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion
 
     }
 }

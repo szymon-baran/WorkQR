@@ -34,15 +34,15 @@
         </q-input>
       </div>
     </div>
-    <div class="row q-mt-md q-col-gutter-lg">
+    <div class="row q-mt-md q-mb-sm q-col-gutter-lg">
       <div class="col-xs-12 col-md-3">
-        <p class="text-subtitle2 text-center">
+        <p class="text-subtitle1 text-center">
           Dni w pracy w wybranym przedziale czasu
         </p>
         <presence-doughnut ref="presenceDoughnut" />
       </div>
       <div class="col-xs-12 col-md-3">
-        <p class="text-subtitle2 text-center">
+        <p class="text-subtitle1 text-center">
           Porównanie godzin pracy/przerwy
         </p>
         <worktime-comparison-polar-area ref="worktimeComparisonPolarArea" />

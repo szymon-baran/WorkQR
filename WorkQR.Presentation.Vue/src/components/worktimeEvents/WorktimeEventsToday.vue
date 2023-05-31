@@ -22,7 +22,7 @@
       </span>
     </div>
     <div class="col-lg-7 col-xs-12">
-      <worktime-events-list :title="'Dzisiejsze wydarzenia'" />
+      <worktime-events-list :is-home-page="true" />
     </div>
   </div>
 </template>

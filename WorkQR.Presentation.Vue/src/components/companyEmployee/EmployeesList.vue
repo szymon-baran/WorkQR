@@ -27,7 +27,7 @@
       </template>
 
       <template v-slot:item="props">
-        <div class="q-pa-xs col-sm-4 col-md-3 employee-card">
+        <div class="q-pa-sm col-xs-12 col-md-3 employee-card">
           <q-card flat bordered>
             <q-card-section class="flex flex-center">
               <q-avatar color="primary" text-color="white" size="4rem">{{

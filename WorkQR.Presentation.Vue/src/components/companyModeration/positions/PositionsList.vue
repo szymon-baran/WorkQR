@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="row">
+      <div class="col-xs-12 text-subtitle2">
+        Możesz edytować wartości poszczególnych rekordów poprzez kliknięcie
+        wybranej komórki
+      </div>
+    </div>
     <q-table
       :rows="positions"
       :columns="columns"
@@ -30,6 +36,9 @@
               :name="props.row.isSystemPosition ? 'check' : 'close'"
               size="1.3rem"
             />
+          </q-td>
+          <q-td key="userRoleName" :props="props">
+            {{ props.row.userRoleName }}
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
@@ -78,7 +87,7 @@ export default defineComponent({
         name: 'breakMinsPerDay',
         field: 'breakMinsPerDay',
         align: 'center',
-        label: 'Czas przerwy/dzień [min]',
+        label: 'Zdefiniowany czas przerwy/dzień [min]',
         sortable: false,
       },
       {
@@ -88,10 +97,17 @@ export default defineComponent({
         label: 'Stanowisko systemowe',
         sortable: false,
       },
+      {
+        name: 'userRoleName',
+        field: 'userRoleName',
+        align: 'center',
+        label: 'Rola systemowa',
+        sortable: false,
+      },
       { name: 'actions', label: 'Akcje', field: '', align: 'right' },
     ];
     onMounted(async () => {
-      const response = await api.get('position/getCompanyPositionsForUser');
+      const response = await api.get('companyModeration/getCompanyPositions');
       positions.value = response.data;
     });
     return {

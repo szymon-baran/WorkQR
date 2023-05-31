@@ -7,7 +7,7 @@
   />
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -39,14 +39,14 @@ export default defineComponent({
       labels: [],
       datasets: [
         {
-          label: 'Przepracowane',
+          label: 'Przepracowane [h]',
           data: [],
           backgroundColor: '#21ba45',
           order: 3,
           stack: 'stack1',
         },
         {
-          label: 'Na przerwie',
+          label: 'Na przerwie [h]',
           data: [],
           backgroundColor: '#f73349',
           order: 3,
@@ -63,9 +63,6 @@ export default defineComponent({
       loaded.value = true;
     };
     ctx.expose({ loadEmployeesWorkedHoursData });
-    onMounted(async () => {
-      await loadEmployeesWorkedHoursData();
-    });
     return {
       reportStore,
       loaded,

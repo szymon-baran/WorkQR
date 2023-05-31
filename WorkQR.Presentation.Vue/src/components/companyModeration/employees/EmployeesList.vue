@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-7 text-subtitle1">
+    <div class="row" v-if="!isInactiveView">
+      <div class="col-7 text-subtitle2">
         Możesz edytować wartości poszczególnych rekordów poprzez kliknięcie
         wybranej komórki
       </div>
