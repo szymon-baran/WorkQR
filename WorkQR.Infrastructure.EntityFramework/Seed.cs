@@ -468,7 +468,7 @@ namespace WorkQR.Infrastructure.EntityFramework
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.EndBreak,
-                EventTime = DateTime.Today.AddDays(-2).AddHours(13).AddMinutes(15)
+                EventTime = DateTime.Today.AddDays(-2).AddHours(12).AddMinutes(15)
             });
             await _context.WorktimeEvents.AddAsync(new()
             {
@@ -493,7 +493,7 @@ namespace WorkQR.Infrastructure.EntityFramework
             {
                 ApplicationUser = _company1Position4User1,
                 EventType = EventType.EndBreak,
-                EventTime = DateTime.Today.AddDays(-1).AddHours(11).AddMinutes(4)
+                EventTime = DateTime.Today.AddDays(-1).AddHours(12).AddMinutes(4)
             });
             await _context.WorktimeEvents.AddAsync(new()
             {

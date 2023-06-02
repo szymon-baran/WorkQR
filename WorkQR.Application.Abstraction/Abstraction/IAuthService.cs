@@ -10,7 +10,7 @@ namespace WorkQR.Application
         Task<UserTokenDTO> RefreshAccessTokenAsync(UserTokenVM model);
         Task<bool> ValidateUsername(string username);
         Task<RegistrationCodeUserDTO> GetUserDataByRegistrationCode(string registrationCode);
-        Task AddEmployee(EmployeeAddVM model, string userName);
+        Task AddEmployee(EmployeeAddVM model);
         Task ActivateEmployee(EmployeeActivateVM model);
     }
 }

@@ -26,10 +26,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyEmployees")]
         public async Task<ActionResult<List<EmployeeDTO>>> GetCompanyEmployees()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyEmployees = await _applicationUserService.GetCompanyEmployees(userName);
+                var companyEmployees = await _applicationUserService.GetCompanyEmployees();
                 return Ok(companyEmployees);
             }
             catch (Exception ex)
@@ -43,10 +42,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getVacationRequests")]
         public async Task<ActionResult<List<VacationRequestDTO>>> GetVacationRequests()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var vacationRequests = await _vacationService.GetVacationRequestsByUsername(userName);
+                var vacationRequests = await _vacationService.GetVacationRequestsByUsername();
                 return Ok(vacationRequests);
             }
             catch (Exception ex)
@@ -72,10 +70,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpPost("addVacationRequest")]
         public async Task<ActionResult> AddVacationRequest(VacationRequestVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                await _vacationService.AddVacationRequest(userName, model);
+                await _vacationService.AddVacationRequest(model);
                 return Ok(true);
             }
             catch (Exception ex)
@@ -87,10 +84,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("validateVacationRequest")]
         public async Task<ActionResult<bool>> ValidateVacationRequest([FromQuery] VacationValidationVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                bool result = await _vacationService.ValidateVacationRequest(userName, model);
+                bool result = await _vacationService.ValidateVacationRequest(model);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -106,10 +102,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getEmployeePresenceData")]
         public async Task<ActionResult<EmployeePresenceDTO>> GetEmployeePresenceData([FromQuery] RaportDocumentVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                var presenceData = await _worktimeEventService.GetEmployeePresenceData(model, userName);
+                var presenceData = await _worktimeEventService.GetEmployeePresenceData(model);
                 return Ok(presenceData);
             }
             catch (Exception ex)
@@ -121,10 +116,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getEmployeeWorkTimeComparisonData")]
         public async Task<ActionResult<EmployeeWorkTimeComparisonDTO>> GetEmployeeWorkTimeComparisonData([FromQuery] RaportDocumentVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                var presenceData = await _worktimeEventService.GetEmployeeWorkTimeComparisonData(model, userName);
+                var presenceData = await _worktimeEventService.GetEmployeeWorkTimeComparisonData(model);
                 return Ok(presenceData);
             }
             catch (Exception ex)

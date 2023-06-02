@@ -6,7 +6,7 @@ namespace WorkQR.Application
     public interface IQRService
     {
         Task<EventScanDTO> Scan(Guid qrAuthorizationKey);
-        Task<Guid> GetQRAuthorizationKeyByUserName(string userName);
+        Task<Guid> GetQRAuthorizationKeyByUserName();
         Task<Guid> ResetUserQRAuthorizationKey(string userId);
         Task CancelEventById(Guid id);
         Task ChangeEventTypeToEndById(Guid id);

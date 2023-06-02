@@ -4,13 +4,13 @@ namespace WorkQR.Application
 {
     public interface IVacationService
     {
-        Task<List<VacationRequestDTO>> GetVacationRequestsByUsername(string userName);
+        Task<List<VacationRequestDTO>> GetVacationRequestsByUsername();
         List<SelectDTO<VacationType>> GetVacationTypes();
-        Task AddVacationRequest(string userName, VacationRequestVM model);
-        Task<bool> ValidateVacationRequest(string userName, VacationValidationVM model);
-        Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests(string userName);
+        Task AddVacationRequest(VacationRequestVM model);
+        Task<bool> ValidateVacationRequest(VacationValidationVM model);
+        Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests();
         Task<List<ModeratorEmployeeVacationDetailsDTO>> GetModeratorVacationRequestsByUser(GetUserDetailsVM model);
-        Task AcceptVacationRequest(string userName, Guid id);
-        Task RejectVacationRequest(string userName, ModeratorVacationRejectionVM model);
+        Task AcceptVacationRequest(Guid id);
+        Task RejectVacationRequest(ModeratorVacationRejectionVM model);
     }
 }

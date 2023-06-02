@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WorkQR.Application
 {
@@ -10,16 +11,23 @@ namespace WorkQR.Application
         private readonly IPositionRepository _positionRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PositionService(IPositionRepository positionRepository, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public PositionService(IPositionRepository positionRepository,
+                               UserManager<ApplicationUser> userManager,
+                               IMapper mapper,
+                               IHttpContextAccessor httpContextAccessor)
         {
             _positionRepository = positionRepository;
             _userManager = userManager;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<CompanyPositionDTO>> GetCompanyPositionsByUserName(string userName)
+        public async Task<List<CompanyPositionDTO>> GetCompanyPositionsByUserName()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -29,8 +37,10 @@ namespace WorkQR.Application
             return _mapper.Map<IEnumerable<Position>, List<CompanyPositionDTO>>(positions);
         }
 
-        public async Task<List<SelectDTO<Guid>>> GetCompanyPositionsForUserToSelect(string userName)
+        public async Task<List<SelectDTO<Guid>>> GetCompanyPositionsForUserToSelect()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");

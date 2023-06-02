@@ -25,12 +25,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         {
             try
             {
-                string userName = User.Identity.Name;
-                if (string.IsNullOrEmpty(userName))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
-                Guid qrAuthorizationKey = await _qrService.GetQRAuthorizationKeyByUserName(userName);
+                Guid qrAuthorizationKey = await _qrService.GetQRAuthorizationKeyByUserName();
                 return Ok(qrAuthorizationKey);
             }
             catch (Exception ex)

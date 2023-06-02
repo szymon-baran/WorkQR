@@ -4,6 +4,7 @@ using System;
 using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Dictionaries;
 using WorkQR.Domain.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WorkQR.Application
 {
@@ -12,16 +13,23 @@ namespace WorkQR.Application
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVacationRepository _vacationRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public VacationService(UserManager<ApplicationUser> userManager, IVacationRepository vacationRepository, IMapper mapper)
+        public VacationService(UserManager<ApplicationUser> userManager,
+                               IVacationRepository vacationRepository,
+                               IMapper mapper,
+                               IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _vacationRepository = vacationRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<VacationRequestDTO>> GetVacationRequestsByUsername(string userName)
+        public async Task<List<VacationRequestDTO>> GetVacationRequestsByUsername()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -40,8 +48,10 @@ namespace WorkQR.Application
             }).ToList();
         }
 
-        public async Task AddVacationRequest(string userName, VacationRequestVM model)
+        public async Task AddVacationRequest(VacationRequestVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -53,8 +63,10 @@ namespace WorkQR.Application
             await _vacationRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> ValidateVacationRequest(string userName, VacationValidationVM model)
+        public async Task<bool> ValidateVacationRequest(VacationValidationVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -78,8 +90,10 @@ namespace WorkQR.Application
 
         #region Moderation
 
-        public async Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests(string userName)
+        public async Task<List<ModeratorVacationRequestDTO>> GetModeratorAllVacationRequests()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -112,8 +126,10 @@ namespace WorkQR.Application
             return _mapper.Map<IEnumerable<Vacation>, List<ModeratorEmployeeVacationDetailsDTO>>(vacationRequests);
         }
 
-        public async Task AcceptVacationRequest(string userName, Guid id)
+        public async Task AcceptVacationRequest(Guid id)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -128,8 +144,10 @@ namespace WorkQR.Application
             await _vacationRepository.SaveChangesAsync();
         }
 
-        public async Task RejectVacationRequest(string userName, ModeratorVacationRejectionVM model)
+        public async Task RejectVacationRequest(ModeratorVacationRejectionVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");

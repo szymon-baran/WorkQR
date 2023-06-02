@@ -7,6 +7,8 @@ using System.Linq;
 using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Dictionaries;
 using WorkQR.Domain.Models;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace WorkQR.Application
 {
@@ -15,16 +17,23 @@ namespace WorkQR.Application
         private readonly IWorktimeEventRepository _worktimeEventRepository;
         private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public WorktimeEventService(IWorktimeEventRepository worktimeEventRepository, IApplicationUserRepository applicationUserRepository, UserManager<ApplicationUser> userManager)
+        public WorktimeEventService(IWorktimeEventRepository worktimeEventRepository,
+                                    IApplicationUserRepository applicationUserRepository,
+                                    UserManager<ApplicationUser> userManager,
+                                    IHttpContextAccessor httpContextAccessor)
         {
             _worktimeEventRepository = worktimeEventRepository;
             _applicationUserRepository = applicationUserRepository;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<WorktimeEventDTO>> GetUserWorktimeEventsToday(string userName)
+        public async Task<List<WorktimeEventDTO>> GetUserWorktimeEventsToday()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -69,8 +78,10 @@ namespace WorkQR.Application
             return worktimeEventsList;
         }
 
-        public async Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDatesForCalendar(DaysSpanVM model, string userName)
+        public async Task<WorktimeEventsTimestampsDTO> GetUserWorktimeEventsBetweenDatesForCalendar(DaysSpanVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -99,8 +110,10 @@ namespace WorkQR.Application
             return worktimeEventsDTO;
         }
 
-        public async Task<byte[]> GetCompanyRaportForDate(ModeratorRaportDocumentVM model, string userName)
+        public async Task<byte[]> GetCompanyRaportForDate(ModeratorRaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -132,8 +145,10 @@ namespace WorkQR.Application
             return bytes;
         }
 
-        public async Task<EmployeePresenceDTO> GetEmployeePresenceData(RaportDocumentVM model, string userName)
+        public async Task<EmployeePresenceDTO> GetEmployeePresenceData(RaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -150,8 +165,10 @@ namespace WorkQR.Application
             };
         }
 
-        public async Task<EmployeeWorkTimeComparisonDTO> GetEmployeeWorkTimeComparisonData(RaportDocumentVM model, string userName)
+        public async Task<EmployeeWorkTimeComparisonDTO> GetEmployeeWorkTimeComparisonData(RaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -205,8 +222,10 @@ namespace WorkQR.Application
             };
         }
 
-        public async Task<List<EmployeePresenceDTO>> GetModeratorEmployeesPresenceData(ModeratorRaportDocumentVM model, string userName)
+        public async Task<List<EmployeePresenceDTO>> GetModeratorEmployeesPresenceData(ModeratorRaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -225,8 +244,10 @@ namespace WorkQR.Application
             }).ToList();
         }
 
-        public async Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(ModeratorRaportDocumentVM model, string userName)
+        public async Task<List<ModeratorEmployeeWorkedHoursDTO>> GetEmployeesWorkedHoursData(ModeratorRaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -270,8 +291,10 @@ namespace WorkQR.Application
             return workedHoursDTOList;
         }
 
-        public async Task<List<ModeratorEmployeeWarningDTO>> GetModeratorEmployeeWarnings(RaportDocumentVM model, string userName)
+        public async Task<List<ModeratorEmployeeWarningDTO>> GetModeratorEmployeeWarnings(RaportDocumentVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");
@@ -345,8 +368,10 @@ namespace WorkQR.Application
             return workedHoursDTOList;
         }
 
-        public async Task UpdateTodayEventDescription(string userName, WorktimeEventTodayEditVM model)
+        public async Task UpdateTodayEventDescription(WorktimeEventTodayEditVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");

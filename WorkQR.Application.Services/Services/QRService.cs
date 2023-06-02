@@ -2,6 +2,7 @@
 using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Dictionaries;
 using WorkQR.Domain.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WorkQR.Application
 {
@@ -9,11 +10,15 @@ namespace WorkQR.Application
     {
         private readonly IWorktimeEventRepository _worktimeEventRepository;
         private readonly IApplicationUserRepository _applicationUserRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public QRService(IWorktimeEventRepository worktimeEventRepository, IApplicationUserRepository applicationUserRepository)
+        public QRService(IWorktimeEventRepository worktimeEventRepository,
+                         IApplicationUserRepository applicationUserRepository,
+                         IHttpContextAccessor httpContextAccessor)
         {
             _worktimeEventRepository = worktimeEventRepository;
             _applicationUserRepository = applicationUserRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<EventScanDTO> Scan(Guid qrAuthorizationKey)
@@ -99,8 +104,10 @@ namespace WorkQR.Application
             return userBreakMinutesPerDay - breakMinutesToday;
         }
 
-        public async Task<Guid> GetQRAuthorizationKeyByUserName(string userName)
+        public async Task<Guid> GetQRAuthorizationKeyByUserName()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             var user = await _applicationUserRepository.FirstOrDefaultAsync(x => x.UserName == userName);
 
             if (user == null)

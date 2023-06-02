@@ -31,6 +31,7 @@ namespace WorkQR.Application
         private readonly IApplicationUserService _applicationUserService;
         private readonly MailSettings _mailSettings;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthService(IApplicationUserRepository applicationUserRepository,
                            ICompanyRepository companyRepository,
@@ -39,7 +40,8 @@ namespace WorkQR.Application
                            IConfiguration configuration,
                            IApplicationUserService applicationUserService,
                            IOptions<MailSettings> mailSettings,
-                           IMapper mapper)
+                           IMapper mapper,
+                           IHttpContextAccessor httpContextAccessor)
         {
             _applicationUserRepository = applicationUserRepository;
             _companyRepository = companyRepository;
@@ -49,6 +51,7 @@ namespace WorkQR.Application
             _applicationUserService = applicationUserService;
             _mailSettings = mailSettings.Value;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<UserDTO> LoginAsync(UserLoginVM model)
@@ -252,8 +255,10 @@ namespace WorkQR.Application
             return Convert.ToBase64String(randomNumber);
         }
 
-        public async Task AddEmployee(EmployeeAddVM model, string userName)
+        public async Task AddEmployee(EmployeeAddVM model)
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
             ApplicationUser? moderatorUser = await _userManager.FindByNameAsync(userName);
             if (moderatorUser == null)
                 throw new Exception("Nie znaleziono zalogowanego użytkownika!");

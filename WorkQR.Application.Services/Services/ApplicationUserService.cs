@@ -4,6 +4,7 @@ using WorkQR.Infrastructure.Abstraction;
 using WorkQR.Domain.Dictionaries;
 using WorkQR.Domain.Models;
 using System.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace WorkQR.Application
 {
@@ -12,18 +13,24 @@ namespace WorkQR.Application
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IApplicationUserRepository _applicationUserRepository;
         private readonly IPositionRepository _positionRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public ApplicationUserService(UserManager<ApplicationUser> userManager,
                                       IApplicationUserRepository applicationUserRepository,
-                                      IPositionRepository positionRepository)
+                                      IPositionRepository positionRepository,
+                                      IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _applicationUserRepository = applicationUserRepository;
             _positionRepository = positionRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<FullEmployeeDTO>> GetCompanyEmployeesForModerator(string username)
-        {
-            var user = await _userManager.FindByNameAsync(username);
+        public async Task<List<FullEmployeeDTO>> GetCompanyEmployeesForModerator()
+        {            
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null || user.Position == null)
                 throw new Exception("Nie znaleziono użytkownika!");
@@ -49,9 +56,11 @@ namespace WorkQR.Application
             }).OrderByDescending(x => x.IsOnVacation).ThenByDescending(x => x.LastActivity).ToList();
         }
 
-        public async Task<List<SelectDTO<string>>> GetCompanyEmployeesToSelect(string username)
+        public async Task<List<SelectDTO<string>>> GetCompanyEmployeesToSelect()
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null || user.Position == null)
                 throw new Exception("Nie znaleziono użytkownika!");
@@ -65,9 +74,11 @@ namespace WorkQR.Application
             }).OrderBy(x => x.Label).ToList();
         }
 
-        public async Task<List<FullEmployeeDTO>> GetCompanyInactiveAccounts(string username)
+        public async Task<List<FullEmployeeDTO>> GetCompanyInactiveAccounts()
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null || user.Position == null)
                 throw new Exception("Nie znaleziono użytkownika!");
@@ -91,9 +102,11 @@ namespace WorkQR.Application
             }).OrderByDescending(x => x.LastActivity).ToList();
         }
 
-        public async Task<List<EmployeeDTO>> GetCompanyEmployees(string username)
+        public async Task<List<EmployeeDTO>> GetCompanyEmployees()
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null || user.Position == null)
                 throw new DataException("Nie znaleziono użytkownika!");
@@ -110,9 +123,11 @@ namespace WorkQR.Application
             }).ToList();
         }
 
-        public async Task UpdateCompanyEmployees(string username, List<CompanyEmployeeVM> model)
+        public async Task UpdateCompanyEmployees(List<CompanyEmployeeVM> model)
         {
-            var loggedUser = await _userManager.FindByNameAsync(username);
+            var userName = _httpContextAccessor.HttpContext.User.Identity?.Name ?? throw new UnauthorizedAccessException();
+
+            var loggedUser = await _userManager.FindByNameAsync(userName);
 
             if (loggedUser == null || loggedUser.Position == null)
                 throw new DataException("Nie znaleziono użytkownika!");

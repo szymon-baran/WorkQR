@@ -25,12 +25,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         {
             try
             {
-                string userName = User.Identity.Name;
-                if (string.IsNullOrEmpty(userName))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
-                List<WorktimeEventDTO> worktimeEventsList = await _worktimeEventService.GetUserWorktimeEventsToday(userName);
+                List<WorktimeEventDTO> worktimeEventsList = await _worktimeEventService.GetUserWorktimeEventsToday();
                 return Ok(worktimeEventsList);
             }
             catch (Exception ex)
@@ -44,12 +39,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         {
             try
             {
-                string userName = User.Identity.Name;
-                if (string.IsNullOrEmpty(userName))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
-                WorktimeEventsTimestampsDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDatesForCalendar(model, userName);
+                WorktimeEventsTimestampsDTO worktimeEventsDTO = await _worktimeEventService.GetUserWorktimeEventsBetweenDatesForCalendar(model);
                 return Ok(worktimeEventsDTO);
             }
             catch (Exception ex)
@@ -63,12 +53,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         {
             try
             {
-                string userName = User.Identity.Name;
-                if (string.IsNullOrEmpty(userName))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
-                await _worktimeEventService.UpdateTodayEventDescription(userName, model);
+                await _worktimeEventService.UpdateTodayEventDescription(model);
                 return Ok(true);
             }
             catch (Exception ex)

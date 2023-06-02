@@ -37,10 +37,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyEmployees")]
         public async Task<ActionResult<List<FullEmployeeDTO>>> GetCompanyEmployees()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyEmployees = await _applicationUserService.GetCompanyEmployeesForModerator(userName);
+                var companyEmployees = await _applicationUserService.GetCompanyEmployeesForModerator();
                 return Ok(companyEmployees);
             }
             catch (Exception ex)
@@ -52,10 +51,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyEmployeesToSelect")]
         public async Task<ActionResult<List<SelectDTO<string>>>> GetCompanyEmployeesToSelect()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyEmployees = await _applicationUserService.GetCompanyEmployeesToSelect(userName);
+                var companyEmployees = await _applicationUserService.GetCompanyEmployeesToSelect();
                 return Ok(companyEmployees);
             }
             catch (Exception ex)
@@ -67,10 +65,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyInactiveAccounts")]
         public async Task<ActionResult<List<FullEmployeeDTO>>> GetCompanyInactiveAccounts()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyEmployees = await _applicationUserService.GetCompanyInactiveAccounts(userName);
+                var companyEmployees = await _applicationUserService.GetCompanyInactiveAccounts();
                 return Ok(companyEmployees);
             }
             catch (Exception ex)
@@ -84,10 +81,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyPositions")]
         public async Task<ActionResult<List<CompanyPositionDTO>>> GetCompanyPositions()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyPositions = await _positionService.GetCompanyPositionsByUserName(userName);
+                var companyPositions = await _positionService.GetCompanyPositionsByUserName();
                 return Ok(companyPositions);
             }
             catch (Exception ex)
@@ -99,10 +95,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getCompanyPositionsForUserToSelect")]
         public async Task<ActionResult<List<SelectDTO<Guid>>>> GetCompanyPositionsForUserToSelect()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var companyPositions = await _positionService.GetCompanyPositionsForUserToSelect(userName);
+                var companyPositions = await _positionService.GetCompanyPositionsForUserToSelect();
                 return Ok(companyPositions);
             }
             catch (Exception ex)
@@ -116,10 +111,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpPost("updateCompanyEmployees")]
         public async Task<ActionResult> UpdateCompanyEmployees(List<CompanyEmployeeVM> model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                await _applicationUserService.UpdateCompanyEmployees(userName, model);
+                await _applicationUserService.UpdateCompanyEmployees(model);
                 return Ok(true);
             }
             catch (Exception ex)
@@ -162,7 +156,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             string userName = User.Identity.Name;
             try
             {
-                var bytes = await _worktimeEventService.GetCompanyRaportForDate(model, userName);
+                var bytes = await _worktimeEventService.GetCompanyRaportForDate(model);
                 return File(bytes, "application/pdf", $"{DateTime.Today.ToShortDateString()}-raport.pdf");
             }
             catch (Exception ex)
@@ -177,7 +171,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             string userName = User.Identity.Name;
             try
             {
-                var presenceData = await _worktimeEventService.GetModeratorEmployeesPresenceData(model, userName);
+                var presenceData = await _worktimeEventService.GetModeratorEmployeesPresenceData(model);
                 return Ok(presenceData);
             }
             catch (Exception ex)
@@ -192,7 +186,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             string userName = User.Identity.Name;
             try
             {
-                var workedHours = await _worktimeEventService.GetEmployeesWorkedHoursData(model, userName);
+                var workedHours = await _worktimeEventService.GetEmployeesWorkedHoursData(model);
                 return Ok(workedHours);
             }
             catch (Exception ex)
@@ -204,10 +198,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpPost("addEmployee")]
         public async Task<ActionResult<Guid>> AddEmployee(EmployeeAddVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                await _authService.AddEmployee(model, userName);
+                await _authService.AddEmployee(model);
                 return Ok(true);
             }
             catch (Exception ex)
@@ -221,10 +214,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpGet("getVacationRequests")]
         public async Task<ActionResult<List<ModeratorVacationRequestDTO>>> GetVacationRequests()
         {
-            string userName = User.Identity.Name;
             try
             {
-                var vacationRequests = await _vacationService.GetModeratorAllVacationRequests(userName);
+                var vacationRequests = await _vacationService.GetModeratorAllVacationRequests();
                 return Ok(vacationRequests);
             }
             catch (Exception ex)
@@ -250,10 +242,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpPost("acceptVacationRequest")]
         public async Task<ActionResult> AcceptVacationRequest(Guid id)
         {
-            string userName = User.Identity.Name;
             try
             {
-                await _vacationService.AcceptVacationRequest(userName, id);
+                await _vacationService.AcceptVacationRequest(id);
                 return Ok(true);
             }
             catch (Exception ex)
@@ -265,10 +256,9 @@ namespace WorkQR.Presentation.WebAPI.Controllers
         [HttpPost("rejectVacationRequest")]
         public async Task<ActionResult> RejectVacationRequest(ModeratorVacationRejectionVM model)
         {
-            string userName = User.Identity.Name;
             try
             {
-                await _vacationService.RejectVacationRequest(userName, model);
+                await _vacationService.RejectVacationRequest(model);
                 return Ok(true);
             }
             catch (Exception ex)
@@ -287,7 +277,7 @@ namespace WorkQR.Presentation.WebAPI.Controllers
             string userName = User.Identity.Name;
             try
             {
-                var vacationRequests = await _worktimeEventService.GetModeratorEmployeeWarnings(model, userName);
+                var vacationRequests = await _worktimeEventService.GetModeratorEmployeeWarnings(model);
                 return Ok(vacationRequests);
             }
             catch (Exception ex)

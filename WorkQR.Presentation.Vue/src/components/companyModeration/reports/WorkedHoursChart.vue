@@ -71,7 +71,7 @@ export default defineComponent({
         plugins: {
           title: {
             display: true,
-            text: 'Dni przepracowane/spędzone na przerwie przez pracowników',
+            text: 'Godziny przepracowane/spędzone na przerwie przez pracowników',
           },
         },
         responsive: true,

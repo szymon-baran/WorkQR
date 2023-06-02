@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="row q-col-gutter-md q-mt-xs">
-      <div class="col-lg-3 col-xs-12">
+    <div class="row q-col-gutter-lg q-mt-xs">
+      <div class="col-md-4 col-xs-12">
         <q-input
           filled
           :model-value="`${reportForm.DatesRange.from} - ${reportForm.DatesRange.to}`"
@@ -33,15 +33,13 @@
           </template>
         </q-input>
       </div>
-    </div>
-    <div class="row q-mt-md q-mb-sm q-col-gutter-lg">
-      <div class="col-xs-12 col-md-3">
+      <div class="col-xs-12 col-md-4">
         <p class="text-subtitle1 text-center">
           Dni w pracy w wybranym przedziale czasu
         </p>
         <presence-doughnut ref="presenceDoughnut" />
       </div>
-      <div class="col-xs-12 col-md-3">
+      <div class="col-xs-12 col-md-4">
         <p class="text-subtitle1 text-center">
           Porównanie godzin pracy/przerwy
         </p>
