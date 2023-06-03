@@ -30,6 +30,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Domain.Models", "WorkQR.Domain.Models\WorkQR.Domain.Models.csproj", "{90F2F385-A9EB-4B57-B27C-4023E4F16AB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2BFA1E94-3468-4960-96F4-2468A0FDBB00}"
+	ProjectSection(SolutionItems) = preProject
+		k6-load-tests.js = k6-load-tests.js
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkQR.Tests.xUnit", "WorkQR.Tests.xUnit\WorkQR.Tests.xUnit.csproj", "{86D20EB4-CF02-4855-8C99-200463AE2AF2}"
 EndProject
